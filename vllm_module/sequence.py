@@ -133,8 +133,7 @@ class SequenceData:
         self._update_cached_all_tokens()
 
     def _update_cached_all_tokens(self):
-        self._cached_all_token_ids: List[int] = list(self._prompt_token_ids +
-                                                     self._output_token_ids)
+        self._cached_all_token_ids: List[int] = list(self._prompt_token_ids + self._output_token_ids)
 
     @property
     def prompt_token_ids(self) -> Tuple[int, ...]:

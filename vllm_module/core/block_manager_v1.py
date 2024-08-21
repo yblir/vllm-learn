@@ -271,19 +271,15 @@ class BlockSpaceManagerV1(BlockSpaceManager):
 
         self_num_required_blocks = self._get_seq_num_required_blocks(
                 seq_group.get_seqs(status=SequenceStatus.WAITING)[0])
-        cross_num_required_blocks = self._get_seq_num_required_blocks(
-                seq_group.get_encoder_seq())
-        num_required_blocks = self_num_required_blocks + \
-                              cross_num_required_blocks
+        cross_num_required_blocks = self._get_seq_num_required_blocks(seq_group.get_encoder_seq())
+        num_required_blocks = self_num_required_blocks + cross_num_required_blocks
 
         if self.block_sliding_window is not None:
-            num_required_blocks = min(num_required_blocks,
-                                      self.block_sliding_window)
+            num_required_blocks = min(num_required_blocks, self.block_sliding_window)
         num_free_gpu_blocks = self.gpu_allocator.get_num_free_blocks()
 
         # Use watermark to avoid frequent cache eviction.
-        if (self.num_total_gpu_blocks - num_required_blocks <
-                self.watermark_blocks):
+        if self.num_total_gpu_blocks - num_required_blocks < self.watermark_blocks:
             return AllocStatus.NEVER
         if num_free_gpu_blocks - num_required_blocks >= self.watermark_blocks:
             return AllocStatus.OK

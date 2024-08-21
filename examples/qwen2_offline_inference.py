@@ -57,7 +57,16 @@ messages3 = [
 
 text3 = tokenizer.apply_chat_template(conversation=messages3, tokenize=False, add_generation_prompt=True)
 # print(text)
-outputs = llm.generate(prompts=[text,text2,text3], sampling_params=sample_params)
+outputs = llm.generate(
+        # 当tokenizer.apply_chat_templat中 tokenize为 False 时激活prompts
+        prompts=[text,text2,text3],
+
+        # 当tokenizer.apply_chat_templat中 tokenize为 True 时激活prompt_token_ids,与prompts二选一
+        # prompt_token_ids=[text,text2,text3],
+
+        sampling_params=sample_params
+)
+
 for output in outputs:
     # prompt = output.prompt
     # print(prompt)

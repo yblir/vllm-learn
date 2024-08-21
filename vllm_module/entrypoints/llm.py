@@ -134,6 +134,7 @@ class LLM:
         if any(k in kwargs for k in removed_vision_keys):
             raise TypeError(
                     "There is no need to pass vision-related arguments anymore.")
+        # 将外部参数映射为EngineArgs的属性,没做其他修改,便于后续参数的管理
         engine_args = EngineArgs(
                 model=model,
                 tokenizer=tokenizer,
@@ -155,33 +156,30 @@ class LLM:
                 disable_custom_all_reduce=disable_custom_all_reduce,
                 **kwargs,
         )
-        self.llm_engine = LLMEngine.from_engine_args(
-                engine_args, usage_context=UsageContext.LLM_CLASS)
+        # 使用配置好的engine参数,初始LLMEngine实例
+        self.llm_engine = LLMEngine.from_engine_args(engine_args, usage_context=UsageContext.LLM_CLASS)
+        # 全局唯一id,1个 prompt(一个batch可能包含多条prompt)的视为1个request,为这个prompt分配一个唯一id
         self.request_counter = Counter()
 
-    def get_tokenizer(
-            self) -> Union[PreTrainedTokenizer, PreTrainedTokenizerFast]:
+    def get_tokenizer(self) -> Union[PreTrainedTokenizer, PreTrainedTokenizerFast]:
         return self.llm_engine.tokenizer.tokenizer
 
-    def set_tokenizer(
-            self,
-            tokenizer: Union[PreTrainedTokenizer, PreTrainedTokenizerFast],
-    ) -> None:
+    def set_tokenizer(self, tokenizer: Union[PreTrainedTokenizer, PreTrainedTokenizerFast], ) -> None:
         # While CachedTokenizer is dynamic, have no choice but
         # compare class name. Misjudgment will arise from
         # user-defined tokenizer started with 'Cached'
         if tokenizer.__class__.__name__.startswith("Cached"):
             self.llm_engine.tokenizer.tokenizer = tokenizer
         else:
-            self.llm_engine.tokenizer.tokenizer = get_cached_tokenizer(
-                    tokenizer)
+            self.llm_engine.tokenizer.tokenizer = get_cached_tokenizer(tokenizer)
 
+    # 使用类型注解和装饰器 @overload来进行重载（Overload）声明
+    # ------------------------------------------------------------------------------------------------------------------
     @overload  # LEGACY: single (prompt + optional token ids)
     def generate(
             self,
             prompts: str,
-            sampling_params: Optional[Union[SamplingParams,
-            List[SamplingParams]]] = None,
+            sampling_params: Optional[Union[SamplingParams, List[SamplingParams]]] = None,
             prompt_token_ids: Optional[List[int]] = None,
             use_tqdm: bool = True,
             lora_request: Optional[Union[List[LoRARequest], LoRARequest]] = None,
@@ -192,8 +190,7 @@ class LLM:
     def generate(
             self,
             prompts: List[str],
-            sampling_params: Optional[Union[SamplingParams,
-            List[SamplingParams]]] = None,
+            sampling_params: Optional[Union[SamplingParams, List[SamplingParams]]] = None,
             prompt_token_ids: Optional[List[List[int]]] = None,
             use_tqdm: bool = True,
             lora_request: Optional[Union[List[LoRARequest], LoRARequest]] = None,
@@ -204,8 +201,7 @@ class LLM:
     def generate(
             self,
             prompts: Optional[str] = None,
-            sampling_params: Optional[Union[SamplingParams,
-            List[SamplingParams]]] = None,
+            sampling_params: Optional[Union[SamplingParams, List[SamplingParams]]] = None,
             *,
             prompt_token_ids: List[int],
             use_tqdm: bool = True,
@@ -250,23 +246,21 @@ class LLM:
     ) -> List[RequestOutput]:
         ...
 
+    # ------------------------------------------------------------------------------------------------------------------
+    # @deprecate_kwargs: 将整个generate包括进wrapper
     @deprecate_kwargs("prompts",
                       "prompt_token_ids",
                       is_deprecated=lambda: LLM.DEPRECATE_LEGACY,
-                      additional_message="Please use the 'inputs' parameter "
-                                         "instead.")
+                      additional_message="Please use the 'inputs' parameter instead.")
     def generate(
             self,
-            prompts: Union[Union[PromptInputs, Sequence[PromptInputs]],
-            Optional[Union[str, List[str]]]] = None,
-            sampling_params: Optional[Union[SamplingParams,
-            Sequence[SamplingParams]]] = None,
+            prompts: Union[Union[PromptInputs, Sequence[PromptInputs]], Optional[Union[str, List[str]]]] = None,
+            sampling_params: Optional[Union[SamplingParams, Sequence[SamplingParams]]] = None,
             prompt_token_ids: Optional[Union[List[int], List[List[int]]]] = None,
             use_tqdm: bool = True,
             lora_request: Optional[Union[List[LoRARequest], LoRARequest]] = None,
             prompt_adapter_request: Optional[PromptAdapterRequest] = None,
-            guided_options_request: Optional[Union[LLMGuidedOptions,
-            GuidedDecodingRequest]] = None
+            guided_options_request: Optional[Union[LLMGuidedOptions, GuidedDecodingRequest]] = None
     ) -> List[RequestOutput]:
         """Generates the completions for the input prompts.
 
@@ -275,6 +269,9 @@ class LLM:
         into a single list and pass it to this method.
 
         Args:
+            prompts:
+            prompt_token_ids:
+            guided_options_request:
             inputs: A list of inputs to generate completions for.
             sampling_params: The sampling parameters for text generation. If
                 None, we use the default sampling parameters.
@@ -297,9 +294,10 @@ class LLM:
         """
         if self.llm_engine.model_config.embedding_mode:
             raise ValueError(
-                    "LLM.generate() is only supported for generation models "
-                    "(XForCausalLM).")
+                    "LLM.generate() is only supported for generation models (XForCausalLM)."
+            )
 
+        # cast 表面看是类型转换,但实践上没做任何事,直接原样返回, 那么这个调用的意义是什么 ?
         if prompt_token_ids is not None:
             inputs = self._convert_v1_inputs(
                     prompts=cast(Optional[Union[str, List[str]]], prompts),
@@ -313,13 +311,14 @@ class LLM:
                 raise ValueError(
                         "You can only use one guided decoding but multiple is "
                         f"specified: {guided_options_request}")
-            guided_options_request = GuidedDecodingRequest(
-                    **guided_options_request)
+            guided_options_request = GuidedDecodingRequest(**guided_options_request)
 
         if sampling_params is None:
             # Use default sampling params.
             sampling_params = SamplingParams()
 
+        # 校验入参，并将一个batchsize中的每条prompt处理成Sequence对象，然后Sequence包装成SequenceGroup组，
+        # 1. prompt->seq->seq_group, 2. 将seq_group加入合适gpu维护的scheduler的waiting队列,等待处理
         self._validate_and_add_requests(
                 inputs=inputs,
                 params=sampling_params,
@@ -516,8 +515,7 @@ class LLM:
     def _validate_and_add_requests(
             self,
             inputs: Union[PromptInputs, Sequence[PromptInputs]],
-            params: Union[SamplingParams, Sequence[SamplingParams], PoolingParams,
-            Sequence[PoolingParams]],
+            params: Union[SamplingParams, Sequence[SamplingParams], PoolingParams, Sequence[PoolingParams]],
             lora_request: Optional[Union[Sequence[LoRARequest], LoRARequest]],
             prompt_adapter_request: Optional[PromptAdapterRequest],
             guided_options: Optional[GuidedDecodingRequest] = None,
@@ -527,9 +525,9 @@ class LLM:
             # Convert a single prompt to a list.
             inputs = [inputs]
 
-        # 在vLLM内核运算逻辑中，1个prompt算1个request，需要有1个全局唯一的request_id
+        # 以下都是对采样参数的校验
+        # --------------------------------------------------------------------------------------------------------------
         num_requests = len(inputs)
-
         if isinstance(params, list) and len(params) != num_requests:
             raise ValueError("The lengths of prompts and params must be the same.")
         if isinstance(lora_request, list) and len(lora_request) != num_requests:
@@ -543,15 +541,24 @@ class LLM:
             ]
         elif isinstance(params, SamplingParams):
             params = self._add_guided_processor(params, guided_options)
+        # --------------------------------------------------------------------------------------------------------------
 
         # Add requests to the engine.
-        # 遍历每一条prompt
+        # 遍历每一条prompt，1个prompt算1个request，需要有1个全局唯一的request_id
         for i, request_inputs in enumerate(inputs):
-            self._add_request(
+            # self._add_request(
+            #         request_inputs,
+            #         params[i] if isinstance(params, Sequence) else params,
+            #         lora_request=lora_request[i] if isinstance(lora_request, Sequence) else lora_request,
+            #         prompt_adapter_request=prompt_adapter_request)
+
+            # 每个prompt赋1个全局唯一的request_id
+            request_id = str(next(self.request_counter))
+            self.llm_engine.add_request(
+                    request_id,
                     request_inputs,
                     params[i] if isinstance(params, Sequence) else params,
-                    lora_request=lora_request[i] if isinstance(
-                            lora_request, Sequence) else lora_request,
+                    lora_request=lora_request[i] if isinstance(lora_request, Sequence) else lora_request,
                     prompt_adapter_request=prompt_adapter_request)
 
     def _add_request(

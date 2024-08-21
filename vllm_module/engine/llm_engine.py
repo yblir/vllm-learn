@@ -305,10 +305,14 @@ class LLMEngine:
         # Create the scheduler.
         # NOTE: the cache_config here have been updated with the numbers of
         # GPU and CPU blocks, which are profiled in the distributed executor.
+
+        # pipeline_parallel_size:并行的gpu数量, 会把可用的 物理blocks平均分配到并行的gpu上
+        # 同时, 每个gpu都会维护一个调度器scheduler, self.scheduler是包含多个scheduler的list
         self.scheduler = [
-            Scheduler(scheduler_config, cache_config, lora_config,
-                      parallel_config.pipeline_parallel_size)
-            for _ in range(parallel_config.pipeline_parallel_size)
+            Scheduler(
+                    scheduler_config, cache_config, lora_config,
+                    parallel_config.pipeline_parallel_size
+            ) for _ in range(parallel_config.pipeline_parallel_size)
         ]
 
         # Metric Logging.
@@ -326,8 +330,7 @@ class LLMEngine:
                                 labels=dict(model_name=model_config.served_model_name),
                                 max_model_len=self.model_config.max_model_len),
                 }
-                self.stat_loggers["prometheus"].info("cache_config",
-                                                     self.cache_config)
+                self.stat_loggers["prometheus"].info("cache_config", self.cache_config)
 
         self.tracer = None
         if self.observability_config.otlp_traces_endpoint:
@@ -373,8 +376,7 @@ class LLMEngine:
         self.model_executor.initialize_cache(num_gpu_blocks, num_cpu_blocks)
 
     @classmethod
-    def _get_executor_cls(cls,
-                          engine_config: EngineConfig) -> Type[ExecutorBase]:
+    def _get_executor_cls(cls, engine_config: EngineConfig) -> Type[ExecutorBase]:
         distributed_executor_backend = (
             engine_config.parallel_config.distributed_executor_backend)
         # Initialize the cluster and specify the executor class.
@@ -461,8 +463,7 @@ class LLMEngine:
         if model_executor := getattr(self, "model_executor", None):
             model_executor.shutdown()
 
-    MISSING_TOKENIZER_GROUP_MSG = ("Unable to get tokenizer because "
-                                   "skip_tokenizer_init is True")
+    MISSING_TOKENIZER_GROUP_MSG = "Unable to get tokenizer because  skip_tokenizer_init is True"
 
     def get_tokenizer_group(
             self,
@@ -522,11 +523,13 @@ class LLMEngine:
         block_size = self.cache_config.block_size
         seq_id = next(self.seq_counter)
         eos_token_id = self._get_eos_token_id(lora_request)
-
+        # seq 包含当前prompt的各种信息:token_id,status(waiting,...), 占用blocks数量(逻辑,物理数量相同)
         seq = Sequence(seq_id, processed_inputs, block_size, eos_token_id,
                        lora_request, prompt_adapter_request)
 
         # Create a SequenceGroup based on SamplingParams or PoolingParams
+        # 以下都是对采样参数的校验
+        # --------------------------------------------------------------------------------------------------------------
         if isinstance(params, SamplingParams):
             seq_group = self._create_sequence_group_with_sampling(
                     request_id,
@@ -545,15 +548,16 @@ class LLMEngine:
                     lora_request=lora_request,
                     prompt_adapter_request=prompt_adapter_request)
         else:
-            raise ValueError(
-                    "Either SamplingParams or PoolingParams must be provided.")
+            raise ValueError("Either SamplingParams or PoolingParams must be provided.")
+        # --------------------------------------------------------------------------------------------------------------
 
         # Add the sequence group to the scheduler with least unfinished seqs.
-        costs = [
-            scheduler.get_num_unfinished_seq_groups()
-            for scheduler in self.scheduler
-        ]
+        # 获得当前每个gpu上还没推理结束的seq_group数量: len(self.waiting) + len(self.running) + len(self.swapped)
+        costs = [scheduler.get_num_unfinished_seq_groups() for scheduler in self.scheduler]
+        # 找出工作量最少的调度器
         min_cost_scheduler = self.scheduler[costs.index(min(costs))]
+        # 将当前seq_group加入这个调度器中(根据self.scheduler初始过程可知,每个gpu维护一个调度器,
+        # 这条代码的意思就是当前seq_group由工作量最少的gpu负责推理)
         min_cost_scheduler.add_seq_group(seq_group)
 
     def stop_remote_worker_execution_loop(self) -> None:
@@ -570,22 +574,29 @@ class LLMEngine:
             inputs = {"prompt": inputs}
 
         if "prompt_token_ids" not in inputs:
+            # 这个函数就是为了拿到self.tokenizer
             tokenizer = self.get_tokenizer_group("prompts must be None if skip_tokenizer_init is True")
-
+            # 文字prompt编码成token_id
             prompt_token_ids = tokenizer.encode(request_id=request_id,
                                                 prompt=inputs["prompt"],
                                                 lora_request=lora_request)
+        # 如果入参前已经做好token_ids,直接取出来用
         else:
             prompt_token_ids = inputs["prompt_token_ids"]
 
+        # 使用未合并的lora才会走进入这个判断分支
         if prompt_adapter_request:
-            prompt_token_ids = \
-                [0] * prompt_adapter_request.prompt_adapter_num_virtual_tokens + prompt_token_ids
+            prompt_token_ids = [0] * prompt_adapter_request.prompt_adapter_num_virtual_tokens + prompt_token_ids
 
+        # LLMInputs继承自TypedDict,将入参转换为字典
+        # llm_inputs = {'prompts':xxx,'prompts_token_ids':xxx,'multi_modal_data':None}
         llm_inputs = LLMInputs(prompt_token_ids=prompt_token_ids,
                                prompt=inputs.get("prompt"),
                                multi_modal_data=inputs.get("multi_modal_data"))
 
+        # todo 使用functools.partial高阶用法,返回的是一个固定llm_inputs参数的函数，真的好用吗？
+        # 目前觉得这个函数会拖慢速度,因为每个prompt都要经过这里获得模型架构的操作
+        # 目前这个函数,经过多层调用后, 最后原样返回,没对llm_inputs做任何操作
         return self.input_processor(llm_inputs)
 
     def add_request(
@@ -643,15 +654,17 @@ class LLMEngine:
         """
         if lora_request is not None and not self.lora_config:
             raise ValueError(f"Got lora_request {lora_request} but LoRA is not enabled!")
+        # 设置该请求的到达时间
         if arrival_time is None:
             arrival_time = time.time()
 
+        # processed_inputs:dict,= {'prompts':xxx,'prompts_token_ids':xxx,'multi_modal_data':None}
         processed_inputs = self.process_model_inputs(
                 request_id=request_id,
                 inputs=inputs,
                 lora_request=lora_request,
                 prompt_adapter_request=prompt_adapter_request)
-
+        # 1. prompt->seq->seq_group, 2. 将seq_group加入合适gpu维护的scheduler的waiting队列,等待处理
         self._add_processed_request(
                 request_id=request_id,
                 processed_inputs=processed_inputs,
@@ -764,8 +777,7 @@ class LLMEngine:
 
     def get_num_unfinished_requests(self) -> int:
         """Gets the number of unfinished requests."""
-        return sum(scheduler.get_num_unfinished_seq_groups()
-                   for scheduler in self.scheduler)
+        return sum(scheduler.get_num_unfinished_seq_groups() for scheduler in self.scheduler)
 
     def has_unfinished_requests(self) -> bool:
         """Returns True if there are unfinished requests."""

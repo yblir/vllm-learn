@@ -181,8 +181,7 @@ class InputRegistry:
 
         return wrapper
 
-    def process_input(self, model_config: "ModelConfig",
-                      inputs: LLMInputs) -> LLMInputs:
+    def process_input(self, model_config: "ModelConfig", inputs: LLMInputs) -> LLMInputs:
         """
         Apply an input processor to an instance of model inputs.
 
@@ -196,8 +195,7 @@ class InputRegistry:
 
         model_cls, _ = get_model_architecture(model_config)
 
-        processor = self._input_processors_by_model_type \
-            .get(model_cls, self._default_input_processor)
+        processor = self._input_processors_by_model_type.get(model_cls, self._default_input_processor)
 
         return processor(InputContext(model_config), inputs)
 
