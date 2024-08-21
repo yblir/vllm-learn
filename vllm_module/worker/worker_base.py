@@ -68,8 +68,8 @@ class WorkerBase(ABC):
 
     @abstractmethod
     def execute_model(
-        self,
-        execute_model_req: Optional[ExecuteModelRequest] = None
+            self,
+            execute_model_req: Optional[ExecuteModelRequest] = None
     ) -> Optional[List[SamplerOutput]]:
         raise NotImplementedError
 
@@ -110,7 +110,7 @@ class LoraNotSupportedWorkerBase(WorkerBase):
 
     def pin_lora(self, lora_id: int) -> bool:
         return ValueError(
-            f"{type(self)} does not support LoRA")  # type: ignore
+                f"{type(self)} does not support LoRA")  # type: ignore
 
     def list_loras(self) -> Set[int]:
         raise ValueError(f"{type(self)} does not support LoRA")
@@ -130,19 +130,19 @@ class WorkerInput:
 
     @classmethod
     def from_broadcasted_tensor_dict(
-        cls: Type["WorkerInput"],
-        tensor_dict: Dict[str, Any],
+            cls: Type["WorkerInput"],
+            tensor_dict: Dict[str, Any],
     ) -> "WorkerInput":
         """
         Pop fields from the given tensor_dict and populate a new instance of
         WorkerInput.
         """
         return cls(
-            num_seq_groups=tensor_dict.pop("num_seq_groups"),
-            blocks_to_swap_in=tensor_dict.pop("blocks_to_swap_in"),
-            blocks_to_swap_out=tensor_dict.pop("blocks_to_swap_out"),
-            blocks_to_copy=tensor_dict.pop("blocks_to_copy"),
-            virtual_engine=tensor_dict["virtual_engine"],
+                num_seq_groups=tensor_dict.pop("num_seq_groups"),
+                blocks_to_swap_in=tensor_dict.pop("blocks_to_swap_in"),
+                blocks_to_swap_out=tensor_dict.pop("blocks_to_swap_out"),
+                blocks_to_copy=tensor_dict.pop("blocks_to_copy"),
+                virtual_engine=tensor_dict["virtual_engine"],
         )
 
     def as_broadcastable_tensor_dict(
@@ -151,11 +151,11 @@ class WorkerInput:
         Extract broadcastable fields.
         """
         tensor_dict = {
-            "num_seq_groups": self.num_seq_groups,
-            "blocks_to_swap_in": self.blocks_to_swap_in,
+            "num_seq_groups"    : self.num_seq_groups,
+            "blocks_to_swap_in" : self.blocks_to_swap_in,
             "blocks_to_swap_out": self.blocks_to_swap_out,
-            "blocks_to_copy": self.blocks_to_copy,
-            "virtual_engine": self.virtual_engine,
+            "blocks_to_copy"    : self.blocks_to_copy,
+            "virtual_engine"    : self.virtual_engine,
         }
 
         return tensor_dict
@@ -214,8 +214,8 @@ class LocalOrDistributedWorkerBase(WorkerBase):
         raise NotImplementedError
 
     def execute_model(
-        self,
-        execute_model_req: Optional[ExecuteModelRequest] = None
+            self,
+            execute_model_req: Optional[ExecuteModelRequest] = None
     ) -> Optional[List[SamplerOutput]]:
         """Executes at least one model step on the given sequences, unless no
         sequences are provided."""
@@ -230,19 +230,18 @@ class LocalOrDistributedWorkerBase(WorkerBase):
                     broadcast_tensor_dict({}, src=0)
                 return None
 
-            worker_input: WorkerInput = self.prepare_worker_input(
-                execute_model_req=execute_model_req)
+            worker_input: WorkerInput = self.prepare_worker_input(execute_model_req=execute_model_req)
             model_input: ModelRunnerInputBase = (
                 self.model_runner.prepare_model_input(
-                    execute_model_req.seq_group_metadata_list,
-                    execute_model_req.virtual_engine,
-                    execute_model_req.finished_requests_ids))
+                        execute_model_req.seq_group_metadata_list,
+                        execute_model_req.virtual_engine,
+                        execute_model_req.finished_requests_ids))
             num_steps = execute_model_req.num_steps
 
             if self.do_metadata_broadcast:
                 broadcast_data = worker_input.as_broadcastable_tensor_dict()
                 broadcast_data.update(
-                    model_input.as_broadcastable_tensor_dict())
+                        model_input.as_broadcastable_tensor_dict())
                 broadcast_data["num_steps"] = num_steps
                 broadcast_tensor_dict(broadcast_data, src=0)
         else:
@@ -252,8 +251,7 @@ class LocalOrDistributedWorkerBase(WorkerBase):
                 return None
 
             num_steps = broadcast_data.pop("num_steps")
-            worker_input = WorkerInput.from_broadcasted_tensor_dict(
-                broadcast_data)
+            worker_input = WorkerInput.from_broadcasted_tensor_dict(broadcast_data)
             model_input = (
                 self.model_runner.
                 make_model_input_from_broadcasted_tensor_dict(broadcast_data))
@@ -267,27 +265,25 @@ class LocalOrDistributedWorkerBase(WorkerBase):
         intermediate_tensors = None
         if not get_pp_group().is_first_rank:
             intermediate_tensors = IntermediateTensors(
-                get_pp_group().recv_tensor_dict(
-                    all_gather_group=get_tp_group()))
+                    get_pp_group().recv_tensor_dict(
+                            all_gather_group=get_tp_group()))
 
         output = self.model_runner.execute_model(
-            model_input, self.kv_cache[worker_input.virtual_engine]
-            if self.kv_cache is not None else None, intermediate_tensors,
-            num_steps)
+                model_input, self.kv_cache[worker_input.virtual_engine]
+                if self.kv_cache is not None else None, intermediate_tensors, num_steps)
 
         if not get_pp_group().is_last_rank:
             # output is IntermediateTensors
-            get_pp_group().send_tensor_dict(output.tensors,
-                                            all_gather_group=get_tp_group())
+            get_pp_group().send_tensor_dict(output.tensors, all_gather_group=get_tp_group())
             return [None]
 
         # output is List[SamplerOutput]
         return output
 
     def _execute_model_spmd(
-        self,
-        execute_model_req: ExecuteModelRequest,
-        intermediate_tensors: Optional[IntermediateTensors] = None
+            self,
+            execute_model_req: ExecuteModelRequest,
+            intermediate_tensors: Optional[IntermediateTensors] = None
     ) -> Optional[List[SamplerOutput]]:
         """
         Execute model in Single Program Multiple Data (SPMD) fashion.
@@ -298,10 +294,10 @@ class LocalOrDistributedWorkerBase(WorkerBase):
             "_execute_model_spmd() requires each worker to take in an "
             "ExecuteModelRequest")
         worker_input: WorkerInput = self.prepare_worker_input(
-            execute_model_req=execute_model_req)
+                execute_model_req=execute_model_req)
         model_input: ModelRunnerInputBase = (
             self.model_runner.prepare_model_input(
-                execute_model_req.seq_group_metadata_list))
+                    execute_model_req.seq_group_metadata_list))
 
         self.execute_worker(worker_input)
 
@@ -310,8 +306,8 @@ class LocalOrDistributedWorkerBase(WorkerBase):
             return []
 
         return self.model_runner.execute_model(
-            model_input, self.kv_cache[worker_input.virtual_engine]
-            if self.kv_cache is not None else None, intermediate_tensors)
+                model_input, self.kv_cache[worker_input.virtual_engine]
+                if self.kv_cache is not None else None, intermediate_tensors)
 
 
 class WorkerWrapperBase:
@@ -328,12 +324,12 @@ class WorkerWrapperBase:
     """
 
     def __init__(
-        self,
-        worker_module_name: str,
-        worker_class_name: str,
-        trust_remote_code: bool = False,
-        worker_class_fn: Optional[Callable[[],
-                                           Type[WorkerBase]]] = None) -> None:
+            self,
+            worker_module_name: str,
+            worker_class_name: str,
+            trust_remote_code: bool = False,
+            worker_class_fn: Optional[Callable[[],
+            Type[WorkerBase]]] = None) -> None:
         self.worker_module_name = worker_module_name
         self.worker_class_name = worker_class_name
         self.worker_class_fn = worker_class_fn

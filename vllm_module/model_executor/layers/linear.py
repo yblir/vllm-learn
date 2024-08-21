@@ -1,4 +1,3 @@
-import sys
 from abc import abstractmethod
 from typing import Dict, List, Optional, Tuple
 
@@ -120,9 +119,7 @@ class UnquantizedLinearMethod(LinearMethodBase):
               x: torch.Tensor,
               bias: Optional[torch.Tensor] = None) -> torch.Tensor:
 
-        # return F.linear(x, layer.weight, bias)
-        # todo 删除bias
-        return F.linear(x, layer.weight)
+        return F.linear(x, layer.weight, bias)
 
 
 class LinearBase(torch.nn.Module):

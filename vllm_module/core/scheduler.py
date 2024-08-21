@@ -393,7 +393,8 @@ class Scheduler:
                     self.free_seq(seq)
 
     def has_unfinished_seqs(self) -> bool:
-        return len(self.waiting) != 0 or len(self.running) != 0 or len(self.swapped) != 0
+        return len(self.waiting) != 0 or len(self.running) != 0 or len(
+                self.swapped) != 0
 
     def get_num_unfinished_seq_groups(self) -> int:
         return len(self.waiting) + len(self.running) + len(self.swapped)
@@ -488,7 +489,8 @@ class Scheduler:
                     decode_seq_groups.append(
                             ScheduledSequenceGroup(seq_group=seq_group,
                                                    token_chunk_size=1))
-                budget.add_num_batched_tokens(seq_group.request_id, num_running_tokens)
+                budget.add_num_batched_tokens(seq_group.request_id,
+                                              num_running_tokens)
                 # OPTIMIZATION:  Note that get_max_num_running_seqs is
                 # expensive. For the default scheduling chase where
                 # enable_chunking is False, num_seqs are updated before running
@@ -585,7 +587,8 @@ class Scheduler:
                                                       enable_chunking, budget)
 
             if (num_new_tokens == 0
-                    or not budget.can_schedule(num_new_tokens=num_new_tokens, num_new_seqs=num_new_seqs)):
+                    or not budget.can_schedule(num_new_tokens=num_new_tokens,
+                                               num_new_seqs=num_new_seqs)):
                 break
 
             if lora_int_id > 0 and curr_loras is not None:
@@ -596,7 +599,8 @@ class Scheduler:
             is_prefill = seq_group.is_prefill()
             if is_prefill:
                 prefill_seq_groups.append(
-                        ScheduledSequenceGroup(seq_group, token_chunk_size=num_new_tokens))
+                        ScheduledSequenceGroup(seq_group,
+                                               token_chunk_size=num_new_tokens))
             else:
                 decode_seq_groups.append(
                         ScheduledSequenceGroup(seq_group, token_chunk_size=1))
@@ -772,7 +776,7 @@ class Scheduler:
         swapped_in = SchedulerSwappedInOutputs.create_empty()
 
         # If any requests are swapped, prioritized swapped requests.
-        if not self.swapped:
+        if not self.swapped:  # 如果swapped队列为空
             prefills = self._schedule_prefills(budget,
                                                curr_loras,
                                                enable_chunking=False)
@@ -815,8 +819,10 @@ class Scheduler:
                 num_batched_tokens=budget.num_batched_tokens,
                 blocks_to_swap_in=swapped_in.blocks_to_swap_in,
                 blocks_to_swap_out=running_scheduled.blocks_to_swap_out,
-                blocks_to_copy=running_scheduled.blocks_to_copy + swapped_in.blocks_to_copy,
-                ignored_seq_groups=prefills.ignored_seq_groups + swapped_in.infeasible_seq_groups,
+                blocks_to_copy=running_scheduled.blocks_to_copy +
+                               swapped_in.blocks_to_copy,
+                ignored_seq_groups=prefills.ignored_seq_groups +
+                                   swapped_in.infeasible_seq_groups,
                 num_lookahead_slots=running_scheduled.num_lookahead_slots,
                 running_queue_size=len(self.running),
                 preempted=preempted,
@@ -861,8 +867,7 @@ class Scheduler:
                                            curr_loras,
                                            enable_chunking=True)
 
-        assert (budget.num_batched_tokens <=
-                self.scheduler_config.max_num_batched_tokens)
+        assert budget.num_batched_tokens <= self.scheduler_config.max_num_batched_tokens
         assert budget.num_curr_seqs <= self.scheduler_config.max_num_seqs
 
         # Update waiting requests.
@@ -963,8 +968,7 @@ class Scheduler:
                 # NOTE: We use get_len instead of get_prompt_len because when
                 # a sequence is preempted, prefill includes previous generated
                 # output tokens.
-                if (token_chunk_size + seqs[0].data.get_num_computed_tokens()
-                        < seqs[0].data.get_len()):
+                if token_chunk_size + seqs[0].data.get_num_computed_tokens() < seqs[0].data.get_len():
                     do_sample = False
 
             # It assumes the scheduled_seq_groups is ordered by
@@ -996,7 +1000,8 @@ class Scheduler:
         # This is because the engine assumes that a failure in model execution
         # will crash the vLLM instance / will not retry.
         for scheduled_seq_group in scheduler_outputs.scheduled_seq_groups:
-            self.block_manager.mark_blocks_as_computed(scheduled_seq_group.seq_group)
+            self.block_manager.mark_blocks_as_computed(
+                    scheduled_seq_group.seq_group)
 
         return seq_group_metadata_list, scheduler_outputs
 
