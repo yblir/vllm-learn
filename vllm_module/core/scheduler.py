@@ -445,30 +445,55 @@ class Scheduler:
 
         while running_queue:
             seq_group = running_queue[0]
+            # 当前待推理的seq_group,需要处理,或者说准备返回的tokens数量
             num_running_tokens = self._get_num_new_tokens(
                     seq_group, SequenceStatus.RUNNING, enable_chunking, budget)
 
+            # todo 觉得这个判断有点多余,因为处于RUNNING状态的seq,必定有tokens返回,num_running_tokens
+            # todo 不可能为0, 再说,如果为0, 方法self._get_num_new_tokens内部就会抛出异常,因为做了assert断言
             if num_running_tokens == 0:
                 break
 
+            # 经过num_running_tokens检验没问题后, 将该seq_group从running_queue中取出来
             running_queue.popleft()
-            while not self._can_append_slots(seq_group):
+
+            # 对于这个seq_group，检查对于其中的每一个seq，是否能至少分配一个物理块给它，如果不能的话
+            # （说明要执行抢占操作了，否则马上会没有资源让这个最早到达的seq_group做完推理）：
+            # （注意，这里用了while...else，如果while条件正常结束，则进入else内容；
+            #  如果被break，则不会执行else）
+            while not self._can_append_slots(seq_group):  # 如果不能为每个seq都分配一个block
+                # 这个seq_group本来是要送去做推理的,但没有足够的gpu物理blocks分配给它,对不住了,只能把它
+                # 加入swap队列,以后有机会再捞它
+                # 之前这个seq_group准备返回的tokens数量已经加到budget属性上,现在不处理它, 要把数量再减回来
+                # todo 什么时候加的呀? 每次循环都要减一次?
                 budget.subtract_num_batched_tokens(seq_group.request_id, num_running_tokens)
                 num_running_seqs = seq_group.get_max_num_running_seqs()
+                # seq也要减回来, 是在外层的self._schedule_default 加上的
                 budget.subtract_num_seqs(seq_group.request_id, num_running_seqs)
 
+                # lora相关,忽略
                 if (curr_loras is not None and seq_group.lora_int_id > 0
                         and seq_group.lora_int_id in curr_loras):
                     curr_loras.remove(seq_group.lora_int_id)
 
+                # ------------------------------------------------------------------------------------------------------
+                # 经过以下释放gpu blocks工作后,再次进入while循环判断gpu blocks数量是否够用,
+                # 如果够用,进入到与while对应的else分支,如果不够用,继续释放gpu blocks,直到够用或running_queue全部取完.
+                # ------------------------------------------------------------------------------------------------------
+
+                # 如果此时running_queue队列不为空,把最后一个seq_group踢出去放入swap队列,给
+                # 上面这个seq_group腾位置(释放最后一个seq_group对应的gpu blocks)
                 if running_queue:
                     # Preempt the lowest-priority sequence groups.
                     victim_seq_group = running_queue.pop()
+
+                    # 有两种swap方式,RECOMPUTE:删除所有,回炉到waiting队列. SWAP:将blocks全部转移到CPU blocks上
                     preempted_mode = self._preempt(victim_seq_group, blocks_to_swap_out)
                     if preempted_mode == PreemptionMode.RECOMPUTE:
                         preempted.append(victim_seq_group)
                     else:
                         swapped_out.append(victim_seq_group)
+                # 如果running_queue队列已经空了,没有替罪的羊,只能把自己放入swap队列了.
                 else:
                     # No other sequence groups can be preempted.
                     # Preempt the current sequence group.
@@ -477,25 +502,27 @@ class Scheduler:
                         preempted.append(seq_group)
                     else:
                         swapped_out.append(seq_group)
+                    # 此时running_queue队列已空,已经没有seq_group可处理了,使用break中断
+                    # while循环, 不走后面的else分支,直接return,而且本次调度没有指定任何待推理的seq_group
                     break
             else:
+                # 为当前seq_group分配gpu 物理blocks. 这里只分配了逻辑blocks与物理blocks的映射关系
+                # blocks_to_copy:[旧物理块id, copy - on - write而来的新物理块id]
                 self._append_slots(seq_group, blocks_to_copy)
                 is_prefill = seq_group.is_prefill()
                 if is_prefill:
-                    prefill_seq_groups.append(
-                            ScheduledSequenceGroup(
-                                    seq_group=seq_group,
-                                    token_chunk_size=num_running_tokens))
+                    prefill_seq_groups.append(ScheduledSequenceGroup(seq_group=seq_group,
+                                                                     token_chunk_size=num_running_tokens))
                 else:
-                    decode_seq_groups.append(
-                            ScheduledSequenceGroup(seq_group=seq_group,
-                                                   token_chunk_size=1))
-                budget.add_num_batched_tokens(seq_group.request_id,
-                                              num_running_tokens)
+                    decode_seq_groups.append(ScheduledSequenceGroup(seq_group=seq_group,
+                                                                    token_chunk_size=1))
+                # todo 不明白与上面budget.subtract_num_batched_tokens的对应关系
+                budget.add_num_batched_tokens(seq_group.request_id, num_running_tokens)
                 # OPTIMIZATION:  Note that get_max_num_running_seqs is
                 # expensive. For the default scheduling chase where
                 # enable_chunking is False, num_seqs are updated before running
                 # this method, so we don't have to update it again here.
+                # 默认情况下, 以下两个if都走不到
                 if enable_chunking:
                     num_running_seqs = seq_group.get_max_num_running_seqs()
                     budget.add_num_seqs(seq_group.request_id, num_running_seqs)
@@ -509,8 +536,7 @@ class Scheduler:
                 swapped_out=swapped_out,
                 blocks_to_swap_out=blocks_to_swap_out,
                 blocks_to_copy=blocks_to_copy,
-                num_lookahead_slots=self._get_num_lookahead_slots(
-                        is_prefill=False))
+                num_lookahead_slots=self._get_num_lookahead_slots(is_prefill=False))
 
     def _schedule_swapped(
             self,
@@ -588,8 +614,7 @@ class Scheduler:
                                                       enable_chunking, budget)
 
             if (num_new_tokens == 0
-                    or not budget.can_schedule(num_new_tokens=num_new_tokens,
-                                               num_new_seqs=num_new_seqs)):
+                    or not budget.can_schedule(num_new_tokens=num_new_tokens,num_new_seqs=num_new_seqs)):
                 break
 
             if lora_int_id > 0 and curr_loras is not None:
@@ -599,12 +624,9 @@ class Scheduler:
             self._append_slots(seq_group, blocks_to_copy)
             is_prefill = seq_group.is_prefill()
             if is_prefill:
-                prefill_seq_groups.append(
-                        ScheduledSequenceGroup(seq_group,
-                                               token_chunk_size=num_new_tokens))
+                prefill_seq_groups.append(ScheduledSequenceGroup(seq_group, token_chunk_size=num_new_tokens))
             else:
-                decode_seq_groups.append(
-                        ScheduledSequenceGroup(seq_group, token_chunk_size=1))
+                decode_seq_groups.append(ScheduledSequenceGroup(seq_group, token_chunk_size=1))
             budget.add_num_batched_tokens(seq_group.request_id, num_new_tokens)
             budget.add_num_seqs(seq_group.request_id, num_new_seqs)
 
@@ -668,6 +690,7 @@ class Scheduler:
         # 而无法继续做生成的seq_group，这些seq_group中的seq状态都会被标记为
         # FINISHED_IGNORED，表示直接不处理他们
         ignored_seq_groups: List[SequenceGroup] = []
+        # 用于装载从wait队列转移出来的seq_group
         seq_groups: List[SequenceGroup] = []
 
         waiting_queue = self.waiting
@@ -705,12 +728,12 @@ class Scheduler:
                 continue  # 继续从waiting拿数据处理
 
             # If the sequence group cannot be allocated, stop.
-            # 决定是否能给当前seq_group分配物理块
+            # 比较当前seq需要的物理块,gpu可用物理块之间的数量关系. 决定是否能给当前seq_group分配物理块
             # can_allocate返回值可能有三种： NEVER：不分配；OK：可以分配；LATER：延迟分配
             can_allocate = self.block_manager.can_allocate(seq_group)
             if can_allocate == AllocStatus.LATER:
                 break
-            # 加入失败者联盟
+            # 当前seq需要的blocks数量,超过gpu能提供的最大数量.加入失败者联盟,永不再处理，
             elif can_allocate == AllocStatus.NEVER:
                 logger.warning(
                         "Input prompt (%d tokens) is too long"
@@ -737,10 +760,10 @@ class Scheduler:
                     continue
 
             # 当前seq_group中状态为 未执行完 的序列的数量，即seq还没推理完成的数量
-            # 刚从wait中取出时，
+            # 刚从wait中取出时，num_new_seqs必定是1
             num_new_seqs = seq_group.get_max_num_running_seqs()
             # budget.can_schedule同时判断tokens和seqs数量是否超过阈值，任一个超过单次调度能执行的总数的阈值
-            # 说明这step可推理的seqs数量已经马上趋于饱和，不能再加入seq到running队列。结束本次waiting向running的调度
+            # 说明这step可推理的seqs数量已经马上趋于饱和，不能再加入seq到running队列。跳出while, 结束本次waiting向running的调度
             if num_new_tokens == 0 or not budget.can_schedule(num_new_tokens=num_new_tokens,
                                                               num_new_seqs=num_new_seqs):
                 break
@@ -750,10 +773,10 @@ class Scheduler:
             if curr_loras is not None and lora_int_id > 0:
                 curr_loras.add(lora_int_id)
 
-            # 走到这一步时，说明当前seq_group已经通过上述种种验证，可以被加入本次调度中执行了
+            # 走到这一步时，说明当前seq_group已经通过上述种种验证，可以被加入running队列进行推理
             # 先将其从waiting队列中移出
             waiting_queue.popleft()
-            # 为当前seq_group分配物理块,并将该seq_group中每条seq的status冲waiting改为running
+            # 为当前seq_group分配物理块,并将该seq_group中每条seq的status从waiting改为running
             self._allocate_and_set_running(seq_group)
 
             # ScheduledSequenceGroup类似于C++结构体。仅包含seq_group和token_chunk_size两个变量
@@ -797,7 +820,7 @@ class Scheduler:
 
         # Make sure we include num running seqs before scheduling prefill,
         # so that we don't schedule beyond max_num_seqs for prefill.
-        # 正在进行推理的seq_group优先级最高，因此先记录这些seq_groups中seq的数量
+        # 先统计正在执行推理的seq_groups中seq的数量
         for seq_group in self.running:
             budget.add_num_seqs(seq_group.request_id, seq_group.get_max_num_running_seqs())
         # lora推理相关，可忽略
@@ -831,11 +854,22 @@ class Scheduler:
         # Don't schedule decodes if prefills are scheduled.
         # NOTE: If `_schedule_prefills` doesn't enable chunking, self.running
         # only contains decode requests, not chunked prefills.
+
+        # self.waiting空,或 self.swapped非空,都会导致prefills.seq_groups数量为0
+        # # 这个判断的意思是,prefills.seq_groups==0,说明本次调度没有安排预填充任务,那么就安排解码任务.
         if len(prefills.seq_groups) == 0:
             running_scheduled = self._schedule_running(budget, curr_loras, enable_chunking=False)
 
             # If any sequence group is preempted, do not swap in any sequence
             # group. because it means there's no slot for new running requests.
+            # 在对running队列调度后(从self.running队列取seq_group,准备进行推理),如果没有seq_group被
+            # 抢占(退回wait队列),也没有seq_group被转移到CPU上, 说明blocks资源充足,可以把以前
+            # self.swapped队列中积压的seq_group转移到gpu blocks做推理.
+
+            # 注意这几个队列的判断逻辑. 如果self.swapped原本就非空,会进入上面的if判断分支进行self.running队列
+            # 调度取值.然后根据这个过程中是否有seq_group被preempted和swapped_out获知blocks资源使用情况.
+            # 如果没有被preempted和swapped_out.就把self.swapped内容取出来. 如果有被preempted和swapped_out
+            # 说明资源紧张.下面if为False,意思是就不要再从self.swapped转移seq_group会gpu做推理了
             if len(running_scheduled.preempted) + len(running_scheduled.swapped_out) == 0:
                 swapped_in = self._schedule_swapped(budget, curr_loras)
 

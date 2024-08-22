@@ -197,8 +197,7 @@ class SequenceData:
     def update_num_computed_tokens(self, num_new_computed_tokens: int):
         """Update number of tokens computed so far."""
         self._num_computed_tokens += num_new_computed_tokens
-        assert self._num_computed_tokens <= self.get_len(), (
-            self._num_computed_tokens, self.get_len())
+        assert self._num_computed_tokens <= self.get_len(), (self._num_computed_tokens, self.get_len())
         # If all tokens are computed, it means it is in decoding phase.
         if self.get_num_uncomputed_tokens() == 0:
             self._stage = SequenceStage.DECODE
@@ -526,21 +525,28 @@ class SequenceGroup:
         self.metrics.finished_time = time
 
     def get_max_num_running_seqs(self) -> int:
+        # 返回请求在其剩余生命周期中并行运行的最大序列数
         """The maximum number of sequences running in parallel in the remaining
         lifetime of the request."""
+        # 若采用beam search，每1个推理阶段都是best_of（束宽）个seq在running
         if self.sampling_params and self.sampling_params.use_beam_search:
             # For beam search, maximally there will always be `best_of` beam
             # candidates running in the future.
             return self.sampling_params.best_of
         else:
-            if (self.sampling_params
-                    and self.sampling_params.best_of > self.num_seqs()):
+            # 此时best_of默认和n一致，即表示我们希望1个prompt产出n个outputs。因此理论上，这个
+            # seq_group下会维护best_of个seq（这就是self.num_seqs()的返回值）。
+            # 如果出现best_of > self.num_seqs()的情况，说明该seq_group刚从waiting变成running
+            # 准备做推理此时对于这个seq_group来说，其剩余生命周期并行运行的最大seq数量为best_of
+            if self.sampling_params and self.sampling_params.best_of > self.num_seqs():
                 # At prompt stage, the sequence group is not yet filled up
                 # and only have one sequence running. However, in the
                 # generation stage, we will have `best_of` sequences running.
                 return self.sampling_params.best_of
             # At sampling stages, return the number of actual sequences
             # that are not finished yet.
+
+            # 其余时刻下，我们就返回这个seq_group中未完成推理的seq数量。
             return self.num_unfinished_seqs()
 
     def get_seqs(

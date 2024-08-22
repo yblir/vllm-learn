@@ -401,7 +401,7 @@ class BlockSpaceManagerV1(BlockSpaceManager):
             return self.gpu_allocator.allocate()
         block_hash: Optional[int] = None
         n_blocks = seq.n_blocks
-        if (self._is_last_block_full(seq)):
+        if self._is_last_block_full(seq):
             block_hash = seq.hash_of_block(n_blocks - 1)
         num_hashed_tokens = seq.num_hashed_tokens_of_block(n_blocks - 1)
 
@@ -423,17 +423,20 @@ class BlockSpaceManagerV1(BlockSpaceManager):
     ) -> List[Tuple[int, int]]:
         """Allocate a physical slot for a new token."""
         n_blocks = seq.n_blocks
+        # 读取这个seq的物理块，List[PhysicalTokenBlock]
         block_table = self.block_tables[seq.seq_id]
         # If we need to allocate a new physical block
+        # 如果物理块数量 < 逻辑块数量(说明此时需要分配新的物理块了),为什么会出现这种情况?
+        # 因为上1个推理阶段完毕后，seq的逻辑块更新了(把最新生成的这个token装进去了)但物理块还没更新
         if len(block_table) < n_blocks:
             # Currently this code only supports adding one physical block
+            # 需要声明物理块只允许比逻辑块少1块
             assert len(block_table) == n_blocks - 1
-
-            if (self.block_sliding_window
-                    and len(block_table) >= self.block_sliding_window):
+            # 如果使用滑动窗口时的逻辑,忽略
+            if self.block_sliding_window and len(block_table) >= self.block_sliding_window:
                 # reuse a block
-                block_table.append(block_table[len(block_table) %
-                                               self.block_sliding_window])
+                block_table.append(block_table[len(block_table) % self.block_sliding_window])
+            # 其余情况，直接分配一个新的物理块给当前序列
             else:
                 # The sequence hash a new logical block.
                 # Allocate a new physical block.
@@ -442,8 +445,11 @@ class BlockSpaceManagerV1(BlockSpaceManager):
                 return []
 
         # We want to append the token to the last physical block.
-        last_block = block_table[-1]
-        assert last_block.device == Device.GPU
+        # 如果物理块数量==逻辑块数量
+        last_block = block_table[-1] # 取出最后一个物理块
+        assert last_block.device == Device.GPU  # 声明必须是gpu物理块
+
+        # 如果最后一个物理块的引用数量为1(只有1个逻辑块引用它), 说明只有当前这个seq在用它
         if last_block.ref_count == 1:
             # Not shared with other sequences. Appendable.
             if self.enable_caching:
@@ -453,12 +459,15 @@ class BlockSpaceManagerV1(BlockSpaceManager):
                         seq, last_block)
                 block_table[-1] = maybe_new_block
             return []
+        # 如果最后一个物理块的引用数量为 > 1, 有别的逻辑块在引用它, 说明有别的seq在用它
         else:
             # The last block is shared with other sequences.
             # Copy on Write: Allocate a new block and copy the tokens.
+            # 触发copy-on-write机制，分配一个新的物理块
             new_block = self._allocate_last_physical_block(seq)
-
+            # 用新分配的block替换之前分配的那个
             block_table[-1] = new_block
+            # 把之前分配的block释放掉, 也即该物理块ref_count -= 1，如果-=1后ref_count=0，说明该物理块彻底自由了，
             self.gpu_allocator.free(last_block)
             return [(last_block.block_number, new_block.block_number)]
 
