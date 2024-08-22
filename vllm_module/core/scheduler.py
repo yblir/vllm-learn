@@ -71,8 +71,7 @@ class SchedulingBudget:
         self._request_ids_num_batched_tokens.add(req_id)
         self._num_batched_tokens += num_batched_tokens
 
-    def subtract_num_batched_tokens(self, req_id: str,
-                                    num_batched_tokens: int):
+    def subtract_num_batched_tokens(self, req_id: str, num_batched_tokens: int):
         if req_id in self._request_ids_num_batched_tokens:
             self._request_ids_num_batched_tokens.remove(req_id)
             self._num_batched_tokens -= num_batched_tokens
@@ -393,8 +392,7 @@ class Scheduler:
                     self.free_seq(seq)
 
     def has_unfinished_seqs(self) -> bool:
-        return len(self.waiting) != 0 or len(self.running) != 0 or len(
-                self.swapped) != 0
+        return len(self.waiting) != 0 or len(self.running) != 0 or len(self.swapped) != 0
 
     def get_num_unfinished_seq_groups(self) -> int:
         return len(self.waiting) + len(self.running) + len(self.swapped)
@@ -429,6 +427,9 @@ class Scheduler:
             SchedulerRunningOutputs.
         """
         # Blocks that need to be swapped or copied before model execution.
+        # todo 类型变了
+        # blocks_to_swap_out：{gpu物理块id: cpu物理块id}
+        # blocks_to_copy: {旧物理块id：[由旧物理块copy-on-write而来的新物理块id]}
         blocks_to_swap_out: List[Tuple[int, int]] = []
         blocks_to_copy: List[Tuple[int, int]] = []
 
@@ -663,17 +664,26 @@ class Scheduler:
         Returns:
             SchedulerSwappedInOutputs.
         """
+        # ignored_seq_groups：记录因太长（所需的blocks和总blocks之间的差值超过阈值了），
+        # 而无法继续做生成的seq_group，这些seq_group中的seq状态都会被标记为
+        # FINISHED_IGNORED，表示直接不处理他们
         ignored_seq_groups: List[SequenceGroup] = []
         seq_groups: List[SequenceGroup] = []
 
         waiting_queue = self.waiting
 
         leftover_waiting_sequences: Deque[SequenceGroup] = deque()
+        # self._passed_delay：通过比较当前请求到达时间来确定是否要从wait队列拿任务
+        # 因为拿任务也要占用时间，需要平衡调度任务与推理任务的调用时机
         while self._passed_delay(time.time()) and waiting_queue:
             seq_group = waiting_queue[0]
-
+            # list,从当前seq_group取出准备推理的seq序列. 1个prompt可能有多个seq(多输出)，但wait队列中连预填充
+            # 都没进行，因此这时的seq(仅是prompt)数量必定==1
             waiting_seqs = seq_group.get_seqs(status=SequenceStatus.WAITING)
             assert len(waiting_seqs) == 1, "Waiting sequence group should have only one prompt sequence."
+
+            # 获取当前seq的序列长度（如果该seq_group来自之前被抢占的请求，
+            # 那么这个长度不仅包括prompt，还包括已经处理好的output token）
             num_new_tokens = self._get_num_new_tokens(seq_group,
                                                       SequenceStatus.WAITING,
                                                       enable_chunking, budget)
@@ -681,6 +691,8 @@ class Scheduler:
                 num_prompt_tokens = waiting_seqs[0].get_len()
                 assert num_new_tokens == num_prompt_tokens
 
+            # 如果这条seq的长度 > 每次调度能处理的最大序列长度，那么把这条seq的状态置为FINISHED_IGNORED，
+            # 并将对应seq_group装入ignored_seq_groups中，然后将其从waiting列表中移除，永不再处理，完结撒花~
             prompt_limit = self._get_prompt_limit(seq_group)
             if num_new_tokens > prompt_limit:
                 logger.warning(
@@ -688,25 +700,28 @@ class Scheduler:
                         " and exceeds limit of %d", num_new_tokens, prompt_limit)
                 for seq in waiting_seqs:
                     seq.status = SequenceStatus.FINISHED_IGNORED
-                ignored_seq_groups.append(seq_group)
-                waiting_queue.popleft()
-                continue
+                ignored_seq_groups.append(seq_group)  # 加入失败者联盟
+                waiting_queue.popleft()  # 从 waiting 队列中踢出去
+                continue  # 继续从waiting拿数据处理
 
             # If the sequence group cannot be allocated, stop.
+            # 决定是否能给当前seq_group分配物理块
+            # can_allocate返回值可能有三种： NEVER：不分配；OK：可以分配；LATER：延迟分配
             can_allocate = self.block_manager.can_allocate(seq_group)
             if can_allocate == AllocStatus.LATER:
                 break
+            # 加入失败者联盟
             elif can_allocate == AllocStatus.NEVER:
                 logger.warning(
                         "Input prompt (%d tokens) is too long"
-                        " and exceeds the capacity of block_manager",
-                        num_new_tokens)
+                        " and exceeds the capacity of block_manager", num_new_tokens)
                 for seq in waiting_seqs:
                     seq.status = SequenceStatus.FINISHED_IGNORED
                 ignored_seq_groups.append(seq_group)
                 waiting_queue.popleft()
                 continue
 
+            # lora相关，忽略
             lora_int_id = 0
             if self.lora_enabled:
                 lora_int_id = seq_group.lora_int_id
@@ -721,23 +736,38 @@ class Scheduler:
                     waiting_queue.popleft()
                     continue
 
+            # 当前seq_group中状态为 未执行完 的序列的数量，即seq还没推理完成的数量
+            # 刚从wait中取出时，
             num_new_seqs = seq_group.get_max_num_running_seqs()
-            if (num_new_tokens == 0
-                    or not budget.can_schedule(num_new_tokens=num_new_tokens, num_new_seqs=num_new_seqs)):
+            # budget.can_schedule同时判断tokens和seqs数量是否超过阈值，任一个超过单次调度能执行的总数的阈值
+            # 说明这step可推理的seqs数量已经马上趋于饱和，不能再加入seq到running队列。结束本次waiting向running的调度
+            if num_new_tokens == 0 or not budget.can_schedule(num_new_tokens=num_new_tokens,
+                                                              num_new_seqs=num_new_seqs):
                 break
 
             # Can schedule this request.
+            # lora相关，忽略
             if curr_loras is not None and lora_int_id > 0:
                 curr_loras.add(lora_int_id)
+
+            # 走到这一步时，说明当前seq_group已经通过上述种种验证，可以被加入本次调度中执行了
+            # 先将其从waiting队列中移出
             waiting_queue.popleft()
+            # 为当前seq_group分配物理块,并将该seq_group中每条seq的status冲waiting改为running
             self._allocate_and_set_running(seq_group)
+
+            # ScheduledSequenceGroup类似于C++结构体。仅包含seq_group和token_chunk_size两个变量
+            # 搞不懂vllm为什么总喜欢这种包裹操作，在各处代码中随处可见。用基本的list,或dict不好吗！
             seq_groups.append(
                     ScheduledSequenceGroup(seq_group=seq_group,
                                            token_chunk_size=num_new_tokens))
+
+            # 当前seq_group的tokens和seqs数量增加到预算budget中
             budget.add_num_batched_tokens(seq_group.request_id, num_new_tokens)
             budget.add_num_seqs(seq_group.request_id, num_new_seqs)
 
         # Queue requests that couldn't be scheduled.
+        # 和lora相关的操作，忽略
         waiting_queue.extendleft(leftover_waiting_sequences)
         if len(seq_groups) > 0:
             self.prev_prompt = True
@@ -749,31 +779,53 @@ class Scheduler:
 
     def _schedule_default(self) -> SchedulerOutputs:
         """Schedule queued requests.
-        
         The current policy is designed to optimize the throughput. First,
         it batches as many prefill requests as possible. And it schedules
         decodes. If there's a pressure on GPU memory, decode requests can
         be swapped or preempted.
+
+        当前策调度略旨在优化吞吐量。首先，它会批量处理尽可能多的预填充请求。然后它会安排解码。
+        如果 GPU 内存有压力，则可以交换或抢占解码请求。因此会优先从swapped进行判断。
         """
         # Include running requests to the budget.
+        # 管理本次调度的的tokens和seqs数量, 根据数量是否超过阈值，决定将本次
+        # seq_groups放入哪个队列。(一个seq_groups会包含多个seqs)
         budget = SchedulingBudget(
                 token_budget=self.scheduler_config.max_num_batched_tokens,
                 max_num_seqs=self.scheduler_config.max_num_seqs,
         )
+
         # Make sure we include num running seqs before scheduling prefill,
         # so that we don't schedule beyond max_num_seqs for prefill.
+        # 正在进行推理的seq_group优先级最高，因此先记录这些seq_groups中seq的数量
         for seq_group in self.running:
             budget.add_num_seqs(seq_group.request_id, seq_group.get_max_num_running_seqs())
+        # lora推理相关，可忽略
         curr_loras = set(
                 seq_group.lora_int_id for seq_group in self.running
                 if seq_group.lora_int_id > 0) if self.lora_enabled else None
 
+        # 以下三个变量，类似于C++中的结构体。将多个变量合在一起，通过.属性访问
+        # 各自保存处于不同活跃状态(wait,run,swap)的seq_groups具有的属性
         prefills = SchedulerPrefillOutputs.create_empty()
         running_scheduled = SchedulerRunningOutputs.create_empty()
         swapped_in = SchedulerSwappedInOutputs.create_empty()
 
         # If any requests are swapped, prioritized swapped requests.
+        # 为什么要从swap开始判断？
+        # 调度的任务是优化吞吐量，即保证处于running状态的seqs最多。running从wait和swap队列
+        # 获得，首先积压的任务可能要比wait的优先级高，因为swap队列中的任务始终占据着系统资源，当
+        # running可添加时，应该首先处理swap。
+        # 为什么不先判断running是否饱和？ 老板当然要先把工作甩你脸上，难道要先为你工作是否饱和？不饱和就干，饱和了就再积压，
+        # 如此才能最大化压榨打工人。
         if not self.swapped:  # 如果swapped队列为空
+            # 既然不能从swap想running转移，那就只能从wait队列拿任务了。
+            # wait队列中的都是原始任务，第一步要预填充
+            # prefills是一个伪结构体：可以.出以下属性
+            #     seq_groups: List[SequenceGroup]
+            #     # Ignored sequence groups.
+            #     ignored_seq_groups: List[SequenceGroup]
+            #     num_lookahead_slots: int
             prefills = self._schedule_prefills(budget, curr_loras, enable_chunking=False)
 
         # Don't schedule decodes if prefills are scheduled.
@@ -925,6 +977,8 @@ class Scheduler:
         # Schedule sequence groups.
         # This function call changes the internal states of the scheduler
         # such as self.running, self.swapped, and self.waiting.
+        # 该函数调用改变调度的内部状态(self.running、self.swapped 和 self.waiting)
+        #
         scheduler_outputs = self._schedule()
         now = time.time()
 
@@ -1140,8 +1194,7 @@ class Scheduler:
         self.prev_time, self.prev_prompt = now, False
         # Delay scheduling prompts to let waiting queue fill up
         if self.scheduler_config.delay_factor > 0 and self.waiting:
-            earliest_arrival_time = min(
-                    [e.metrics.arrival_time for e in self.waiting])
+            earliest_arrival_time = min([e.metrics.arrival_time for e in self.waiting])
             passed_delay = (
                     (now - earliest_arrival_time) >
                     (self.scheduler_config.delay_factor * self.last_prompt_latency)

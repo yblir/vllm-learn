@@ -904,10 +904,14 @@ class LLMEngine:
             >>>     if not (engine.has_unfinished_requests() or example_inputs):
             >>>         break
         """
+        # 多GPU并行推理时走AsyncLLMEngine分支。如果进入当前LLMEngine,性能会下降，这里会抛出异常。
         if self.parallel_config.pipeline_parallel_size > 1:
             raise NotImplementedError(
                     "Pipeline parallelism is only supported through AsyncLLMEngine "
                     "as performance will be severely degraded otherwise.")
+
+        # 上述if判断表明，只有一个GPU可用。因此self.scheduler也只有一个元素，是当前GPU的调度
+        # 该函数调用改变调度的内部状态(self.running、self.swapped 和 self.waiting)
         seq_group_metadata_list, scheduler_outputs = self.scheduler[0].schedule()
 
         if not scheduler_outputs.is_empty():

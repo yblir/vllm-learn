@@ -326,7 +326,10 @@ class LLM:
                 prompt_adapter_request=prompt_adapter_request,
                 guided_options=guided_options_request)
 
+        # 首先从scheduler的waiting队列取数据，加入到running队列，再从running队列
+        # 中取数据推理，若物理blocks不够用，从running转入swap队列
         outputs = self._run_engine(use_tqdm=use_tqdm)
+
         return LLMEngine.validate_outputs(outputs, RequestOutput)
 
     @overload  # LEGACY: single (prompt + optional token ids)
@@ -611,8 +614,12 @@ class LLM:
         outputs: List[Union[RequestOutput, EmbeddingRequestOutput]] = []
         total_in_toks = 0
         total_out_toks = 0
+
+        # 如果当前调度器中还有没完成推理的请求（调度器中waiting/running/swapped任一队列非空）
         while self.llm_engine.has_unfinished_requests():
+            # 执行1次推理调度（step），决定哪些请求的数据可以参与到这次推理中，step输出本次推理结果
             step_outputs = self.llm_engine.step()
+            # 一次step推理后，如果有请求已经完成了推理，将推理结果装进outputs中，
             for output in step_outputs:
                 if output.finished:
                     outputs.append(output)
@@ -621,12 +628,11 @@ class LLM:
                             # Calculate tokens only for RequestOutput
                             total_in_toks += len(output.prompt_token_ids)
                             in_spd = total_in_toks / pbar.format_dict["elapsed"]
-                            total_out_toks += sum(
-                                    len(stp.token_ids) for stp in output.outputs)
+                            total_out_toks += sum(len(stp.token_ids) for stp in output.outputs)
                             out_spd = total_out_toks / pbar.format_dict["elapsed"]
                             pbar.postfix = (
-                                f"est. speed input: {in_spd:.2f} toks/s, "
-                                f"output: {out_spd:.2f} toks/s")
+                                f"est. speed input: {in_spd:.2f} toks/s, output: {out_spd:.2f} toks/s"
+                            )
                         pbar.update(1)
         if use_tqdm:
             pbar.close()
