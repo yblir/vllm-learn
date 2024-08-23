@@ -1326,16 +1326,14 @@ class ModelRunner(GPUModelRunnerBase[ModelInputForGPUWithSamplingMetadata]):
                     BatchPrefillWithPagedKVCacheWrapper(
                             self.flashinfer_prefill_workspace_buffer, "NHD")
 
-            model_input.attn_metadata.prefill_wrapper = \
-                self.flashinfer_prefill_wrapper
+            model_input.attn_metadata.prefill_wrapper = self.flashinfer_prefill_wrapper
             if model_input.attn_metadata.use_cuda_graph:
                 batch_size = model_input.input_tokens.shape[0]
                 model_input.attn_metadata.decode_wrapper = self.graph_runners[
                     model_input.
                     virtual_engine][batch_size].flashinfer_decode_wrapper
             else:
-                model_input.attn_metadata.decode_wrapper = \
-                    self.flashinfer_decode_wrapper
+                model_input.attn_metadata.decode_wrapper = self.flashinfer_decode_wrapper
             model_input.attn_metadata.begin_forward()
 
         # Currently cuda graph is only supported by the decode phase.
@@ -1386,8 +1384,7 @@ class ModelRunner(GPUModelRunnerBase[ModelInputForGPUWithSamplingMetadata]):
             assert model_input.sampling_metadata is not None
             indices = model_input.sampling_metadata.selected_token_indices
             if model_input.is_prompt:
-                hidden_states = hidden_or_intermediate_states.index_select(
-                        0, indices)
+                hidden_states = hidden_or_intermediate_states.index_select(0, indices)
             elif decode_meta.use_cuda_graph:
                 hidden_states = hidden_or_intermediate_states[:len(indices)]
             else:

@@ -455,8 +455,7 @@ class BlockSpaceManagerV1(BlockSpaceManager):
             if self.enable_caching:
                 # If the last block is now complete, we may reuse an old block
                 # to save memory.
-                maybe_new_block = self._maybe_promote_last_block(
-                        seq, last_block)
+                maybe_new_block = self._maybe_promote_last_block(seq, last_block)
                 block_table[-1] = maybe_new_block
             return []
         # 如果最后一个物理块的引用数量为 > 1, 有别的逻辑块在引用它, 说明有别的seq在用它
@@ -487,8 +486,7 @@ class BlockSpaceManagerV1(BlockSpaceManager):
         for block in set(src_block_table):
             block.ref_count += 1
 
-    def _get_physical_blocks(
-            self, seq_group: SequenceGroup) -> List[PhysicalTokenBlock]:
+    def _get_physical_blocks(self, seq_group: SequenceGroup) -> List[PhysicalTokenBlock]:
 
         # NOTE: Here, we assume that the physical blocks are only shared by
         # the sequences in the same group.
@@ -507,11 +505,13 @@ class BlockSpaceManagerV1(BlockSpaceManager):
                     seq_group: SequenceGroup,
                     num_lookahead_slots: int = 0) -> AllocStatus:
         assert num_lookahead_slots == 0, "BlockSpaceManagerV1 does not support lookahead allocation"
-
+        # 当前seq_group正在使用的不重复的物理块
         blocks = self._get_physical_blocks(seq_group)
         num_swapped_seqs = seq_group.num_seqs(status=SequenceStatus.SWAPPED)
+        # 以为encode也算单独一个seq？
         if seq_group.is_encoder_decoder():
             num_swapped_seqs += 1
+        # 当前GPU可用的物理块数量
         num_free_blocks = self.gpu_allocator.get_num_free_blocks()
         # NOTE: Conservatively, we assume that every sequence will allocate
         # at least one free block right after the swap-in.

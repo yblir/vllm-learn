@@ -564,25 +564,37 @@ class Scheduler:
             SchedulerSwappedInOutputs.
         """
         # Blocks that need to be swapped or copied before model execution.
+        # [(cpu物理块id, gpu物理块id)]
         blocks_to_swap_in: List[Tuple[int, int]] = []
+        # [(旧物理块,copy - on - write而来的新物理块id)]
         blocks_to_copy: List[Tuple[int, int]] = []
+        # 准备解码的seq_group
         decode_seq_groups: List[ScheduledSequenceGroup] = []
+        # 准备预填充的seq_group
         prefill_seq_groups: List[ScheduledSequenceGroup] = []
+        # 因各种原因，被标记为不再处理的seq_group，如预填充序列太长了...
         infeasible_seq_groups: List[SequenceGroup] = []
 
         swapped_queue = self.swapped
 
         leftover_swapped: Deque[SequenceGroup] = deque()
         while swapped_queue:
+            # 取出swap队列中最早被抢占的seq_group
             seq_group = swapped_queue[0]
 
+            # ----------------------------------------------------------------------------------------------------------
             # If the sequence group cannot be swapped in, stop.
+            # 对被抢占seq_group有两种处理方式，1. 清空放入waiting队列，这时is_prefill为True
+            # 2.blocks全部转移到CPU上，这时is_prefill为False
+            # self._get_num_lookahead_slots(is_prefill)必定为0，否则抛出异常，block_manager_v1不支持非0
+            # 情况，todo 搞不懂设置这个值是干嘛的！
             is_prefill = seq_group.is_prefill()
+            # 根据需要的，与可用的物理blocks数量判断，是否可以把当前seq_group从swap队列转移到running队列
             alloc_status = self.block_manager.can_swap_in(
                     seq_group, self._get_num_lookahead_slots(is_prefill))
-            if alloc_status == AllocStatus.LATER:
+            if alloc_status == AllocStatus.LATER:    # 稍后，资源多时再处理
                 break
-            elif alloc_status == AllocStatus.NEVER:
+            elif alloc_status == AllocStatus.NEVER:  # 不合格，永不再处理
                 logger.warning(
                         "Failing the request %s because there's not enough kv "
                         "cache blocks to run the entire sequence.",
@@ -592,7 +604,9 @@ class Scheduler:
                 infeasible_seq_groups.append(seq_group)
                 swapped_queue.popleft()
                 continue
+            # ----------------------------------------------------------------------------------------------------------
 
+            # lora相关，忽略
             lora_int_id = 0
             if self.lora_enabled:
                 lora_int_id = seq_group.lora_int_id
@@ -608,25 +622,37 @@ class Scheduler:
 
             # The total number of sequences in the RUNNING state should not
             # exceed the maximum number of sequences.
+            # 取出这个seq_group在剩余生命周期内将并行运行的最大seq数量
             num_new_seqs = seq_group.get_max_num_running_seqs()
+            # 当前准备转移的seq_group,需要处理,或者说准备返回的tokens数量，
+            # decode模式：每个seq num_token=1,其他模式则遵循各自的状态
             num_new_tokens = self._get_num_new_tokens(seq_group,
                                                       SequenceStatus.SWAPPED,
                                                       enable_chunking, budget)
-
+            # 感觉num_new_tokens==0的判断有点多余，基本不可能为0
+            # budget.can_schedule 会判断加上当前seq_group的num_new_tokens和num_new_seqs后
+            # 总数是否会超标，如果超标，说明不能再添加任何seq_group到running队列，直接结束本次调度
             if (num_new_tokens == 0
-                    or not budget.can_schedule(num_new_tokens=num_new_tokens,num_new_seqs=num_new_seqs)):
+                    or not budget.can_schedule(num_new_tokens=num_new_tokens, num_new_seqs=num_new_seqs)):
                 break
 
             if lora_int_id > 0 and curr_loras is not None:
                 curr_loras.add(lora_int_id)
+
+            # 如果能走到这步，说明可向running队列转移了。先把当前seq_group从swap队列踢出来
+            # 再把CPU上的blocks转移到GPU block上
+            # todo 再append？
             swapped_queue.popleft()
             self._swap_in(seq_group, blocks_to_swap_in)
             self._append_slots(seq_group, blocks_to_copy)
+            # 判断是不是预填充，将这个seq_group加入不同的分组
             is_prefill = seq_group.is_prefill()
             if is_prefill:
                 prefill_seq_groups.append(ScheduledSequenceGroup(seq_group, token_chunk_size=num_new_tokens))
             else:
                 decode_seq_groups.append(ScheduledSequenceGroup(seq_group, token_chunk_size=1))
+
+            # 将这个马上上岸的seq_group的tokens和seqs数量更新到budget中
             budget.add_num_batched_tokens(seq_group.request_id, num_new_tokens)
             budget.add_num_seqs(seq_group.request_id, num_new_seqs)
 
@@ -857,6 +883,11 @@ class Scheduler:
 
         # self.waiting空,或 self.swapped非空,都会导致prefills.seq_groups数量为0
         # # 这个判断的意思是,prefills.seq_groups==0,说明本次调度没有安排预填充任务,那么就安排解码任务.
+        # 执行推理任务的seq_group都在running队列，因此需要对这个队列进行调度。
+        # 调度什么呢？
+        # 是看running队列中的seq_group是否可以继续做推理任务。因为vllm动态管理，最大限度优化吞吐量，会导致blocks资源紧张
+        # 上次推理生成的tokens的kv-cache需要GPU blocks去存储，导致资源消耗。那么这次准备推理时blocks数量不一定能够它完成
+        # 推理，所以要对running队列中每个seq_group进行检查，看是否可以进行做推理。
         if len(prefills.seq_groups) == 0:
             running_scheduled = self._schedule_running(budget, curr_loras, enable_chunking=False)
 
@@ -868,28 +899,36 @@ class Scheduler:
 
             # 注意这几个队列的判断逻辑. 如果self.swapped原本就非空,会进入上面的if判断分支进行self.running队列
             # 调度取值.然后根据这个过程中是否有seq_group被preempted和swapped_out获知blocks资源使用情况.
-            # 如果没有被preempted和swapped_out.就把self.swapped内容取出来. 如果有被preempted和swapped_out
-            # 说明资源紧张.下面if为False,意思是就不要再从self.swapped转移seq_group会gpu做推理了
+            # 如果没有被preempted和swapped_out.说明工作不饱和，就把self.swapped内容取出来，加入running队列进行推理
+            # 如果有被preempted和swapped_out，说明资源紧张. self.swapped积压的任务暂时还处理不了
+            # 如果下面if为False,意思是就不要再从self.swapped转移seq_group会gpu做推理了
             if len(running_scheduled.preempted) + len(running_scheduled.swapped_out) == 0:
                 swapped_in = self._schedule_swapped(budget, curr_loras)
 
+        # 最后一次判断本次推理的tokens和seqs数量是否超过阈值
         assert budget.num_batched_tokens <= self.scheduler_config.max_num_batched_tokens
         assert budget.num_curr_seqs <= self.scheduler_config.max_num_seqs
 
         # Update waiting requests.
+        # 这个类型被抢占的seq_group，打回原型，重新加入waiting队列。幸运的是添加到了队列头部，当再次从
+        # waiting队列取数据时，会优先处理它
         self.waiting.extendleft(running_scheduled.preempted)
         # Update new running requests.
+        # 将以上通过层层筛选的seq_group加入到running队列(真·running)，这些seq_group才是下一步的推理对象
         self.running.extend([s.seq_group for s in prefills.seq_groups])
         self.running.extend([s.seq_group for s in running_scheduled.decode_seq_groups])
         self.running.extend([s.seq_group for s in swapped_in.decode_seq_groups])
         # Update swapped requests.
+        # 没有足够资源做推理的seq_group会从running转移到swap队列(swap队列是路径之一，另一个是加入到wait队列)
         self.swapped.extend(running_scheduled.swapped_out)
-        preempted = (len(running_scheduled.preempted) + len(running_scheduled.swapped_out))
+        # 统计被抢占的seq_group数量
+        preempted = len(running_scheduled.preempted) + len(running_scheduled.swapped_out)
 
         # There should be no prefill from running queue because this policy
         # doesn't allow chunked prefills.
         assert len(running_scheduled.prefill_seq_groups) == 0
         assert len(swapped_in.prefill_seq_groups) == 0
+
         return SchedulerOutputs(
                 scheduled_seq_groups=(prefills.seq_groups +
                                       running_scheduled.decode_seq_groups +
@@ -1018,8 +1057,7 @@ class Scheduler:
 
         # Create input data structures.
         seq_group_metadata_list: List[SequenceGroupMetadata] = []
-        for i, scheduled_seq_group in enumerate(
-                scheduler_outputs.scheduled_seq_groups):
+        for i, scheduled_seq_group in enumerate(scheduler_outputs.scheduled_seq_groups):
             seq_group = scheduled_seq_group.seq_group
             token_chunk_size = scheduled_seq_group.token_chunk_size
             seq_group.maybe_set_first_scheduled_time(now)
@@ -1081,8 +1119,7 @@ class Scheduler:
         # This is because the engine assumes that a failure in model execution
         # will crash the vLLM instance / will not retry.
         for scheduled_seq_group in scheduler_outputs.scheduled_seq_groups:
-            self.block_manager.mark_blocks_as_computed(
-                    scheduled_seq_group.seq_group)
+            self.block_manager.mark_blocks_as_computed(scheduled_seq_group.seq_group)
 
         return seq_group_metadata_list, scheduler_outputs
 
