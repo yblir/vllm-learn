@@ -321,10 +321,10 @@ class BlockSpaceManagerV1(BlockSpaceManager):
         # NOTE: Here we assume that all sequences in the group have the same
         # decoder prompt.
         seq = seq_group.get_seqs(status=SequenceStatus.WAITING)[0]
-        block_table: BlockTable = \
-            self._allocate_sequence(seq,
-                                    seq_group.num_seqs(),
-                                    is_encoder_decoder)
+        # block_table:list,存储的是从自由状态获得的可用物理块. 因为下面必定要用到,所以已经设置引用计数为1
+        block_table: BlockTable = self._allocate_sequence(seq,
+                                                          seq_group.num_seqs(),
+                                                          is_encoder_decoder)
 
         # Assign the self-attention block tables for each sequence.
         for seq in seq_group.get_seqs(status=SequenceStatus.WAITING):
@@ -446,7 +446,7 @@ class BlockSpaceManagerV1(BlockSpaceManager):
 
         # We want to append the token to the last physical block.
         # 如果物理块数量==逻辑块数量
-        last_block = block_table[-1] # 取出最后一个物理块
+        last_block = block_table[-1]  # 取出最后一个物理块
         assert last_block.device == Device.GPU  # 声明必须是gpu物理块
 
         # 如果最后一个物理块的引用数量为1(只有1个逻辑块引用它), 说明只有当前这个seq在用它
@@ -682,13 +682,9 @@ class BlockSpaceManagerV1(BlockSpaceManager):
         # NOTE We exclude the last block to avoid the case where the entire
         # prompt is cached. This would cause erroneous behavior in model
         # runner.
-        return [
-            b.block_number
-            for b in takewhile(lambda b: b.computed, block_table[:-1])
-        ]
+        return [b.block_number for b in takewhile(lambda b: b.computed, block_table[:-1])]
 
-    def get_common_computed_block_ids(
-            self, seqs: List[Sequence]) -> GenericSequence[int]:
+    def get_common_computed_block_ids(self, seqs: List[Sequence]) -> GenericSequence[int]:
         """Return the block ids that are common for a given sequence group.
 
         Used in prefill (can skip prefill of some blocks).

@@ -762,8 +762,8 @@ class Scheduler:
             # 当前seq需要的blocks数量,超过gpu能提供的最大数量.加入失败者联盟,永不再处理，
             elif can_allocate == AllocStatus.NEVER:
                 logger.warning(
-                        "Input prompt (%d tokens) is too long"
-                        " and exceeds the capacity of block_manager", num_new_tokens)
+                        f"Input prompt ({num_new_tokens} tokens) is too long"
+                        " and exceeds the capacity of block_manager")
                 for seq in waiting_seqs:
                     seq.status = SequenceStatus.FINISHED_IGNORED
                 ignored_seq_groups.append(seq_group)
@@ -785,8 +785,8 @@ class Scheduler:
                     waiting_queue.popleft()
                     continue
 
-            # 当前seq_group中状态为 未执行完 的序列的数量，即seq还没推理完成的数量
-            # 刚从wait中取出时，num_new_seqs必定是1
+            # 当前seq_group中状态为 未执行完 的序列的数量，即seq还没推理完成的数量. 刚从wait中取出时，
+            # seq数量是1,但推理生成阶段,这个seq_group中会有n个seq在并行.n是外部传入的output数量. 因此这里num_new_seqs==n
             num_new_seqs = seq_group.get_max_num_running_seqs()
             # budget.can_schedule同时判断tokens和seqs数量是否超过阈值，任一个超过单次调度能执行的总数的阈值
             # 说明这step可推理的seqs数量已经马上趋于饱和，不能再加入seq到running队列。跳出while, 结束本次waiting向running的调度

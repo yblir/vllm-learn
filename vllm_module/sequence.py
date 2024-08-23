@@ -537,7 +537,7 @@ class SequenceGroup:
             # 此时best_of默认和n一致，即表示我们希望1个prompt产出n个outputs。因此理论上，这个
             # seq_group下会维护best_of个seq（这就是self.num_seqs()的返回值）。
             # 如果出现best_of > self.num_seqs()的情况，说明该seq_group刚从waiting变成running
-            # 准备做推理此时对于这个seq_group来说，其剩余生命周期并行运行的最大seq数量为best_of
+            # 准备做推理,此时对于这个seq_group来说，其剩余生命周期并行运行的最大seq数量为best_of
             if self.sampling_params and self.sampling_params.best_of > self.num_seqs():
                 # At prompt stage, the sequence group is not yet filled up
                 # and only have one sequence running. However, in the

@@ -1086,7 +1086,7 @@ class GPUModelRunnerBase(ModelRunnerBase[TModelInputForGPU]):
                 for batch_size in reversed(batch_size_capture_list):
                     if self.attn_backend.get_name() == "flashinfer":
                         _indptr_buffer = indptr_buffer[:batch_size + 1]
-                        _last_page_len_buffer = last_page_len_buffer[:                   batch_size]
+                        _last_page_len_buffer = last_page_len_buffer[:batch_size]
 
                         num_qo_heads = (
                             self.model_config.get_num_attention_heads(
@@ -1277,8 +1277,7 @@ class ModelRunner(GPUModelRunnerBase[ModelInputForGPUWithSamplingMetadata]):
                     model_input.query_lens, self.device, self.pin_memory, generators)
         else:
             sampling_metadata = None
-        is_prompt = (seq_group_metadata_list[0].is_prompt
-                     if seq_group_metadata_list else None)
+        is_prompt = seq_group_metadata_list[0].is_prompt if seq_group_metadata_list else None
         return dataclasses.replace(model_input,
                                    sampling_metadata=sampling_metadata,
                                    is_prompt=is_prompt,
