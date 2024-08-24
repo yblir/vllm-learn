@@ -837,7 +837,7 @@ class Scheduler:
         如果 GPU 内存有压力，则可以交换或抢占解码请求。因此会优先从swapped进行判断。
         """
         # Include running requests to the budget.
-        # 管理本次调度的的tokens和seqs数量, 根据数量是否超过阈值，决定将本次
+        # 每次step都要重新初始化一个budget来管理本次调度的的tokens和seqs数量, 根据数量是否超过阈值，决定将本次
         # seq_groups放入哪个队列。(一个seq_groups会包含多个seqs)
         budget = SchedulingBudget(
                 token_budget=self.scheduler_config.max_num_batched_tokens,
