@@ -1,11 +1,5 @@
 import os
 import sys
-from ctypes import cdll
-
-# cdll.LoadLibrary('/mnt/e/PyCharm/insteresting/vllm-0.5.4/cmake/libtorch.so')
-# cdll.LoadLibrary('/mnt/e/PyCharm/insteresting/vllm-0.5.4/cmake/_C.abi3.so')
-# cdll.LoadLibrary('/mnt/e/PyCharm/insteresting/vllm-0.5.4/cmake/_core_C.abi3.so')
-# cdll.LoadLibrary('/mnt/e/PyCharm/insteresting/vllm-0.5.4/cmake/_moe_C.abi3.so')
 
 sys.path.append('/mnt/e/PyCharm/insteresting/vllm-0.5.4/')
 
@@ -20,7 +14,7 @@ model_path = '/mnt/e/PyCharm/PreTrainModel/qwen2_15b_instruct'
 
 params = {"repetition_penalty": 1.1,
           "temperature"       : 0.7,
-          'n'                 :4,
+          'n'                 : 4,
           "top_p"             : 0.8,
           "top_k"             : 20, }
 sample_params = SamplingParams(**params)
@@ -52,11 +46,13 @@ text2 = tokenizer.apply_chat_template(conversation=messages2, tokenize=False, ad
 
 messages3 = [
     {'role': 'system', 'content': '你是一个诗人'},
-    {'role': 'user', 'content': '中国首都城市什么名字'}
+    {'role': 'user', 'content': '中国首都是'}
 ]
 
 text3 = tokenizer.apply_chat_template(conversation=messages3, tokenize=False, add_generation_prompt=True)
-# print(text)
+text4 = tokenizer.apply_chat_template(conversation=messages3, tokenize=True, add_generation_prompt=True)
+print(text3)
+print(text4)
 outputs = llm.generate(
         # 当tokenizer.apply_chat_templat中 tokenize为 False 时激活prompts
         prompts=[text,text2,text3],
@@ -76,5 +72,4 @@ for output in outputs:
         print(output.outputs[i].text)
         print(output.outputs[i].token_ids)
     print('------------------------------------------\n')
-    # generated_text = output.outputs[0].text
-    # print(generated_text)
+

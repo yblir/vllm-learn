@@ -865,14 +865,11 @@ class Scheduler:
         # 调度的任务是优化吞吐量，即保证处于running状态的seqs最多。running从wait和swap队列
         # 获得，首先积压的任务可能要比wait的优先级高，因为swap队列中的任务始终占据着系统资源，当
         # running可添加时，应该首先处理swap。
-        # 为什么不先判断running是否饱和？ 老板当然要先把工作甩你脸上，难道要先为你工作是否饱和？不饱和就干，饱和了就再积压，
-        # 如此才能最大化压榨打工人。
         if not self.swapped:  # 如果swapped队列为空
             # 既然不能从swap想running转移，那就只能从wait队列拿任务了。
             # wait队列中的都是原始任务，第一步要预填充
             # prefills是一个伪结构体：可以.出以下属性
             #     seq_groups: List[SequenceGroup]
-            #     # Ignored sequence groups.
             #     ignored_seq_groups: List[SequenceGroup]
             #     num_lookahead_slots: int
             prefills = self._schedule_prefills(budget, curr_loras, enable_chunking=False)
@@ -910,8 +907,8 @@ class Scheduler:
         assert budget.num_curr_seqs <= self.scheduler_config.max_num_seqs
 
         # Update waiting requests.
-        # 这个类型被抢占的seq_group，打回原型，重新加入waiting队列。幸运的是添加到了队列头部，当再次从
-        # waiting队列取数据时，会优先处理它
+        # 这个类型被抢占的seq_group，打回原型，重新加入waiting队列。
+        # 幸运的是添加到了队列头部，当再次从waiting队列取数据时，会优先处理它
         self.waiting.extendleft(running_scheduled.preempted)
         # Update new running requests.
         # 将以上通过层层筛选的seq_group加入到running队列(真·running)，这些seq_group才是下一步的推理对象
