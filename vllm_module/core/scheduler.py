@@ -465,10 +465,11 @@ class Scheduler:
                 # 根据vllm的调度原则，这个seq_group要被优先处理，没有足够资源，就把running队列最后位置的
                 # seq_group踢出去，释放gpu blocks给当前seq_group使用。
 
-                # 在外层调度逻辑中，seq_group准备返回的tokens数量已经加到budget属性上,现在不处理它, 要把数量再减回来
+                # seq_group准备返回的tokens数量已经加到budget属性上,现在不处理它, 要把数量再减回来
+                # budget会记录每次+-数量的seq_group.request_id,如果以前没被+过，现在就不会被-，就像下面的调用一样
                 budget.subtract_num_batched_tokens(seq_group.request_id, num_running_tokens)
+                # 在外层总调度中，已经在budget汇总了所有正在活跃的seqs数量，现在要减去属于该seq_group的seqs数量
                 num_running_seqs = seq_group.get_max_num_running_seqs()
-                # seq也要减回来, 是在外层的self._schedule_default 加上的
                 budget.subtract_num_seqs(seq_group.request_id, num_running_seqs)
 
                 # lora相关,忽略
