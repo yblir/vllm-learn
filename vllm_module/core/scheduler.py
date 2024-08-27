@@ -445,11 +445,11 @@ class Scheduler:
 
         while running_queue:
             seq_group = running_queue[0]
-            # 当前待推理的seq_group,需要处理,或者说准备返回的tokens数量
+            # 当前待推理的seq_group需要处理,或者说准备返回的tokens数量,对于RUNNING状态，每个seq返回1个token
             num_running_tokens = self._get_num_new_tokens(
                     seq_group, SequenceStatus.RUNNING, enable_chunking, budget)
 
-            # todo 觉得这个判断有点多余,因为处于RUNNING状态的seq,必定有tokens返回,num_running_tokens
+            # todo 觉得这个判断有点多余,因为处于RUNNING状态的seq,必定有tokens返回,prompt总不能为空吧，num_running_tokens
             # todo 不可能为0, 再说,如果为0, 方法self._get_num_new_tokens内部就会抛出异常,因为做了assert断言
             if num_running_tokens == 0:
                 break
@@ -459,13 +459,13 @@ class Scheduler:
 
             # 对于这个seq_group，检查对于其中的每一个seq，是否能至少分配一个物理块给它，如果不能的话
             # （说明要执行抢占操作了，否则马上会没有资源让这个最早到达的seq_group做完推理）：
-            # （注意，这里用了while...else，如果while条件正常结束，则进入else内容；
-            #  如果被break，则不会执行else）
-            while not self._can_append_slots(seq_group):  # 如果不能为每个seq都分配一个block
-                # 这个seq_group本来是要送去做推理的,但没有足够的gpu物理blocks分配给它,对不住了,只能把它
-                # 加入swap队列,以后有机会再捞它
-                # 之前这个seq_group准备返回的tokens数量已经加到budget属性上,现在不处理它, 要把数量再减回来
-                # todo 什么时候加的呀? 每次循环都要减一次?
+            # 这里用了while...else，如果while条件正常结束，则进入else内容；如果被break，则不会执行else
+            while not self._can_append_slots(seq_group):  # 如果不能为当前seq_group的每个seq都分配一个block
+                # 这个seq_group本来是要送去做推理的,但没有足够的gpu物理blocks分配给它
+                # 根据vllm的调度原则，这个seq_group要被优先处理，没有足够资源，就把running队列最后位置的
+                # seq_group踢出去，释放gpu blocks给当前seq_group使用。
+
+                # 在外层调度逻辑中，seq_group准备返回的tokens数量已经加到budget属性上,现在不处理它, 要把数量再减回来
                 budget.subtract_num_batched_tokens(seq_group.request_id, num_running_tokens)
                 num_running_seqs = seq_group.get_max_num_running_seqs()
                 # seq也要减回来, 是在外层的self._schedule_default 加上的
@@ -731,13 +731,15 @@ class Scheduler:
             waiting_seqs = seq_group.get_seqs(status=SequenceStatus.WAITING)
             assert len(waiting_seqs) == 1, "Waiting sequence group should have only one prompt sequence."
 
-            # 获取当前seq的序列长度（如果该seq_group来自之前被抢占的请求，
-            # 那么这个长度不仅包括prompt，还包括已经处理好的output token）
+            # 当前待推理的seq_group需要处理,或者说准备返回的tokens数量,对于WAITING状态，
+            # 只有1个seq，tokens数量为prompt长度
             num_new_tokens = self._get_num_new_tokens(seq_group,
                                                       SequenceStatus.WAITING,
                                                       enable_chunking, budget)
             if not enable_chunking:
                 num_prompt_tokens = waiting_seqs[0].get_len()
+                # 从waiting取出的seq_group，连预填充都没做，更不会有output token，
+                # 若计算出的tokens数量不等与prompt数量，一定有问题，抛出异常吧！
                 assert num_new_tokens == num_prompt_tokens
 
             # 如果这条seq的长度 > 每次调度能处理的最大序列长度，那么把这条seq的状态置为FINISHED_IGNORED，
@@ -846,7 +848,8 @@ class Scheduler:
 
         # Make sure we include num running seqs before scheduling prefill,
         # so that we don't schedule beyond max_num_seqs for prefill.
-        # 先统计正在执行推理的seq_groups中seq的数量
+        # 先统计正在执行推理的seq_groups中seq的数量，当准备加入的新seq_group会超过budget阈值时，
+        # 应禁止加入，保证running队列中seq_groups优先做推理。
         for seq_group in self.running:
             budget.add_num_seqs(seq_group.request_id, seq_group.get_max_num_running_seqs())
         # lora推理相关，可忽略
