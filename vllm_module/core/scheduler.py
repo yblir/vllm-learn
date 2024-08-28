@@ -517,7 +517,10 @@ class Scheduler:
                 else:
                     decode_seq_groups.append(ScheduledSequenceGroup(seq_group=seq_group,
                                                                     token_chunk_size=1))
-                # todo 不明白与上面budget.subtract_num_batched_tokens的对应关系
+                # todo 这似乎是个bug, 如果_can_append_slots为True，会跳过while直接走当前else分支
+                # todo seqs在外层_schedule_default已经更新过，所以这里只更新tokens就好
+                # todo 但是，如果_can_append_slots为False，budget会同时减去seq_group的tokens和seqs数量
+                # todo 下面把tokens再加回来，逻辑没问题，但没有更新seqs！
                 budget.add_num_batched_tokens(seq_group.request_id, num_running_tokens)
                 # OPTIMIZATION:  Note that get_max_num_running_seqs is
                 # expensive. For the default scheduling chase where
@@ -587,8 +590,7 @@ class Scheduler:
             # If the sequence group cannot be swapped in, stop.
             # 对被抢占seq_group有两种处理方式，1. 清空放入waiting队列，这时is_prefill为True
             # 2.blocks全部转移到CPU上，这时is_prefill为False
-            # self._get_num_lookahead_slots(is_prefill)必定为0，否则抛出异常，block_manager_v1不支持非0
-            # 情况，todo 搞不懂设置这个值是干嘛的！
+            # self._get_num_lookahead_slots(is_prefill)必定为0，否则抛出异常，block_manager_v1不支持非0情况
             is_prefill = seq_group.is_prefill()
             # 根据需要的，与可用的物理blocks数量判断，是否可以把当前seq_group从swap队列转移到running队列
             alloc_status = self.block_manager.can_swap_in(
@@ -642,7 +644,6 @@ class Scheduler:
 
             # 如果能走到这步，说明可向running队列转移了。先把当前seq_group从swap队列踢出来
             # 再把CPU上的blocks转移到GPU block上
-            # todo 再append？
             swapped_queue.popleft()
             self._swap_in(seq_group, blocks_to_swap_in)
             self._append_slots(seq_group, blocks_to_copy)
@@ -732,8 +733,8 @@ class Scheduler:
             waiting_seqs = seq_group.get_seqs(status=SequenceStatus.WAITING)
             assert len(waiting_seqs) == 1, "Waiting sequence group should have only one prompt sequence."
 
-            # 当前待推理的seq_group需要处理,或者说准备返回的tokens数量,对于WAITING状态，
-            # 只有1个seq，tokens数量为prompt长度
+            # 当前待推理的seq_group需要处理,或者说准备返回的tokens数量,
+            # 对于WAITING状态，只有1个seq，tokens数量为prompt长度
             num_new_tokens = self._get_num_new_tokens(seq_group,
                                                       SequenceStatus.WAITING,
                                                       enable_chunking, budget)
