@@ -239,9 +239,10 @@ class BlockSpaceManagerV1(BlockSpaceManager):
         assert watermark >= 0.0
 
         self.enable_caching = enable_caching
-
+        # 水位线，是一个数量阈值，设置它的目的是避免gpu上物理块全部使用完。
         self.watermark_blocks = int(watermark * num_gpu_blocks)
 
+        # 根据是否做了prefix caching限制，来选择不同的allocator
         if self.enable_caching:
             logger.info("Automatic prefix caching is enabled.")
             self.gpu_allocator: BlockAllocatorBase = CachedBlockAllocator(
@@ -254,10 +255,12 @@ class BlockSpaceManagerV1(BlockSpaceManager):
             self.cpu_allocator = UncachedBlockAllocator(
                     Device.CPU, block_size, num_cpu_blocks)
         # Mapping: seq_id -> BlockTable.
+        # 记录每个seq对应的BlockTable(这是一个包含物理块索引号的list)
         self.block_tables: Dict[int, BlockTable] = {}
         # Mapping: req_id -> BlockTable
         # Note that each SequenceGroup has a unique
         # request ID
+        # 功能同上，但cross_block_tables记录的是encoder-decode类型的模型，暂时混略
         self.cross_block_tables: Dict[str, BlockTable] = {}
 
     def _get_seq_num_required_blocks(self, seq: Sequence) -> int:
@@ -266,23 +269,31 @@ class BlockSpaceManagerV1(BlockSpaceManager):
     def can_allocate(self, seq_group: SequenceGroup) -> AllocStatus:
         # FIXME(woosuk): Here we assume that all sequences in the group share
         # the same prompt. This may not be true for preempted sequences.
-
+        # 只对encoder-decode模型有效，忽略
         check_no_caching_or_swa_for_blockmgr_encdec(self, seq_group)
 
+        # 计算当前seq序列需要的物理block数量
+        # 这是seq的一个属性，对于waiting状态的seq，n_blocks=len(prompt)/16, 向上取整
         self_num_required_blocks = self._get_seq_num_required_blocks(
                 seq_group.get_seqs(status=SequenceStatus.WAITING)[0])
+        # 又是encoder-decode相关，忽略
         cross_num_required_blocks = self._get_seq_num_required_blocks(seq_group.get_encoder_seq())
         num_required_blocks = self_num_required_blocks + cross_num_required_blocks
 
         if self.block_sliding_window is not None:
             num_required_blocks = min(num_required_blocks, self.block_sliding_window)
+        # 当前gpu空闲的blocks数量
         num_free_gpu_blocks = self.gpu_allocator.get_num_free_blocks()
 
         # Use watermark to avoid frequent cache eviction.
+        # 如果设备中所有的物理块数量 - 该seq实际需要的物理块数量 < 水位线block数量，则不分配
+        # （说明当前seq太长了）
         if self.num_total_gpu_blocks - num_required_blocks < self.watermark_blocks:
             return AllocStatus.NEVER
+        # 如果设备中可用的物理块数量 - 该seq实际需要的block数量 >= 水位线block数量，则分配
         if num_free_gpu_blocks - num_required_blocks >= self.watermark_blocks:
             return AllocStatus.OK
+        # 否则，现在不能分配(暂时没足够的blocks)，但可以延迟分配
         else:
             return AllocStatus.LATER
 
