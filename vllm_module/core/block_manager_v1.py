@@ -302,10 +302,12 @@ class BlockSpaceManagerV1(BlockSpaceManager):
                            ref_count: int, \
                            is_encoder_decoder: bool = True) -> BlockTable:
         # Allocate new physical token blocks that will store the prompt tokens.
+        # 当前seq需要的物理块数量
         num_prompt_blocks = seq.n_blocks
 
         block_table: BlockTable = []
         for logical_idx in range(num_prompt_blocks):
+            # 滑窗，忽略
             if (self.block_sliding_window is not None
                     and logical_idx >= self.block_sliding_window):
                 block = block_table[logical_idx % self.block_sliding_window]
@@ -315,9 +317,12 @@ class BlockSpaceManagerV1(BlockSpaceManager):
                 block = self.gpu_allocator.allocate(
                         seq.hash_of_block(logical_idx),
                         seq.num_hashed_tokens_of_block(logical_idx))
+            # 默认情况下走下面的分支
             else:
                 block = self.gpu_allocator.allocate()
                 # Set the reference counts of the token blocks.
+                # 由于seq_group下的所有seq共享一个prompt，所以有ref_count = num_seqs
+                # 表示这些seqs的逻辑块都引用它了
                 block.ref_count = ref_count
             block_table.append(block)
 
@@ -325,23 +330,28 @@ class BlockSpaceManagerV1(BlockSpaceManager):
 
     def allocate(self, seq_group: SequenceGroup) -> None:
         is_encoder_decoder = seq_group.is_encoder_decoder()
+        # 只对encoder-decode模型有效，忽略
         check_no_caching_or_swa_for_blockmgr_encdec(self, seq_group)
 
         # Allocate decoder sequences
         #
         # NOTE: Here we assume that all sequences in the group have the same
         # decoder prompt.
+        # 对于WAITING装的seq_group，seq只有1条，就是prompt
         seq = seq_group.get_seqs(status=SequenceStatus.WAITING)[0]
-        # block_table:list,存储的是从自由状态获得的可用物理块. 因为下面必定要用到,所以已经设置引用计数为1
+        # block_table:list,存储的是当前seq用到的物理块的索引号
         block_table: BlockTable = self._allocate_sequence(seq,
                                                           seq_group.num_seqs(),
                                                           is_encoder_decoder)
 
         # Assign the self-attention block tables for each sequence.
+        # 记录每一个seq序列使用的block_table，block_tables是一个全局变量，记录这所有
+        # seq_group的seq，根据add_request()中代码可知，不同seq_group的seq.id也不会重复，没有相互覆盖的风险
         for seq in seq_group.get_seqs(status=SequenceStatus.WAITING):
             self.block_tables[seq.seq_id] = block_table.copy()
 
         # Allocate encoder sequence
+        # 忽略
         if is_encoder_decoder:
             # A SequenceGroup has only a single encoder sequence (at most),
             # thus allocate with a ref count of 1
@@ -437,13 +447,13 @@ class BlockSpaceManagerV1(BlockSpaceManager):
         # 读取这个seq的物理块，List[PhysicalTokenBlock]
         block_table = self.block_tables[seq.seq_id]
         # If we need to allocate a new physical block
-        # 如果物理块数量 < 逻辑块数量(说明此时需要分配新的物理块了),为什么会出现这种情况?
-        # 因为上1个推理阶段完毕后，seq的逻辑块更新了(把最新生成的这个token装进去了)但物理块还没更新
+        # 如果实际物理块数量 < seq需要的物理块数量(说明此时需要分配新的物理块了),为什么会出现这种情况?
+        # 因为上1个推理阶段完毕后，seq的需求的块数量更新了，但物理块数量还没更新
         if len(block_table) < n_blocks:
             # Currently this code only supports adding one physical block
-            # 需要声明物理块只允许比逻辑块少1块
+            # 需要声明物理块只允许比需求的块少1块
             assert len(block_table) == n_blocks - 1
-            # 如果使用滑动窗口时的逻辑,忽略
+            # 如果使用滑动窗口,忽略
             if self.block_sliding_window and len(block_table) >= self.block_sliding_window:
                 # reuse a block
                 block_table.append(block_table[len(block_table) % self.block_sliding_window])
@@ -456,20 +466,23 @@ class BlockSpaceManagerV1(BlockSpaceManager):
                 return []
 
         # We want to append the token to the last physical block.
-        # 如果物理块数量==逻辑块数量
-        last_block = block_table[-1]  # 取出最后一个物理块
-        assert last_block.device == Device.GPU  # 声明必须是gpu物理块
+        # 取出最后一个物理块
+        last_block = block_table[-1]
+        # 断言该块必须是gpu物理块
+        assert last_block.device == Device.GPU
 
-        # 如果最后一个物理块的引用数量为1(只有1个逻辑块引用它), 说明只有当前这个seq在用它
+        # 如果最后一个物理块的引用数量为1, 说明只有当前这个seq在用它
         if last_block.ref_count == 1:
             # Not shared with other sequences. Appendable.
+            # 是在做prefix caching，暂时忽略
             if self.enable_caching:
                 # If the last block is now complete, we may reuse an old block
                 # to save memory.
                 maybe_new_block = self._maybe_promote_last_block(seq, last_block)
                 block_table[-1] = maybe_new_block
             return []
-        # 如果最后一个物理块的引用数量为 > 1, 有别的逻辑块在引用它, 说明有别的seq在用它
+        # 如果最后一个物理块的引用数量为 > 1, 说明有别的seq在用它，不允许这样情况发生
+        # 因为两个seq生成的内容可能不同，同时向一个位置添加kv-cache会出现相互覆盖的情况
         else:
             # The last block is shared with other sequences.
             # Copy on Write: Allocate a new block and copy the tokens.
@@ -477,7 +490,9 @@ class BlockSpaceManagerV1(BlockSpaceManager):
             new_block = self._allocate_last_physical_block(seq)
             # 用新分配的block替换之前分配的那个
             block_table[-1] = new_block
-            # 把之前分配的block释放掉, 也即该物理块ref_count -= 1，如果-=1后ref_count=0，说明该物理块彻底自由了，
+            # 把之前分配的block释放掉, 也即该物理块ref_count -= 1，
+            # 如果-=1后ref_count=0，说明该物理块变为自由状态；但当前语境下不可能为0，因为
+            # 正是因为last_block.ref_count>1才会走到这里，此时last_block.ref_count最小为1
             self.gpu_allocator.free(last_block)
             return [(last_block.block_number, new_block.block_number)]
 
@@ -518,8 +533,9 @@ class BlockSpaceManagerV1(BlockSpaceManager):
         assert num_lookahead_slots == 0, "BlockSpaceManagerV1 does not support lookahead allocation"
         # 当前seq_group正在使用的不重复的物理块
         blocks = self._get_physical_blocks(seq_group)
+        # 当前处于SWAPPED状态的seq数量
         num_swapped_seqs = seq_group.num_seqs(status=SequenceStatus.SWAPPED)
-        # 以为encode也算单独一个seq？
+        # 忽略
         if seq_group.is_encoder_decoder():
             num_swapped_seqs += 1
         # 当前GPU可用的物理块数量
@@ -527,11 +543,20 @@ class BlockSpaceManagerV1(BlockSpaceManager):
         # NOTE: Conservatively, we assume that every sequence will allocate
         # at least one free block right after the swap-in.
         # NOTE: This should match the logic in can_append_slot().
+
+        # len(blocks)是移动回GPU时应该使用的物理块数量，prompt+已完成解码的output 的kv-cache 需要使用这些block
+        # num_swapped_seqs是预备生成的token所使用的block，前面我们分析过，解码阶段，一个seq可能使用的
+        # block最小为0(最后一个block槽位没满，还能继续添加)，最大为1(最后的block槽位满，要新增block才能完成推理)
+        # 随意二者加起来的block的数量才是能绝对满足该seq_group推理的block数量
         num_required_blocks = len(blocks) + num_swapped_seqs
+        # 如果GPU总共的blocks(不是可用block，是所有的block)都小于num_required_blocks，
+        # 这条seq_group没法推理(GPU装不下这条数据)，
         if self.gpu_allocator.get_num_total_blocks() < num_required_blocks:
             return AllocStatus.NEVER
+        # 在水位线以上，合格
         elif num_free_blocks - num_required_blocks >= self.watermark_blocks:
             return AllocStatus.OK
+        # 小于水位线，GPU block数量暂时不够，稍后在处理这条数据
         else:
             return AllocStatus.LATER
 
@@ -543,15 +568,21 @@ class BlockSpaceManagerV1(BlockSpaceManager):
         new_block_table = []
 
         for from_block in block_table:
+            # mapping 为空，走不到if
             if from_block in mapping:
                 to_block = mapping[from_block]
                 to_block.ref_count += 1
+            # 会走else分支
             else:
+                # 在CPU上分配物理块
                 to_block = dest_allocator.allocate(
                         from_block.block_hash, from_block.num_hashed_tokens)
+                # 记录GPU与CPU上物理块的索引号映射，便于以后cpu->gpu找回。
                 mapping[from_block] = to_block
+            # 记录CPU物理块的索引号，CPU物理块与CPU物理块一一对应
             new_block_table.append(to_block)
             # Free the source block swapped in to destination.
+            # 释放GPU物理块
             src_allocator.free(from_block)
 
         return new_block_table
@@ -565,9 +596,9 @@ class BlockSpaceManagerV1(BlockSpaceManager):
         mapping: Dict[PhysicalTokenBlock, PhysicalTokenBlock] = {}
         for seq in seq_group.get_seqs(status=SequenceStatus.SWAPPED):
             self.block_tables[seq.seq_id] = \
-                self._swap_block_table(self.block_tables[seq.seq_id],
-                                       self.cpu_allocator,
-                                       self.gpu_allocator,
+                self._swap_block_table(self.block_tables[seq.seq_id],   # 取出该seq用到的GPU block
+                                       self.cpu_allocator,  # CPU物理块分配器
+                                       self.gpu_allocator,  # GPU物理块分配器
                                        mapping)
 
         if seq_group.is_encoder_decoder():
@@ -590,13 +621,14 @@ class BlockSpaceManagerV1(BlockSpaceManager):
         # GPU block -> CPU block.
         # dict is efficient in lookup `if gpu_block in mapping`
         mapping: Dict[PhysicalTokenBlock, PhysicalTokenBlock] = {}
+        # 遍历当前seq_group中每条seq，gpu->cpu
         for seq in seq_group.get_seqs(status=SequenceStatus.RUNNING):
             self.block_tables[seq.seq_id] = \
                 self._swap_block_table(self.block_tables[seq.seq_id],
                                        self.gpu_allocator,
                                        self.cpu_allocator,
                                        mapping)
-
+        # 忽略
         if seq_group.is_encoder_decoder():
             self.cross_block_tables[request_id] = \
                 self._swap_block_table(self.cross_block_tables[request_id],

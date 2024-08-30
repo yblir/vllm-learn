@@ -188,7 +188,7 @@ class SequenceData:
             return (self._prompt_token_ids_tuple,
                     tuple(self._output_token_ids[:num_tokens - prompt_length]))
         else:
-            return (self._prompt_token_ids_tuple[:num_tokens], None)
+            return self._prompt_token_ids_tuple[:num_tokens], None
 
     def get_num_computed_tokens(self) -> int:
         """Return the number of prefill tokens that are already computed."""
@@ -318,6 +318,7 @@ class Sequence:
         # Compute the number of tokens in the sequence
         # TODO: The current hashing function is O(L^2). We should optimize
         # this in the future.
+        # 计算截止到序号为logical_idx的块（整个块的所有槽位，包括空槽位）一共可以有多少个token
         num_tokens = self.num_hashed_tokens_of_block(logical_idx)
         hashed_tokens = self.data.get_prefix_token_ids(num_tokens)
         return hash((hashed_tokens, self.lora_int_id))

@@ -1145,7 +1145,9 @@ class Scheduler:
         self.running = remaining
 
     def _allocate_and_set_running(self, seq_group: SequenceGroup) -> None:
+        # 调用block_manager为当前seq_group分配物理块
         self.block_manager.allocate(seq_group)
+        # 将seq_group状态改为RUNNING，准备做推理
         for seq in seq_group.get_seqs(status=SequenceStatus.WAITING):
             seq.status = SequenceStatus.RUNNING
 
@@ -1222,6 +1224,7 @@ class Scheduler:
             seq_group: SequenceGroup,
     ) -> None:
         seqs = seq_group.get_seqs(status=SequenceStatus.RUNNING)
+        # 对于数量为1的seq，直接释放所有物理块
         assert len(seqs) == 1
         for seq in seqs:
             seq.status = SequenceStatus.WAITING
