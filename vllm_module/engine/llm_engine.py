@@ -521,6 +521,8 @@ class LLMEngine:
     ) -> None:
         # Create the sequences.
         block_size = self.cache_config.block_size
+        # self.seq_counter是在类中初始化，所以可以为每条seq生成不重复的id，
+        # seq_id与request_id是两个独立的变量
         seq_id = next(self.seq_counter)
         eos_token_id = self._get_eos_token_id(lora_request)
         # seq 包含当前prompt的各种信息:token_id,status(waiting,...), 占用blocks数量(逻辑,物理数量相同)
@@ -528,7 +530,7 @@ class LLMEngine:
                        lora_request, prompt_adapter_request)
 
         # Create a SequenceGroup based on SamplingParams or PoolingParams
-        # 以下都是对采样参数的校验
+        # 将seq和采样参数合并为seq_group
         # --------------------------------------------------------------------------------------------------------------
         if isinstance(params, SamplingParams):
             seq_group = self._create_sequence_group_with_sampling(

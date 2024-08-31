@@ -181,6 +181,7 @@ class UncachedBlockAllocator(BlockAllocatorBase):
     def allocate(self,
                  block_hash: Optional[int] = None,
                  num_hashed_tokens: int = 0) -> PhysicalTokenBlock:
+        """分配block: 从自由态block列表中取出一个block，并将引用计数设为1"""
         if not self.free_blocks:
             raise ValueError("Out of memory! No free blocks are available.")
         block = self.free_blocks.pop()
@@ -188,6 +189,7 @@ class UncachedBlockAllocator(BlockAllocatorBase):
         return block
 
     def free(self, block: PhysicalTokenBlock) -> None:
+        """释放block，引用计数置为0"""
         if block.ref_count == 0:
             raise ValueError(f"Double free! {block} is already freed.")
         block.ref_count -= 1
@@ -195,18 +197,18 @@ class UncachedBlockAllocator(BlockAllocatorBase):
             self.free_blocks.append(block)
 
     def get_num_free_blocks(self) -> int:
+        """获得当前gpu上可用block数量"""
         return len(self.free_blocks)
 
     def get_num_total_blocks(self) -> int:
+        """获得当前gpu所有block总数"""
         return self.num_blocks
 
     def contains_block(self, block_hash: int) -> bool:
-        raise NotImplementedError(
-                "Invalid codepath for uncached block allocator.")
+        raise NotImplementedError("Invalid codepath for uncached block allocator.")
 
     def update_hash(self, block_hash: int, block: PhysicalTokenBlock):
-        raise NotImplementedError(
-                "Invalid codepath for uncached block allocator.")
+        raise NotImplementedError("Invalid codepath for uncached block allocator.")
 
 
 class BlockSpaceManagerV1(BlockSpaceManager):
@@ -287,7 +289,7 @@ class BlockSpaceManagerV1(BlockSpaceManager):
 
         # Use watermark to avoid frequent cache eviction.
         # 如果设备中所有的物理块数量 - 该seq实际需要的物理块数量 < 水位线block数量，则不分配
-        # （说明当前seq太长了）
+        # 说明当前seq太长了，标记为NEVER，以后也不处理这个seq_group了
         if self.num_total_gpu_blocks - num_required_blocks < self.watermark_blocks:
             return AllocStatus.NEVER
         # 如果设备中可用的物理块数量 - 该seq实际需要的block数量 >= 水位线block数量，则分配
@@ -572,7 +574,6 @@ class BlockSpaceManagerV1(BlockSpaceManager):
             if from_block in mapping:
                 to_block = mapping[from_block]
                 to_block.ref_count += 1
-            # 会走else分支
             else:
                 # 在CPU上分配物理块
                 to_block = dest_allocator.allocate(

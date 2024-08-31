@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 
 sys.path.append('/mnt/e/PyCharm/insteresting/vllm-0.5.4/')
 
@@ -14,12 +15,14 @@ model_path = '/mnt/e/PyCharm/PreTrainModel/qwen2_15b_instruct'
 
 params = {"repetition_penalty": 1.1,
           "temperature"       : 0.7,
+
           'n'                 : 4,
           "top_p"             : 0.8,
           "top_k"             : 20, }
 sample_params = SamplingParams(**params)
 llm = LLM(model=model_path,
-          dtype='half'
+          dtype='half',
+          enable_prefix_caching= False,
             # dtype='float16'
           # 把模型层均分到n个gpu上, 而不是运行n个完整模型
           # tensor_parallel_size=1
@@ -53,6 +56,7 @@ text3 = tokenizer.apply_chat_template(conversation=messages3, tokenize=False, ad
 text4 = tokenizer.apply_chat_template(conversation=messages3, tokenize=True, add_generation_prompt=True)
 print(text3)
 print(text4)
+t1=time.time()
 outputs = llm.generate(
         # 当tokenizer.apply_chat_templat中 tokenize为 False 时激活prompts
         prompts=[text,text2,text3],
@@ -62,7 +66,7 @@ outputs = llm.generate(
 
         sampling_params=sample_params
 )
-
+print("耗时 =",time.time()-t1)
 for output in outputs:
     # prompt = output.prompt
     # print(prompt)

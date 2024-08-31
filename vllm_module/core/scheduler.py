@@ -1062,6 +1062,7 @@ class Scheduler:
         for i, scheduled_seq_group in enumerate(scheduler_outputs.scheduled_seq_groups):
             seq_group = scheduled_seq_group.seq_group
             token_chunk_size = scheduled_seq_group.token_chunk_size
+            # 记录当前seq_group到达时间，用于以后的调度安排
             seq_group.maybe_set_first_scheduled_time(now)
 
             # seq_id -> SequenceData
@@ -1072,9 +1073,12 @@ class Scheduler:
             for seq in seq_group.get_seqs(status=SequenceStatus.RUNNING):
                 seq_id = seq.seq_id
                 seq_data[seq_id] = seq.data
+                # 记录当前seq使用的物理块序列号，即使处于不同的block中，seq_id也不会重复
                 block_tables[seq_id] = self.block_manager.get_block_table(seq)
+                # enable_prefix_caching为True启用
                 self.block_manager.access_all_blocks_in_seq(seq, now)
 
+            # enable_prefix_caching为True启用
             common_computed_block_nums = (
                 self.block_manager.get_common_computed_block_ids(
                         seq_group.get_seqs(status=SequenceStatus.RUNNING)))
