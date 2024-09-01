@@ -10,7 +10,9 @@ from transformers import AutoTokenizer
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
+
 model_path = '/mnt/e/PyCharm/PreTrainModel/qwen2_15b_instruct'
+# model_path = '/mnt/e/PyCharm/PreTrainModel/qwen2_7b'
 # model_path = '/media/xk/D6B8A862B8A8433B/data/qwen2-15b-instruct'
 
 params = {"repetition_penalty": 1.1,
@@ -26,6 +28,7 @@ llm = LLM(model=model_path,
             # dtype='float16'
           # 把模型层均分到n个gpu上, 而不是运行n个完整模型
           # tensor_parallel_size=1
+          max_model_len=1000
           # gpu利用率最大70%
           # gpu_memory_utilization=0.7,
           )

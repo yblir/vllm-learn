@@ -31,6 +31,9 @@ class Worker(LocalOrDistributedWorkerBase):
     Each worker is associated with a single GPU. The worker is responsible for
     maintaining the KV cache and executing the model on the GPU. In case of
     distributed inference, each worker is assigned a partition of the model.
+
+    work负责维护 KV-cache，并在 GPU 上执行模型。
+    在分布式推理的情况下，每个work都会被分配模型的一部分。
     """
 
     def __init__(
@@ -195,8 +198,7 @@ class Worker(LocalOrDistributedWorkerBase):
         num_gpu_blocks = int(
             (total_gpu_memory * self.cache_config.gpu_memory_utilization -
              peak_memory) // cache_block_size)
-        num_cpu_blocks = int(self.cache_config.swap_space_bytes //
-                             cache_block_size)
+        num_cpu_blocks = int(self.cache_config.swap_space_bytes // cache_block_size)
         num_gpu_blocks = max(num_gpu_blocks, 0)
         num_cpu_blocks = max(num_cpu_blocks, 0)
         if self.model_runner.lora_manager:

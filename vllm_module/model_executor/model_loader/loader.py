@@ -148,9 +148,11 @@ def _initialize_model(
         cache_config: CacheConfig,
         scheduler_config: Optional[SchedulerConfig] = None) -> nn.Module:
     """Initialize a model with the given configurations."""
+    # 通过下载hf模型时自带的config，根据config['architectures']参数，获得当前模型名称
     model_class = get_model_architecture(model_config)[0]
+    # 取得量化相关参数，在当前版本中没有启用该参数
     quant_config = _get_quantization_config(model_config, load_config)
-
+    # 通过加载vllm/model_executor/models/qwen2.py，获得模型结构(这是vllm改造后的结构)
     return model_class(config=model_config.hf_config,
                        # cache_config=cache_config,
                        # quant_config=quant_config,
@@ -325,6 +327,7 @@ class DefaultModelLoader(BaseModelLoader):
                                           lora_config, multimodal_config,
                                           cache_config, scheduler_config)
             model.load_weights(
+                # 加载model.safetensors权重文件
                 self._get_weights_iterator(model_config.model,
                                            model_config.revision,
                                            fall_back_to_pt=getattr(
