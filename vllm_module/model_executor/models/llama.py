@@ -452,15 +452,19 @@ class LlamaForCausalLM(nn.Module, SupportsLoRA):
         })
 
     def load_weights(self, weights: Iterable[Tuple[str, torch.Tensor]]):
+        # vllm与hf两种模型实现方式之间的名称映射
         stacked_params_mapping = [
             # (param_name, shard_name, shard_id)
+            # vllm, hf,share_id
             (".qkv_proj", ".q_proj", "q"),
             (".qkv_proj", ".k_proj", "k"),
             (".qkv_proj", ".v_proj", "v"),
             (".gate_up_proj", ".gate_proj", 0),
             (".gate_up_proj", ".up_proj", 1),
         ]
+        # 获得当前vllm改造后llama模型的参数和对应的权重(此时的权重应是随机生成的)
         params_dict = dict(self.named_parameters())
+        # 遍历hf模型每层参数的名称和权重
         for name, loaded_weight in weights:
             if "rotary_emb.inv_freq" in name:
                 continue
@@ -477,14 +481,15 @@ class LlamaForCausalLM(nn.Module, SupportsLoRA):
             if scale_name := get_compressed_tensors_cache_scale(name):
                 # Loading kv cache scales for compressed-tensors quantization
                 param = params_dict[scale_name]
-                weight_loader = getattr(param, "weight_loader",
-                                        default_weight_loader)
+                weight_loader = getattr(param, "weight_loader", default_weight_loader)
                 loaded_weight = loaded_weight[0]
                 weight_loader(param, loaded_weight)
                 continue
+            # vllm, hf,share_id
             for (param_name, weight_name, shard_id) in stacked_params_mapping:
                 if weight_name not in name:
                     continue
+                # 将hf模型的层名，替换为vllm中的层名
                 name = name.replace(weight_name, param_name)
                 # Skip loading extra bias for GPTQ models.
                 if name.endswith(".bias") and name not in params_dict:
@@ -492,9 +497,10 @@ class LlamaForCausalLM(nn.Module, SupportsLoRA):
 
                 if is_pp_missing_parameter(name, self):
                     continue
-
+                # 获得vllm改造后llama权重参数
                 param = params_dict[name]
                 weight_loader = param.weight_loader
+                # 将hf模型参数更新到对应的vllm模型参数中,完成权重参数的映射工作
                 weight_loader(param, loaded_weight, shard_id)
 
                 break
@@ -511,8 +517,7 @@ class LlamaForCausalLM(nn.Module, SupportsLoRA):
                     continue
 
                 param = params_dict[name]
-                weight_loader = getattr(param, "weight_loader",
-                                        default_weight_loader)
+                weight_loader = getattr(param, "weight_loader", default_weight_loader)
                 weight_loader(param, loaded_weight)
 
     # If this function is called, it should always initialize KV cache scale
