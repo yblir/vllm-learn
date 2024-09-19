@@ -1,5 +1,6 @@
 import dataclasses
 import gc
+import sys
 import time
 import warnings
 import weakref
@@ -1362,7 +1363,18 @@ class ModelRunner(GPUModelRunnerBase[ModelInputForGPUWithSamplingMetadata]):
                 intermediate_tensors=intermediate_tensors,
                 **MultiModalInputs.as_kwargs(multi_modal_kwargs, device=self.device),
                 **seqlen_agnostic_kwargs)
-
+        # print(hidden_or_intermediate_states[0].detach().cpu().numpy())
+        # h_shape=hidden_or_intermediate_states.shape[0]
+        # if h_shape==46:
+        #     print(hidden_or_intermediate_states.detach().cpu().numpy())
+        #     sys.exit()
+        # elif h_shape==99:
+        #     print(hidden_or_intermediate_states[:46].detach().cpu().numpy())
+        #     sys.exit()
+        # else:
+        #     pass
+            # print('---------------------')
+            # print(hidden_or_intermediate_states[0].detach().cpu().numpy())
         # Compute the logits in the last pipeline stage.
         if not get_pp_group().is_last_rank:
             return hidden_or_intermediate_states

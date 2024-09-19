@@ -86,7 +86,22 @@ class LlamaMLP(nn.Module):
     def forward(self, x):
         gate_up, _ = self.gate_up_proj(x)
         x = self.act_fn(gate_up)
-        x, _ = self.down_proj(x)
+        # todo
+        if x.shape[0]==99:
+            print('111')
+            x1,_=self.down_proj(x[:53])
+            x2,_=self.down_proj(x[53:])
+            # x, _ = self.down_proj(x)
+            x=torch.cat([x1,x2],dim=0)
+        elif x.shape[0]==2:
+            print('222')
+            x1,_=self.down_proj(x[:1])
+            x2,_=self.down_proj(x[1:])
+            # x, _ = self.down_proj(x)
+            x=torch.cat([x1,x2],dim=0)
+        else:
+            print('333')
+            x, _ = self.down_proj(x)
         return x
 
 

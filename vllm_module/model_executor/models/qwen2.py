@@ -386,6 +386,7 @@ class Qwen2ForCausalLM(nn.Module, SupportsLoRA):
         logits: torch.Tensor,
         sampling_metadata: SamplingMetadata,
     ) -> Optional[SamplerOutput]:
+        print(logits)
         next_tokens = self.sampler(logits, sampling_metadata)
         return next_tokens
 
