@@ -67,7 +67,7 @@ def write_keyfile(keyfile_path: str):
         f.write(encryption_params.key)
 
 
-@patch('vllm2.model_executor.model_loader.tensorizer.TensorizerAgent')
+@patch('vllm.model_executor.model_loader.tensorizer.TensorizerAgent')
 def test_load_with_tensorizer(mock_agent, tensorizer_config):
     mock_linear_method = MagicMock()
     mock_agent_instance = mock_agent.return_value

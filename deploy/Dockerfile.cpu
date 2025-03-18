@@ -66,4 +66,4 @@ RUN ln -s /workspace/vllm/tests && ln -s /workspace/vllm/examples && ln -s /work
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install -e tests/vllm_test_utils
 
-ENTRYPOINT ["python3", "-m", "vllm2.entrypoints.openai.api_server"]
+ENTRYPOINT ["python3", "-m", "vllm.entrypoints.openai.api_server"]

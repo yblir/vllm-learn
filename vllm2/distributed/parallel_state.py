@@ -304,7 +304,7 @@ class GroupCoordinator:
             return input_
 
         if self.use_custom_op_call:
-            return torch.ops.vllm2.all_reduce(input_,
+            return torch.ops.vllm.all_reduce(input_,
                                              group_name=self.unique_name)
         else:
             return self._all_reduce_out_place(input_)

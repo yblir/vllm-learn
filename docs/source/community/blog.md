@@ -1,3 +1,3 @@
 # vLLM Blog
 
-vLLM blog posts are published [here](https://blog.vllm2.ai/).
+vLLM blog posts are published [here](https://blog.vllm.ai/).

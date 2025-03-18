@@ -31,7 +31,7 @@ EXPECTED_LORA_OUTPUT = [
 ]
 
 
-def do_sample(llm: vllm2.LLM, lora_path: str, lora_id: int) -> List[str]:
+def do_sample(llm: vllm.LLM, lora_path: str, lora_id: int) -> List[str]:
     prompts = [
         "[user] Write a SQL query to answer the question based on the table schema.\n\n context: CREATE TABLE table_name_74 (icao VARCHAR, airport VARCHAR)\n\n question: Name the ICAO for lilongwe international airport [/user] [assistant]",  # noqa: E501
         "[user] Write a SQL query to answer the question based on the table schema.\n\n context: CREATE TABLE table_name_11 (nationality VARCHAR, elector VARCHAR)\n\n question: When Anchero Pantaleone was the elector what is under nationality? [/user] [assistant]",  # noqa: E501
@@ -40,7 +40,7 @@ def do_sample(llm: vllm2.LLM, lora_path: str, lora_id: int) -> List[str]:
         "[user] Write a SQL query to answer the question based on the table schema.\n\n context: CREATE TABLE table_name_60 (pick INTEGER, former_wnba_team VARCHAR)\n\n question: What pick was a player that previously played for the Minnesota Lynx? [/user] [assistant]",  # noqa: E501
         "[user] Write a SQL query to answer the question based on the table schema.\n\n context: CREATE TABLE table_28138035_4 (womens_doubles VARCHAR, mens_singles VARCHAR)\n\n question: Name the women's doubles for werner schlager [/user] [assistant]"  # noqa: E501
     ]
-    sampling_params = vllm2.SamplingParams(temperature=0,
+    sampling_params = vllm.SamplingParams(temperature=0,
                                           max_tokens=256,
                                           stop=["[/assistant]"])
     outputs = llm.generate(
@@ -85,7 +85,7 @@ def v1(run_with_both_engines_lora):
 @fork_new_process_for_each_test
 def test_llama_lora(sql_lora_files):
 
-    llm = vllm2.LLM(MODEL_PATH,
+    llm = vllm.LLM(MODEL_PATH,
                    enable_lora=True,
                    max_num_seqs=16,
                    max_loras=4,
@@ -104,13 +104,13 @@ def test_llama_lora_warmup(sql_lora_files):
 
     @ray.remote(num_gpus=1)
     def get_num_gpu_blocks_lora():
-        llm = vllm2.LLM(MODEL_PATH, enable_lora=True, max_num_seqs=16)
+        llm = vllm.LLM(MODEL_PATH, enable_lora=True, max_num_seqs=16)
         num_gpu_blocks_lora_warmup = llm.llm_engine.cache_config.num_gpu_blocks
         return num_gpu_blocks_lora_warmup
 
     @ray.remote(num_gpus=1)
     def get_num_gpu_blocks_no_lora():
-        llm = vllm2.LLM(MODEL_PATH, max_num_seqs=16)
+        llm = vllm.LLM(MODEL_PATH, max_num_seqs=16)
         num_gpu_blocks_no_lora_warmup = (
             llm.llm_engine.cache_config.num_gpu_blocks)
         return num_gpu_blocks_no_lora_warmup
@@ -129,7 +129,7 @@ def test_llama_lora_warmup(sql_lora_files):
 @fork_new_process_for_each_test
 def test_llama_lora_tp4(sql_lora_files):
 
-    llm = vllm2.LLM(
+    llm = vllm.LLM(
         MODEL_PATH,
         enable_lora=True,
         max_num_seqs=16,
@@ -144,7 +144,7 @@ def test_llama_lora_tp4(sql_lora_files):
 @fork_new_process_for_each_test
 def test_llama_lora_tp4_fully_sharded_loras(sql_lora_files):
 
-    llm = vllm2.LLM(
+    llm = vllm.LLM(
         MODEL_PATH,
         enable_lora=True,
         max_num_seqs=16,
@@ -160,7 +160,7 @@ def test_llama_lora_tp4_fully_sharded_loras(sql_lora_files):
 @fork_new_process_for_each_test
 def test_llama_lora_tp4_fully_sharded_enable_bias(sql_lora_files):
 
-    llm = vllm2.LLM(
+    llm = vllm.LLM(
         MODEL_PATH,
         enable_lora=True,
         max_num_seqs=16,

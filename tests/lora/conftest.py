@@ -300,8 +300,8 @@ def llama_2_7b_engine_extra_embeddings():
                                                        max_lora_rank=8)
         return get_model_old(**kwargs)
 
-    with patch("vllm2.worker.model_runner.get_model", get_model_patched):
-        engine = vllm2.LLM("meta-llama/Llama-2-7b-hf", enable_lora=False)
+    with patch("vllm.worker.model_runner.get_model", get_model_patched):
+        engine = vllm.LLM("meta-llama/Llama-2-7b-hf", enable_lora=False)
     yield engine.llm_engine
     del engine
     cleanup_dist_env_and_memory(shutdown_ray=True)

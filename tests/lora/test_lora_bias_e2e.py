@@ -10,12 +10,12 @@ from vllm2.lora.request import LoRARequest
 MODEL_PATH = "ibm-granite/granite-3b-code-base"
 
 
-def do_sample(llm: vllm2.LLM, lora_path: str, lora_id: int) -> List[str]:
+def do_sample(llm: vllm.LLM, lora_path: str, lora_id: int) -> List[str]:
     prompts = [
         "[user] Write a SQL query to answer the question based on the table schema.\n\n context: CREATE TABLE candidate (people_id VARCHAR, unsure_rate INTEGER); CREATE TABLE people (sex VARCHAR, people_id VARCHAR)\n\n question: which gender got the highest average uncertain ratio. [/user] [assistant]",  # noqa: E501
         "[user] Write a SQL query to answer the question based on the table schema.\n\n context: CREATE TABLE table_28138035_4 (womens_doubles VARCHAR, mens_singles VARCHAR)\n\n question: Name the women's doubles for werner schlager [/user] [assistant]"  # noqa: E501
     ]
-    sampling_params = vllm2.SamplingParams(temperature=0,
+    sampling_params = vllm.SamplingParams(temperature=0,
                                           max_tokens=256,
                                           stop=["[/assistant]"])
     outputs = llm.generate(
@@ -44,7 +44,7 @@ def v1(run_with_both_engines_lora):
 @pytest.mark.parametrize("lora_bias", [True])
 @pytest.mark.parametrize("fully_sharded", [True, False])
 def test_lora_bias(lora_bias_files: str, lora_bias: bool, fully_sharded: bool):
-    llm = vllm2.LLM(MODEL_PATH,
+    llm = vllm.LLM(MODEL_PATH,
                    enable_lora=True,
                    max_num_seqs=16,
                    max_lora_rank=8,

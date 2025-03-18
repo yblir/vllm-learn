@@ -31,7 +31,7 @@ Refer to <gh-file:examples/offline_inference/simple_profiling.py> for an example
 ### OpenAI Server
 
 ```bash
-VLLM_TORCH_PROFILER_DIR=./vllm_profile python -m vllm2.entrypoints.openai.api_server --model meta-llama/Meta-Llama-3-70B
+VLLM_TORCH_PROFILER_DIR=./vllm_profile python -m vllm.entrypoints.openai.api_server --model meta-llama/Meta-Llama-3-70B
 ```
 
 benchmark_serving.py:

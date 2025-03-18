@@ -207,7 +207,7 @@ class cmake_build_ext(build_ext):
         targets = []
 
         def target_name(s: str) -> str:
-            return s.removeprefix("vllm2.").removeprefix("vllm_flash_attn.")
+            return s.removeprefix("vllm.").removeprefix("vllm_flash_attn.")
 
         # Build all the extensions
         for ext in self.extensions:
@@ -294,7 +294,7 @@ class repackage_wheel(build_ext):
         wheel_location = os.getenv("VLLM_PRECOMPILED_WHEEL_LOCATION", None)
         if wheel_location is None:
             base_commit = self.get_base_commit_in_main_branch()
-            wheel_location = f"https://wheels.vllm2.ai/{base_commit}/vllm-1.0.0.dev-cp38-abi3-manylinux1_x86_64.whl"
+            wheel_location = f"https://wheels.vllm.ai/{base_commit}/vllm-1.0.0.dev-cp38-abi3-manylinux1_x86_64.whl"
 
         import zipfile
 
@@ -601,21 +601,21 @@ def get_requirements() -> List[str]:
 ext_modules = []
 
 if _is_cuda() or _is_hip():
-    ext_modules.append(CMakeExtension(name="vllm2._moe_C"))
+    ext_modules.append(CMakeExtension(name="vllm._moe_C"))
 
 if _is_hip():
-    ext_modules.append(CMakeExtension(name="vllm2._rocm_C"))
+    ext_modules.append(CMakeExtension(name="vllm._rocm_C"))
 
 if _is_cuda():
-    ext_modules.append(CMakeExtension(name="vllm2.vllm_flash_attn._vllm_fa2_C"))
+    ext_modules.append(CMakeExtension(name="vllm.vllm_flash_attn._vllm_fa2_C"))
     if envs.VLLM_USE_PRECOMPILED or get_nvcc_cuda_version() >= Version("12.0"):
         # FA3 requires CUDA 12.0 or later
         ext_modules.append(
-            CMakeExtension(name="vllm2.vllm_flash_attn._vllm_fa3_C"))
-    ext_modules.append(CMakeExtension(name="vllm2.cumem_allocator"))
+            CMakeExtension(name="vllm.vllm_flash_attn._vllm_fa3_C"))
+    ext_modules.append(CMakeExtension(name="vllm.cumem_allocator"))
 
 if _build_custom_ops():
-    ext_modules.append(CMakeExtension(name="vllm2._C"))
+    ext_modules.append(CMakeExtension(name="vllm._C"))
 
 package_data = {
     "vllm": [

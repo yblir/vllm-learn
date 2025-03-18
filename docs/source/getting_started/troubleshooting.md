@@ -45,7 +45,7 @@ You might also need to set `export NCCL_SOCKET_IFNAME=<your_network_interface>` 
 ## Error near `self.graph.replay()`
 
 If vLLM crashes and the error trace captures it somewhere around `self.graph.replay()` in `vllm/worker/model_runner.py`, it is a CUDA error inside CUDAGraph.
-To identify the particular CUDA operation that causes the error, you can add `--enforce-eager` to the command line, or `enforce_eager=True` to the {class}`~vllm2.LLM` class to disable the CUDAGraph optimization and isolate the exact CUDA operation that causes the error.
+To identify the particular CUDA operation that causes the error, you can add `--enforce-eager` to the command line, or `enforce_eager=True` to the {class}`~vllm.LLM` class to disable the CUDAGraph optimization and isolate the exact CUDA operation that causes the error.
 
 (troubleshooting-incorrect-hardware-driver)=
 
@@ -153,7 +153,7 @@ If you have seen a warning in your logs like this:
 WARNING 12-11 14:50:37 multiproc_worker_utils.py:281] CUDA was previously
     initialized. We must use the `spawn` multiprocessing start method. Setting
     VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See
-    https://docs.vllm2.ai/en/latest/getting_started/troubleshooting.html#python-multiprocessing
+    https://docs.vllm.ai/en/latest/getting_started/troubleshooting.html#python-multiprocessing
     for more information.
 ```
 
@@ -185,7 +185,7 @@ __name__ == '__main__':` block. For example, instead of this:
 ```python
 import vllm
 
-llm = vllm2.LLM(...)
+llm = vllm.LLM(...)
 ```
 
 try this instead:
@@ -194,7 +194,7 @@ try this instead:
 if __name__ == '__main__':
     import vllm
 
-    llm = vllm2.LLM(...)
+    llm = vllm.LLM(...)
 ```
 
 ## `torch.compile` Error

@@ -85,7 +85,7 @@ def evaluate_json_response(model_response, golden_response):
 
 
 def generate(
-    llm: vllm2.LLM,
+    llm: vllm.LLM,
     inputs: Tuple[str, SamplingParams, Optional[LoRARequest]],
 ):
     prompts, sampling_param, lora_request = inputs
@@ -94,7 +94,7 @@ def generate(
 
 
 def batched_generate(
-    llm: vllm2.LLM,
+    llm: vllm.LLM,
     inputs: List[Tuple[str, SamplingParams, Optional[LoRARequest]]],
 ):
     for input in inputs:
@@ -116,7 +116,7 @@ def lora_llm(long_context_infos):
         for info in long_context_infos.values()
     ]
 
-    llm = vllm2.LLM(
+    llm = vllm.LLM(
         "meta-llama/Llama-2-13b-chat-hf",
         enable_lora=True,
         max_num_seqs=16,

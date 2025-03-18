@@ -24,7 +24,7 @@ Further update the model as follows:
   
   More conveniently, you can simply pass `**kwargs` to the {meth}`~torch.nn.Module.forward` method and retrieve the keyword parameters for multimodal inputs from it.
 
-- Implement {meth}`~vllm2.model_executor.models.interfaces.SupportsMultiModal.get_multimodal_embeddings` that returns the embeddings from running the multimodal inputs through the multimodal tokenizer of the model. Below we provide a boilerplate of a typical implementation pattern, but feel free to adjust it to your own needs.
+- Implement {meth}`~vllm.model_executor.models.interfaces.SupportsMultiModal.get_multimodal_embeddings` that returns the embeddings from running the multimodal inputs through the multimodal tokenizer of the model. Below we provide a boilerplate of a typical implementation pattern, but feel free to adjust it to your own needs.
 
     ```python
     class YourModelForImage2Seq(nn.Module):
@@ -52,7 +52,7 @@ Further update the model as follows:
     The returned `multimodal_embeddings` must be either a **3D {class}`torch.Tensor`** of shape `(num_items, feature_size, hidden_size)`, or a **list / tuple of 2D {class}`torch.Tensor`'s** of shape `(feature_size, hidden_size)`, so that `multimodal_embeddings[i]` retrieves the embeddings generated from the `i`-th multimodal data item (e.g, image) of the request.
     :::
 
-- Implement {meth}`~vllm2.model_executor.models.interfaces.SupportsMultiModal.get_input_embeddings` to merge `multimodal_embeddings` with text embeddings from the `input_ids`. If input processing for the model is implemented correctly (see sections below), then you can leverage the utility function we provide to easily merge the embeddings.
+- Implement {meth}`~vllm.model_executor.models.interfaces.SupportsMultiModal.get_input_embeddings` to merge `multimodal_embeddings` with text embeddings from the `input_ids`. If input processing for the model is implemented correctly (see sections below), then you can leverage the utility function we provide to easily merge the embeddings.
 
     ```python
     from .utils import merge_multimodal_embeddings
@@ -80,7 +80,7 @@ Further update the model as follows:
             return inputs_embeds
     ```
 
-- Once the above steps are done, update the model class with the {class}`~vllm2.model_executor.models.interfaces.SupportsMultiModal` interface.
+- Once the above steps are done, update the model class with the {class}`~vllm.model_executor.models.interfaces.SupportsMultiModal` interface.
 
   ```diff
   + from vllm2.model_executor.models.interfaces import SupportsMultiModal
@@ -96,12 +96,12 @@ Further update the model as follows:
 
 ## 2. Specify processing information
 
-Next, create a subclass of {class}`~vllm2.multimodal.processing.BaseProcessingInfo`
+Next, create a subclass of {class}`~vllm.multimodal.processing.BaseProcessingInfo`
 to provide basic information related to HF processing.
 
 ### Maximum number of input items
 
-You need to override the abstract method {meth}`~vllm2.multimodal.processing.BaseProcessingInfo.get_supported_mm_limits`
+You need to override the abstract method {meth}`~vllm.multimodal.processing.BaseProcessingInfo.get_supported_mm_limits`
 to return the maximum number of input items for each modality supported by the model.
 
 For example, if the model supports any number of images but only one video per prompt:
@@ -113,7 +113,7 @@ def get_supported_mm_limits(self) -> Mapping[str, Optional[int]]:
 
 ### Maximum number of placeholder feature tokens
 
-Also, override the abstract method {meth}`~vllm2.multimodal.processing.BaseProcessingInfo.get_mm_max_tokens_per_item`
+Also, override the abstract method {meth}`~vllm.multimodal.processing.BaseProcessingInfo.get_mm_max_tokens_per_item`
 to return the maximum number of placeholder feature tokens per input item for each modality.
 
 When calling the model, the output embeddings from the visual encoder are assigned to the input positions
@@ -516,17 +516,17 @@ This is because `ncols` and `nrows` are used to specify the layout of the featur
 
 ## 3. Specify dummy inputs
 
-Then, inherit {class}`~vllm2.multimodal.profiling.BaseDummyInputsBuilder` to construct dummy inputs for
+Then, inherit {class}`~vllm.multimodal.profiling.BaseDummyInputsBuilder` to construct dummy inputs for
 HF processing as well as memory profiling.
 
 ### For memory profiling
 
-Override the abstract method {meth}`~vllm2.multimodal.profiling.BaseDummyInputsBuilder.get_dummy_processor_inputs`
+Override the abstract method {meth}`~vllm.multimodal.profiling.BaseDummyInputsBuilder.get_dummy_processor_inputs`
 to construct dummy inputs for memory profiling. This dummy input should result in the worst-case memory usage of
 the model so that vLLM can reserve the correct amount of memory for it.
 
 Assuming that the memory usage increases with the number of tokens, the dummy input can be constructed based
-on the code for {meth}`~vllm2.multimodal.processing.BaseProcessingInfo.get_mm_max_tokens_per_item`.
+on the code for {meth}`~vllm.multimodal.processing.BaseProcessingInfo.get_mm_max_tokens_per_item`.
 
 ::::{tab-set}
 :::{tab-item} Basic example: LLaVA
@@ -599,7 +599,7 @@ def get_dummy_processor_inputs(
 
 ## 4. Specify processing details
 
-Afterwards, create a subclass of {class}`~vllm2.multimodal.processing.BaseMultiModalProcessor`
+Afterwards, create a subclass of {class}`~vllm.multimodal.processing.BaseMultiModalProcessor`
 to fill in the missing details about HF processing.
 
 :::{seealso}
@@ -608,7 +608,7 @@ to fill in the missing details about HF processing.
 
 ### Multi-modal fields
 
-Override {meth}`~vllm2.multimodal.processing.BaseMultiModalProcessor._get_mm_fields_config` to
+Override {meth}`~vllm.multimodal.processing.BaseMultiModalProcessor._get_mm_fields_config` to
 return a schema of the tensors outputted by the HF processor that are related to the input multi-modal items.
 
 :::::{tab-set}
@@ -629,7 +629,7 @@ data = {"pixel_values": images}
 return BatchFeature(data=data, tensor_type=return_tensors)
 ```
 
-So, we override {meth}`~vllm2.multimodal.processing.BaseMultiModalProcessor._get_mm_fields_config` as follows:
+So, we override {meth}`~vllm.multimodal.processing.BaseMultiModalProcessor._get_mm_fields_config` as follows:
 
 ```python
 def _get_mm_fields_config(
@@ -707,7 +707,7 @@ Our [actual code](gh-file:vllm/model_executor/models/fuyu.py) has special handli
 for text-only inputs to prevent unnecessary warnings from HF processor.
 :::
 
-This lets us override {meth}`~vllm2.multimodal.processing.BaseMultiModalProcessor._get_mm_fields_config` as follows:
+This lets us override {meth}`~vllm.multimodal.processing.BaseMultiModalProcessor._get_mm_fields_config` as follows:
 
 ```python
 def _get_mm_fields_config(
@@ -724,10 +724,10 @@ def _get_mm_fields_config(
 
 ### Prompt replacements
 
-Override {meth}`~vllm2.multimodal.processing.BaseMultiModalProcessor._get_prompt_replacements` to
-return a list of {class}`~vllm2.multimodal.processing.PromptReplacement` instances.
+Override {meth}`~vllm.multimodal.processing.BaseMultiModalProcessor._get_prompt_replacements` to
+return a list of {class}`~vllm.multimodal.processing.PromptReplacement` instances.
 
-Each {class}`~vllm2.multimodal.processing.PromptReplacement` instance specifies a find-and-replace
+Each {class}`~vllm.multimodal.processing.PromptReplacement` instance specifies a find-and-replace
 operation performed by the HF processor.
 
 ::::{tab-set}
@@ -745,7 +745,7 @@ for sample in text:
 ```
 
 It simply repeats each input `image_token` a number of times equal to the number of placeholder feature tokens (`num_image_tokens`).
-Based on this, we override {meth}`~vllm2.multimodal.processing.BaseMultiModalProcessor._get_prompt_replacements` as follows:
+Based on this, we override {meth}`~vllm.multimodal.processing.BaseMultiModalProcessor._get_prompt_replacements` as follows:
 
 ```python
 def _get_prompt_replacements(
@@ -935,10 +935,10 @@ def _get_prompt_replacements(
 
 ## 5. Register processor-related classes
 
-After you have defined {class}`~vllm2.multimodal.processing.BaseProcessingInfo` (Step 2),
-{class}`~vllm2.multimodal.profiling.BaseDummyInputsBuilder` (Step 3),
-and {class}`~vllm2.multimodal.processing.BaseMultiModalProcessor` (Step 4),
-decorate the model class with {meth}`MULTIMODAL_REGISTRY.register_processor <vllm2.multimodal.registry.MultiModalRegistry.register_processor>`
+After you have defined {class}`~vllm.multimodal.processing.BaseProcessingInfo` (Step 2),
+{class}`~vllm.multimodal.profiling.BaseDummyInputsBuilder` (Step 3),
+and {class}`~vllm.multimodal.processing.BaseMultiModalProcessor` (Step 4),
+decorate the model class with {meth}`MULTIMODAL_REGISTRY.register_processor <vllm.multimodal.registry.MultiModalRegistry.register_processor>`
 to register them to the multi-modal registry:
 
 ```diff

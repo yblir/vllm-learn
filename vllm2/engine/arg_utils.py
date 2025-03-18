@@ -192,7 +192,7 @@ class EngineArgs:
     collect_detailed_traces: Optional[str] = None
     disable_async_output_proc: bool = False
     scheduling_policy: Literal["fcfs", "priority"] = "fcfs"
-    scheduler_cls: Union[str, Type[object]] = "vllm2.core.scheduler.Scheduler"
+    scheduler_cls: Union[str, Type[object]] = "vllm.core.scheduler.Scheduler"
 
     override_neuron_config: Optional[Dict[str, Any]] = None
     override_pooler_config: Optional[PoolerConfig] = None
@@ -942,7 +942,7 @@ class EngineArgs:
         parser.add_argument(
             '--scheduler-cls',
             default=EngineArgs.scheduler_cls,
-            help='The scheduler class to use. "vllm2.core.scheduler.Scheduler" '
+            help='The scheduler class to use. "vllm.core.scheduler.Scheduler" '
             'is the default scheduler. Can be a class directly or the path to '
             'a class of form "mod.custom_class".')
 

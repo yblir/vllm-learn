@@ -194,7 +194,7 @@ def _run_test(
     tensor_parallel_size: int,
     distributed_executor_backend: Optional[str] = None,
 ):
-    """Inference result should be the same between hf and vllm2.
+    """Inference result should be the same between hf and vllm.
 
     All the image fixtures for the test are from IMAGE_ASSETS.
     For huggingface runner, we provide the PIL images as input.

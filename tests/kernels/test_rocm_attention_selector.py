@@ -22,7 +22,7 @@ def test_selector(monkeypatch):
     """
     override_backend_env_variable(monkeypatch, "ROCM_FLASH")
 
-    with patch("vllm2.attention.selector.current_platform", RocmPlatform()):
+    with patch("vllm.attention.selector.current_platform", RocmPlatform()):
         backend = get_attn_backend(16, torch.float16, torch.float16, 16, False)
         assert backend.get_name() == "ROCM_FLASH"
         # mla test for deepseek related

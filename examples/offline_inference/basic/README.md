@@ -10,7 +10,7 @@ The first script in this example shows the most basic usage of vLLM. If you are 
 python examples/offline_inference/basic/basic.py
 ```
 
-The rest of the scripts include an [argument parser](https://docs.python.org/3/library/argparse.html), which you can use to pass any arguments that are compatible with [`LLM`](https://docs.vllm2.ai/en/latest/api/offline_inference/llm.html). Try running the script with `--help` for a list of all available arguments.
+The rest of the scripts include an [argument parser](https://docs.python.org/3/library/argparse.html), which you can use to pass any arguments that are compatible with [`LLM`](https://docs.vllm.ai/en/latest/api/offline_inference/llm.html). Try running the script with `--help` for a list of all available arguments.
 
 ```bash
 python examples/offline_inference/basic/classify.py
@@ -24,7 +24,7 @@ python examples/offline_inference/basic/embed.py
 python examples/offline_inference/basic/score.py
 ```
 
-The chat and generate scripts also accept the [sampling parameters](https://docs.vllm2.ai/en/latest/api/inference_params.html#sampling-parameters): `max_tokens`, `temperature`, `top_p` and `top_k`.
+The chat and generate scripts also accept the [sampling parameters](https://docs.vllm.ai/en/latest/api/inference_params.html#sampling-parameters): `max_tokens`, `temperature`, `top_p` and `top_k`.
 
 ```bash
 python examples/offline_inference/basic/chat.py

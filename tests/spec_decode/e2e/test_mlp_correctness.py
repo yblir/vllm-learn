@@ -351,7 +351,7 @@ def test_mlp_e2e_greedy_correctness_with_padding(
         return pad_vocab_size(vocab_size, pad_to=32064)
 
     with patch(
-            "vllm2.model_executor.layers.vocab_parallel_embedding.pad_vocab_size",
+            "vllm.model_executor.layers.vocab_parallel_embedding.pad_vocab_size",
             patched_pad_vocab_size):
         run_equality_correctness_test(vllm_runner,
                                       common_llm_kwargs,

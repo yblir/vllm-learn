@@ -72,7 +72,7 @@ Sometimes you may see the API server entrypoint used directly instead of via the
 `vllm` CLI command. For example:
 
 ```bash
-python -m vllm2.entrypoints.openai.api_server --model <model>
+python -m vllm.entrypoints.openai.api_server --model <model>
 ```
 
 That code can be found in <gh-file:vllm/entrypoints/openai/api_server.py>.

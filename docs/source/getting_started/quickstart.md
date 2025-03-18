@@ -42,10 +42,10 @@ For non-CUDA platforms, please refer [here](#installation-index) for specific in
 
 With vLLM installed, you can start generating texts for list of input prompts (i.e. offline batch inferencing). See the example script: <gh-file:examples/offline_inference/basic/basic.py>
 
-The first line of this example imports the classes {class}`~vllm2.LLM` and {class}`~vllm2.SamplingParams`:
+The first line of this example imports the classes {class}`~vllm.LLM` and {class}`~vllm.SamplingParams`:
 
-- {class}`~vllm2.LLM` is the main class for running offline inference with vLLM engine.
-- {class}`~vllm2.SamplingParams` specifies the parameters for the sampling process.
+- {class}`~vllm.LLM` is the main class for running offline inference with vLLM engine.
+- {class}`~vllm.SamplingParams` specifies the parameters for the sampling process.
 
 ```python
 from vllm2 import LLM, SamplingParams
@@ -63,7 +63,7 @@ prompts = [
 sampling_params = SamplingParams(temperature=0.8, top_p=0.95)
 ```
 
-The {class}`~vllm2.LLM` class initializes vLLM's engine and the [OPT-125M model](https://arxiv.org/abs/2205.01068) for offline inference. The list of supported models can be found [here](#supported-models).
+The {class}`~vllm.LLM` class initializes vLLM's engine and the [OPT-125M model](https://arxiv.org/abs/2205.01068) for offline inference. The list of supported models can be found [here](#supported-models).
 
 ```python
 llm = LLM(model="facebook/opt-125m")

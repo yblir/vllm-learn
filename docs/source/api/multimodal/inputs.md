@@ -3,47 +3,47 @@
 ## User-facing inputs
 
 ```{eval-rst}
-.. autodata:: vllm2.multimodal.inputs.MultiModalDataDict
+.. autodata:: vllm.multimodal.inputs.MultiModalDataDict
 ```
 
 ## Internal data structures
 
 ```{eval-rst}
-.. autoclass:: vllm2.multimodal.inputs.PlaceholderRange
+.. autoclass:: vllm.multimodal.inputs.PlaceholderRange
     :members:
     :show-inheritance:
 ```
 
 ```{eval-rst}
-.. autodata:: vllm2.multimodal.inputs.NestedTensors
+.. autodata:: vllm.multimodal.inputs.NestedTensors
 ```
 
 ```{eval-rst}
-.. autoclass:: vllm2.multimodal.inputs.MultiModalFieldElem
+.. autoclass:: vllm.multimodal.inputs.MultiModalFieldElem
     :members:
     :show-inheritance:
 ```
 
 ```{eval-rst}
-.. autoclass:: vllm2.multimodal.inputs.MultiModalFieldConfig
+.. autoclass:: vllm.multimodal.inputs.MultiModalFieldConfig
     :members:
     :show-inheritance:
 ```
 
 ```{eval-rst}
-.. autoclass:: vllm2.multimodal.inputs.MultiModalKwargsItem
+.. autoclass:: vllm.multimodal.inputs.MultiModalKwargsItem
     :members:
     :show-inheritance:
 ```
 
 ```{eval-rst}
-.. autoclass:: vllm2.multimodal.inputs.MultiModalKwargs
+.. autoclass:: vllm.multimodal.inputs.MultiModalKwargs
     :members:
     :show-inheritance:
 ```
 
 ```{eval-rst}
-.. autoclass:: vllm2.multimodal.inputs.MultiModalInputs
+.. autoclass:: vllm.multimodal.inputs.MultiModalInputs
     :members:
     :show-inheritance:
 ```

@@ -15,7 +15,7 @@ from vllm2.worker.worker_base import WorkerWrapperBase
 
 
 class DummyWorkerWrapper(WorkerWrapperBase):
-    """Dummy version of vllm2.worker.worker.Worker"""
+    """Dummy version of vllm.worker.worker.Worker"""
 
     def worker_method(self, worker_input: Any) -> Tuple[int, Any]:
         sleep(0.05)

@@ -37,14 +37,14 @@ launch_chunked_prefill() {
   model="meta-llama/Meta-Llama-3.1-8B-Instruct"
   # disagg prefill
   CUDA_VISIBLE_DEVICES=0 python3 \
-    -m vllm2.entrypoints.openai.api_server \
+    -m vllm.entrypoints.openai.api_server \
     --model $model \
     --port 8100 \
     --max-model-len 10000 \
     --enable-chunked-prefill \
     --gpu-memory-utilization 0.6 &
   CUDA_VISIBLE_DEVICES=1 python3 \
-    -m vllm2.entrypoints.openai.api_server \
+    -m vllm.entrypoints.openai.api_server \
     --model $model \
     --port 8200 \
     --max-model-len 10000 \
@@ -61,7 +61,7 @@ launch_disagg_prefill() {
   model="meta-llama/Meta-Llama-3.1-8B-Instruct" 
   # disagg prefill
   CUDA_VISIBLE_DEVICES=0 python3 \
-    -m vllm2.entrypoints.openai.api_server \
+    -m vllm.entrypoints.openai.api_server \
     --model $model \
     --port 8100 \
     --max-model-len 10000 \
@@ -70,7 +70,7 @@ launch_disagg_prefill() {
     '{"kv_connector":"PyNcclConnector","kv_role":"kv_producer","kv_rank":0,"kv_parallel_size":2,"kv_buffer_size":5e9}' &
 
   CUDA_VISIBLE_DEVICES=1 python3 \
-    -m vllm2.entrypoints.openai.api_server \
+    -m vllm.entrypoints.openai.api_server \
     --model $model \
     --port 8200 \
     --max-model-len 10000 \

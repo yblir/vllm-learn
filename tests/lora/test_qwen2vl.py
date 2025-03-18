@@ -43,9 +43,9 @@ class Qwen2VLTester:
         self.config = config
         self.llm = self._initialize_llm()
 
-    def _initialize_llm(self) -> vllm2.LLM:
+    def _initialize_llm(self) -> vllm.LLM:
         """Initialize the LLM with given configuration"""
-        return vllm2.LLM(
+        return vllm.LLM(
             model=self.config.model_path,
             max_num_seqs=self.config.max_num_seqs,
             enable_lora=True,
@@ -63,7 +63,7 @@ class Qwen2VLTester:
                  temperature: float = 0,
                  max_tokens: int = 5) -> List[str]:
 
-        sampling_params = vllm2.SamplingParams(
+        sampling_params = vllm.SamplingParams(
             temperature=temperature,
             max_tokens=max_tokens,
         )

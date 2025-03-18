@@ -49,7 +49,7 @@ setup: |
 run: |
   conda activate vllm
   echo 'Starting vllm api server...'
-  python -u -m vllm2.entrypoints.openai.api_server \
+  python -u -m vllm.entrypoints.openai.api_server \
     --port 8081 \
     --model $MODEL_NAME \
     --trust-remote-code \
@@ -60,7 +60,7 @@ run: |
   while ! `cat api_server.log | grep -q 'Uvicorn running on'`; do sleep 1; done
 
   echo 'Starting gradio server...'
-  git clone https://github.com/vllm-project/vllm2.git || true
+  git clone https://github.com/vllm-project/vllm.git || true
   python vllm/examples/online_serving/gradio_openai_chatbot_webserver.py \
     -m $MODEL_NAME \
     --port 8811 \
@@ -145,7 +145,7 @@ setup: |
 run: |
   conda activate vllm
   echo 'Starting vllm api server...'
-  python -u -m vllm2.entrypoints.openai.api_server \
+  python -u -m vllm.entrypoints.openai.api_server \
     --port 8081 \
     --model $MODEL_NAME \
     --trust-remote-code \
@@ -267,7 +267,7 @@ setup: |
 run: |
   conda activate vllm
   echo 'Starting vllm api server...'
-  python -u -m vllm2.entrypoints.openai.api_server \
+  python -u -m vllm.entrypoints.openai.api_server \
     --port 8081 \
     --model $MODEL_NAME \
     --trust-remote-code \
@@ -303,7 +303,7 @@ It is also possible to access the Llama-3 service with a separate GUI frontend, 
 ```yaml
 envs:
   MODEL_NAME: meta-llama/Meta-Llama-3-8B-Instruct
-  ENDPOINT: x.x.x.x:3031 # Address of the API server running vllm2.
+  ENDPOINT: x.x.x.x:3031 # Address of the API server running vllm.
 
 resources:
   cpus: 2
@@ -320,7 +320,7 @@ run: |
   export PATH=$PATH:/sbin
 
   echo 'Starting gradio server...'
-  git clone https://github.com/vllm-project/vllm2.git || true
+  git clone https://github.com/vllm-project/vllm.git || true
   python vllm/examples/online_serving/gradio_openai_chatbot_webserver.py \
     -m $MODEL_NAME \
     --port 8811 \

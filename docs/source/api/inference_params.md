@@ -7,7 +7,7 @@ Inference parameters for vLLM APIs.
 ## Sampling Parameters
 
 ```{eval-rst}
-.. autoclass:: vllm2.SamplingParams
+.. autoclass:: vllm.SamplingParams
     :members:
 ```
 
@@ -16,6 +16,6 @@ Inference parameters for vLLM APIs.
 ## Pooling Parameters
 
 ```{eval-rst}
-.. autoclass:: vllm2.PoolingParams
+.. autoclass:: vllm.PoolingParams
     :members:
 ```

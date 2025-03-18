@@ -23,10 +23,10 @@ class MockLogitsProcessor(LogitsProcessor):
 
     def forward(self, *args, **kwargs):
         with patch(
-                "vllm2.model_executor.layers.logits_processor._prune_hidden_states",
+                "vllm.model_executor.layers.logits_processor._prune_hidden_states",
                 lambda x, y: x
         ), patch(
-                "vllm2.model_executor.layers.logits_processor.LogitsProcessor._get_logits",
+                "vllm.model_executor.layers.logits_processor.LogitsProcessor._get_logits",
                 lambda *args, **kwargs: self.fake_logits):
             return super().forward(*args, **kwargs)
 

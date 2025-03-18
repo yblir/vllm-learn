@@ -3,7 +3,7 @@
 ## Module Contents
 
 ```{eval-rst}
-.. automodule:: vllm2.model_executor.models.interfaces
+.. automodule:: vllm.model_executor.models.interfaces
     :members:
     :member-order: bysource
 ```

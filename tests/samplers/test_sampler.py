@@ -620,8 +620,8 @@ def test_sampler_top_k_top_p(seed: int, device: str):
                  for prob in probs], None)
 
     # top-k and top-p is only calculated when flashinfer kernel is not available
-    with patch("vllm2.model_executor.layers.sampler._sample", mock_sample), \
-         patch("vllm2.model_executor.layers.sampler."
+    with patch("vllm.model_executor.layers.sampler._sample", mock_sample), \
+         patch("vllm.model_executor.layers.sampler."
                "flashinfer_top_k_top_p_sampling", None):
         sampler(logits=fake_logits, sampling_metadata=sampling_metadata)
 
@@ -656,7 +656,7 @@ def test_flashinfer_fallback(seed: int, device: str):
                                 sampling_params, device)
 
     with patch(
-            "vllm2.model_executor.layers.sampler."
+            "vllm.model_executor.layers.sampler."
             "flashinfer_top_k_top_p_sampling", failing_flashinfer_sampling):
         fallback_sampler_output = _do_sample(batch_size, fake_logits, sampler,
                                              sampling_params, device)
@@ -746,7 +746,7 @@ def test_sampler_include_gpu_probs_tensor(device: str):
 
     mock_inplace = Mock()
     with patch(
-            "vllm2.model_executor.layers.sampler._modify_greedy_probs_inplace",
+            "vllm.model_executor.layers.sampler._modify_greedy_probs_inplace",
             mock_inplace):
 
         sampler_output = _do_sample(batch_size, fake_logits, sampler,

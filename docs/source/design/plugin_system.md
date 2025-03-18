@@ -6,7 +6,7 @@ The community frequently requests the ability to extend vLLM with custom feature
 
 ## How Plugins Work in vLLM
 
-Plugins are user-registered code that vLLM executes. Given vLLM's architecture (see [](#arch-overview)), multiple processes may be involved, especially when using distributed inference with various parallelism techniques. To enable plugins successfully, every process created by vLLM needs to load the plugin. This is done by the [load_general_plugins](https://github.com/vllm-project/vllm/blob/c76ac49d266e27aa3fea84ef2df1f813d24c91c7/vllm/plugins/__init__.py#L16) function in the `vllm2.plugins` module. This function is called for every process created by vLLM before it starts any work.
+Plugins are user-registered code that vLLM executes. Given vLLM's architecture (see [](#arch-overview)), multiple processes may be involved, especially when using distributed inference with various parallelism techniques. To enable plugins successfully, every process created by vLLM needs to load the plugin. This is done by the [load_general_plugins](https://github.com/vllm-project/vllm/blob/c76ac49d266e27aa3fea84ef2df1f813d24c91c7/vllm/plugins/__init__.py#L16) function in the `vllm.plugins` module. This function is called for every process created by vLLM before it starts any work.
 
 ## How vLLM Discovers Plugins
 
@@ -20,7 +20,7 @@ setup(name='vllm_add_dummy_model',
       version='0.1',
       packages=['vllm_add_dummy_model'],
       entry_points={
-          'vllm2.general_plugins':
+          'vllm.general_plugins':
           ["register_dummy_model = vllm_add_dummy_model:register"]
       })
 
@@ -37,15 +37,15 @@ For more information on adding entry points to your package, please check the [o
 
 Every plugin has three parts:
 
-1. **Plugin group**: The name of the entry point group. vLLM uses the entry point group `vllm2.general_plugins` to register general plugins. This is the key of `entry_points` in the `setup.py` file. Always use `vllm2.general_plugins` for vLLM's general plugins.
+1. **Plugin group**: The name of the entry point group. vLLM uses the entry point group `vllm.general_plugins` to register general plugins. This is the key of `entry_points` in the `setup.py` file. Always use `vllm.general_plugins` for vLLM's general plugins.
 2. **Plugin name**: The name of the plugin. This is the value in the dictionary of the `entry_points` dictionary. In the example above, the plugin name is `register_dummy_model`. Plugins can be filtered by their names using the `VLLM_PLUGINS` environment variable. To load only a specific plugin, set `VLLM_PLUGINS` to the plugin name.
 3. **Plugin value**: The fully qualified name of the function to register in the plugin system. In the example above, the plugin value is `vllm_add_dummy_model:register`, which refers to a function named `register` in the `vllm_add_dummy_model` module.
 
 ## Types of supported plugins
 
-- **General plugins** (with group name `vllm2.general_plugins`): The primary use case for these plugins is to register custom, out-of-the-tree models into vLLM. This is done by calling `ModelRegistry.register_model` to register the model inside the plugin function.
+- **General plugins** (with group name `vllm.general_plugins`): The primary use case for these plugins is to register custom, out-of-the-tree models into vLLM. This is done by calling `ModelRegistry.register_model` to register the model inside the plugin function.
 
-- **Platform plugins** (with group name `vllm2.platform_plugins`): The primary use case for these plugins is to register custom, out-of-the-tree platforms into vLLM. The plugin function should return `None` when the platform is not supported in the current environment, or the platform class's fully qualified name when the platform is supported.
+- **Platform plugins** (with group name `vllm.platform_plugins`): The primary use case for these plugins is to register custom, out-of-the-tree platforms into vLLM. The plugin function should return `None` when the platform is not supported in the current environment, or the platform class's fully qualified name when the platform is supported.
 
 ## Guidelines for Writing Plugins
 

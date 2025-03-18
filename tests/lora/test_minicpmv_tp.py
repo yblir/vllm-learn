@@ -27,8 +27,8 @@ EXPECTED_OUTPUT = [
 ]
 
 
-def do_sample(llm: vllm2.LLM, lora_path: str, lora_id: int) -> List[str]:
-    sampling_params = vllm2.SamplingParams(
+def do_sample(llm: vllm.LLM, lora_path: str, lora_id: int) -> List[str]:
+    sampling_params = vllm.SamplingParams(
         temperature=0,
         max_tokens=5,
         stop_token_ids=[128001, 128009],  # eos_id, eot_id
@@ -61,7 +61,7 @@ def do_sample(llm: vllm2.LLM, lora_path: str, lora_id: int) -> List[str]:
     reason="MiniCPM-V dependency xformers incompatible with ROCm")
 @fork_new_process_for_each_test
 def test_minicpmv_lora(minicpmv_lora_files):
-    llm = vllm2.LLM(
+    llm = vllm.LLM(
         MODEL_PATH,
         max_num_seqs=2,
         enable_lora=True,
@@ -84,7 +84,7 @@ def test_minicpmv_lora(minicpmv_lora_files):
     reason="MiniCPM-V dependency xformers incompatible with ROCm")
 @fork_new_process_for_each_test
 def test_minicpmv_tp4_wo_fully_sharded_loras(minicpmv_lora_files):
-    llm = vllm2.LLM(
+    llm = vllm.LLM(
         MODEL_PATH,
         enable_lora=True,
         max_num_seqs=2,
@@ -105,7 +105,7 @@ def test_minicpmv_tp4_wo_fully_sharded_loras(minicpmv_lora_files):
     reason="MiniCPM-V dependency xformers incompatible with ROCm")
 @fork_new_process_for_each_test
 def test_minicpmv_tp4_fully_sharded_loras(minicpmv_lora_files):
-    llm = vllm2.LLM(
+    llm = vllm.LLM(
         MODEL_PATH,
         enable_lora=True,
         max_num_seqs=2,

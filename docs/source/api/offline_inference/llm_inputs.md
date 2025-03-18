@@ -1,18 +1,18 @@
 # LLM Inputs
 
 ```{eval-rst}
-.. autodata:: vllm2.inputs.PromptType
+.. autodata:: vllm.inputs.PromptType
 ```
 
 ```{eval-rst}
-.. autoclass:: vllm2.inputs.TextPrompt
+.. autoclass:: vllm.inputs.TextPrompt
     :show-inheritance:
     :members:
     :member-order: bysource
 ```
 
 ```{eval-rst}
-.. autoclass:: vllm2.inputs.TokensPrompt
+.. autoclass:: vllm.inputs.TokensPrompt
     :show-inheritance:
     :members:
     :member-order: bysource

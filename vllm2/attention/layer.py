@@ -187,7 +187,7 @@ class Attention(nn.Module):
                                   ctx_attn_metadata,
                                   output=output)
             else:
-                torch.ops.vllm2.unified_attention_with_output(
+                torch.ops.vllm.unified_attention_with_output(
                     query, key, value, output, self.layer_name)
             return output.view(-1, hidden_size)
         else:
@@ -198,7 +198,7 @@ class Attention(nn.Module):
                 return self.impl.forward(self, query, key, value,
                                          self_kv_cache, ctx_attn_metadata)
             else:
-                return torch.ops.vllm2.unified_attention(
+                return torch.ops.vllm.unified_attention(
                     query, key, value, self.layer_name)
 
     def calc_kv_scales(self, key, value):

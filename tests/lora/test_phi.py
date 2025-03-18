@@ -12,7 +12,7 @@ MODEL_PATH = "microsoft/phi-2"
 PROMPT_TEMPLATE = "### Instruct: {sql_prompt}\n\n### Context: {context}\n\n### Output:"  # noqa: E501
 
 
-def do_sample(llm: vllm2.LLM, lora_path: str, lora_id: int) -> List[str]:
+def do_sample(llm: vllm.LLM, lora_path: str, lora_id: int) -> List[str]:
     prompts = [
         PROMPT_TEMPLATE.format(
             sql_prompt=
@@ -31,7 +31,7 @@ def do_sample(llm: vllm2.LLM, lora_path: str, lora_id: int) -> List[str]:
             "CREATE TABLE marine_species (name VARCHAR(50), common_name VARCHAR(50), location VARCHAR(50));"  # noqa: E501
         ),
     ]
-    sampling_params = vllm2.SamplingParams(temperature=0,
+    sampling_params = vllm.SamplingParams(temperature=0,
                                           max_tokens=64,
                                           stop="### End")
     outputs = llm.generate(
@@ -64,7 +64,7 @@ def v1(run_with_both_engines_lora):
 def test_phi2_lora(phi2_lora_files):
     # We enable enforce_eager=True here to reduce VRAM usage for lora-test CI,
     # Otherwise, the lora-test will fail due to CUDA OOM.
-    llm = vllm2.LLM(MODEL_PATH,
+    llm = vllm.LLM(MODEL_PATH,
                    max_model_len=1024,
                    enable_lora=True,
                    max_loras=2,

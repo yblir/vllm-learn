@@ -62,7 +62,7 @@ $ docker run -it \
 XPU platform supports tensor-parallel inference/serving and also supports pipeline parallel as a beta feature for online serving. We requires Ray as the distributed runtime backend. For example, a reference execution likes following:
 
 ```console
-python -m vllm2.entrypoints.openai.api_server \
+python -m vllm.entrypoints.openai.api_server \
      --model=facebook/opt-13b \
      --dtype=bfloat16 \
      --device=xpu \

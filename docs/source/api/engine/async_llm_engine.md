@@ -1,7 +1,7 @@
 # AsyncLLMEngine
 
 ```{eval-rst}
-.. autoclass:: vllm2.AsyncLLMEngine
+.. autoclass:: vllm.AsyncLLMEngine
     :members:
     :show-inheritance:
 ```

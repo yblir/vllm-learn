@@ -3,7 +3,7 @@
 ## Module Contents
 
 ```{eval-rst}
-.. automodule:: vllm2.multimodal.processing
+.. automodule:: vllm.multimodal.processing
     :members:
     :member-order: bysource
 ```

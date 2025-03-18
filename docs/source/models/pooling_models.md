@@ -4,8 +4,8 @@
 
 vLLM also supports pooling models, including embedding, reranking and reward models.
 
-In vLLM, pooling models implement the {class}`~vllm2.model_executor.models.VllmModelForPooling` interface.
-These models use a {class}`~vllm2.model_executor.layers.Pooler` to extract the final hidden states of the input
+In vLLM, pooling models implement the {class}`~vllm.model_executor.models.VllmModelForPooling` interface.
+These models use a {class}`~vllm.model_executor.layers.Pooler` to extract the final hidden states of the input
 before returning them.
 
 :::{note}
@@ -59,12 +59,12 @@ which takes priority over both the model's and Sentence Transformers's defaults.
 
 ## Offline Inference
 
-The {class}`~vllm2.LLM` class provides various methods for offline inference.
+The {class}`~vllm.LLM` class provides various methods for offline inference.
 See [Engine Arguments](#engine-args) for a list of options when initializing the model.
 
 ### `LLM.encode`
 
-The {class}`~vllm2.LLM.encode` method is available to all pooling models in vLLM.
+The {class}`~vllm.LLM.encode` method is available to all pooling models in vLLM.
 It returns the extracted hidden states directly, which is useful for reward models.
 
 ```python
@@ -77,7 +77,7 @@ print(f"Data: {data!r}")
 
 ### `LLM.embed`
 
-The {class}`~vllm2.LLM.embed` method outputs an embedding vector for each prompt.
+The {class}`~vllm.LLM.embed` method outputs an embedding vector for each prompt.
 It is primarily designed for embedding models.
 
 ```python
@@ -92,7 +92,7 @@ A code example can be found here: <gh-file:examples/offline_inference/basic/embe
 
 ### `LLM.classify`
 
-The {class}`~vllm2.LLM.classify` method outputs a probability vector for each prompt.
+The {class}`~vllm.LLM.classify` method outputs a probability vector for each prompt.
 It is primarily designed for classification models.
 
 ```python
@@ -107,7 +107,7 @@ A code example can be found here: <gh-file:examples/offline_inference/basic/clas
 
 ### `LLM.score`
 
-The {class}`~vllm2.LLM.score` method outputs similarity scores between sentence pairs.
+The {class}`~vllm.LLM.score` method outputs similarity scores between sentence pairs.
 It is primarily designed for [cross-encoder models](https://www.sbert.net/examples/applications/cross-encoder/README.html).
 These types of models serve as rerankers between candidate query-document pairs in RAG systems.
 

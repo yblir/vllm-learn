@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     S3_ENDPOINT_URL: Optional[str] = None
     VLLM_CACHE_ROOT: str = os.path.expanduser("~/.cache/vllm2")
     VLLM_CONFIG_ROOT: str = os.path.expanduser("~/.config/vllm2")
-    VLLM_USAGE_STATS_SERVER: str = "https://stats.vllm2.ai"
+    VLLM_USAGE_STATS_SERVER: str = "https://stats.vllm.ai"
     VLLM_NO_USAGE_STATS: bool = False
     VLLM_DO_NOT_TRACK: bool = False
     VLLM_USAGE_SOURCE: str = ""
@@ -212,7 +212,7 @@ environment_variables: Dict[str, Callable[[], Any]] = {
 
     # Usage stats collection
     "VLLM_USAGE_STATS_SERVER":
-    lambda: os.environ.get("VLLM_USAGE_STATS_SERVER", "https://stats.vllm2.ai"),
+    lambda: os.environ.get("VLLM_USAGE_STATS_SERVER", "https://stats.vllm.ai"),
     "VLLM_NO_USAGE_STATS":
     lambda: os.environ.get("VLLM_NO_USAGE_STATS", "0") == "1",
     "VLLM_DO_NOT_TRACK":

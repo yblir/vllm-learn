@@ -35,7 +35,7 @@ def test_empty_file():
         input_file.write("")
         input_file.flush()
         proc = subprocess.Popen([
-            sys.executable, "-m", "vllm2.entrypoints.openai.run_batch", "-i",
+            sys.executable, "-m", "vllm.entrypoints.openai.run_batch", "-i",
             input_file.name, "-o", output_file.name, "--model",
             "intfloat/e5-mistral-7b-instruct"
         ], )
@@ -54,7 +54,7 @@ def test_completions():
         input_file.write(INPUT_BATCH)
         input_file.flush()
         proc = subprocess.Popen([
-            sys.executable, "-m", "vllm2.entrypoints.openai.run_batch", "-i",
+            sys.executable, "-m", "vllm.entrypoints.openai.run_batch", "-i",
             input_file.name, "-o", output_file.name, "--model",
             "NousResearch/Meta-Llama-3-8B-Instruct"
         ], )
@@ -79,7 +79,7 @@ def test_completions_invalid_input():
         input_file.write(INVALID_INPUT_BATCH)
         input_file.flush()
         proc = subprocess.Popen([
-            sys.executable, "-m", "vllm2.entrypoints.openai.run_batch", "-i",
+            sys.executable, "-m", "vllm.entrypoints.openai.run_batch", "-i",
             input_file.name, "-o", output_file.name, "--model",
             "NousResearch/Meta-Llama-3-8B-Instruct"
         ], )
@@ -95,7 +95,7 @@ def test_embeddings():
         input_file.write(INPUT_EMBEDDING_BATCH)
         input_file.flush()
         proc = subprocess.Popen([
-            sys.executable, "-m", "vllm2.entrypoints.openai.run_batch", "-i",
+            sys.executable, "-m", "vllm.entrypoints.openai.run_batch", "-i",
             input_file.name, "-o", output_file.name, "--model",
             "intfloat/e5-mistral-7b-instruct"
         ], )
@@ -119,7 +119,7 @@ def test_score():
         proc = subprocess.Popen([
             sys.executable,
             "-m",
-            "vllm2.entrypoints.openai.run_batch",
+            "vllm.entrypoints.openai.run_batch",
             "-i",
             input_file.name,
             "-o",

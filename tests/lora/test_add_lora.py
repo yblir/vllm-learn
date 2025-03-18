@@ -121,13 +121,13 @@ async def test_add_lora():
         enforce_eager=True)
 
     # The run_with_both_engines_lora fixture sets up the `VLLM_USE_V1`
-    # environment variable. reload vllm2.enging.async_llm_engine as
-    # vllm2.engine.async_llm_engine.AsyncLLMEgnine changes depending on the
+    # environment variable. reload vllm.enging.async_llm_engine as
+    # vllm.engine.async_llm_engine.AsyncLLMEgnine changes depending on the
     # env var.
     import importlib
 
     import vllm2.engine.async_llm_engine
-    importlib.reload(vllm2.engine.async_llm_engine)
+    importlib.reload(vllm.engine.async_llm_engine)
     from vllm2.entrypoints.openai.api_server import (
         build_async_engine_client_from_engine_args)
 

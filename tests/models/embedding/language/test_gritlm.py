@@ -37,7 +37,7 @@ def test_find_array(monkeypatch):
     from vllm2.model_executor.models.gritlm import GritLMPooler
 
     # Create an LLM object to get the model config.
-    llm = vllm2.LLM(MODEL_NAME, task="embed", max_model_len=MAX_MODEL_LEN)
+    llm = vllm.LLM(MODEL_NAME, task="embed", max_model_len=MAX_MODEL_LEN)
     pooler = GritLMPooler(model_config=llm.llm_engine.model_config)
 
     arr = _arr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
@@ -81,13 +81,13 @@ async def client_generate(server_generate: RemoteOpenAIServer):
         yield async_client
 
 
-def run_llm_encode(llm: vllm2.LLM, queries: List[str],
+def run_llm_encode(llm: vllm.LLM, queries: List[str],
                    instruction: str) -> List[float]:
     outputs = llm.encode([instruction + q for q in queries], )
     return [output.outputs.embedding for output in outputs]
 
 
-async def run_client_embeddings(client: vllm2.LLM, queries: List[str],
+async def run_client_embeddings(client: vllm.LLM, queries: List[str],
                                 instruction: str) -> List[float]:
     outputs = await client.embeddings.create(
         model=MODEL_NAME,
@@ -143,7 +143,7 @@ def test_gritlm_offline_embedding(monkeypatch):
 
     queries, q_instruction, documents, d_instruction = get_test_data()
 
-    llm = vllm2.LLM(MODEL_NAME, task="embed", max_model_len=MAX_MODEL_LEN)
+    llm = vllm.LLM(MODEL_NAME, task="embed", max_model_len=MAX_MODEL_LEN)
 
     d_rep = run_llm_encode(
         llm,
@@ -181,8 +181,8 @@ async def test_gritlm_api_server_embedding(
 def test_gritlm_offline_gen():
     input = "<|user|>\nWhat is the capital of France?\n<|assistant|>\n"
 
-    llm = vllm2.LLM(MODEL_NAME, max_model_len=MAX_MODEL_LEN)
-    sampling_params = vllm2.SamplingParams(temperature=0.0, max_tokens=256)
+    llm = vllm.LLM(MODEL_NAME, max_model_len=MAX_MODEL_LEN)
+    sampling_params = vllm.SamplingParams(temperature=0.0, max_tokens=256)
     outputs = llm.generate(input, sampling_params=sampling_params)
 
     assert outputs[0].outputs[0].text == "The capital of France is Paris."

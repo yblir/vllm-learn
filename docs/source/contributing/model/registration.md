@@ -46,10 +46,10 @@ ModelRegistry.register_model("YourModelForCausalLM", "your_code:YourModelForCaus
 ```
 
 :::{important}
-If your model is a multimodal model, ensure the model class implements the {class}`~vllm2.model_executor.models.interfaces.SupportsMultiModal` interface.
+If your model is a multimodal model, ensure the model class implements the {class}`~vllm.model_executor.models.interfaces.SupportsMultiModal` interface.
 Read more about that [here](#supports-multimodal).
 :::
 
 :::{note}
-Although you can directly put these code snippets in your script using `vllm2.LLM`, the recommended way is to place these snippets in a vLLM plugin. This ensures compatibility with various vLLM features like distributed inference and the API server.
+Although you can directly put these code snippets in your script using `vllm.LLM`, the recommended way is to place these snippets in a vLLM plugin. This ensures compatibility with various vLLM features like distributed inference and the API server.
 :::

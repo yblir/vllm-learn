@@ -41,10 +41,10 @@ class KVConnectorFactory:
 # only load the files corresponding to the current connector.
 KVConnectorFactory.register_connector(
     "PyNcclConnector",
-    "vllm2.distributed.kv_transfer.kv_connector.simple_connector",
+    "vllm.distributed.kv_transfer.kv_connector.simple_connector",
     "SimpleConnector")
 
 KVConnectorFactory.register_connector(
     "MooncakeConnector",
-    "vllm2.distributed.kv_transfer.kv_connector.simple_connector",
+    "vllm.distributed.kv_transfer.kv_connector.simple_connector",
     "SimpleConnector")

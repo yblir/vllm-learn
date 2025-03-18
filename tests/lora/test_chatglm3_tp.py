@@ -21,7 +21,7 @@ EXPECTED_LORA_OUTPUT = [
 ]
 
 
-def do_sample(llm: vllm2.LLM, lora_path: str, lora_id: int) -> List[str]:
+def do_sample(llm: vllm.LLM, lora_path: str, lora_id: int) -> List[str]:
     prompts = [
         PROMPT_TEMPLATE.format(query="How many singers do we have?"),
         PROMPT_TEMPLATE.format(
@@ -33,7 +33,7 @@ def do_sample(llm: vllm2.LLM, lora_path: str, lora_id: int) -> List[str]:
             "Show name, country, age for all singers ordered by age from the oldest to the youngest."  # noqa: E501
         ),
     ]
-    sampling_params = vllm2.SamplingParams(temperature=0, max_tokens=32)
+    sampling_params = vllm.SamplingParams(temperature=0, max_tokens=32)
     outputs = llm.generate(
         prompts,
         sampling_params,
@@ -60,7 +60,7 @@ def v1(run_with_both_engines_lora):
 @pytest.mark.skip_v1
 @fork_new_process_for_each_test
 def test_chatglm3_lora(chatglm3_lora_files):
-    llm = vllm2.LLM(MODEL_PATH,
+    llm = vllm.LLM(MODEL_PATH,
                    max_model_len=1024,
                    enable_lora=True,
                    max_loras=4,
@@ -81,7 +81,7 @@ def test_chatglm3_lora(chatglm3_lora_files):
 @multi_gpu_test(num_gpus=4)
 @fork_new_process_for_each_test
 def test_chatglm3_lora_tp4(chatglm3_lora_files):
-    llm = vllm2.LLM(MODEL_PATH,
+    llm = vllm.LLM(MODEL_PATH,
                    max_model_len=1024,
                    enable_lora=True,
                    max_loras=4,
@@ -103,7 +103,7 @@ def test_chatglm3_lora_tp4(chatglm3_lora_files):
 @multi_gpu_test(num_gpus=4)
 @fork_new_process_for_each_test
 def test_chatglm3_lora_tp4_fully_sharded_loras(chatglm3_lora_files):
-    llm = vllm2.LLM(MODEL_PATH,
+    llm = vllm.LLM(MODEL_PATH,
                    max_model_len=1024,
                    enable_lora=True,
                    max_loras=4,

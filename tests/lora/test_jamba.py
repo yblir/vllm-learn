@@ -13,10 +13,10 @@ MODEL_PATH = "ai21labs/AI21-Jamba-1.5-Mini"
 MAX_TOKENS = 40
 
 
-def do_sample(llm: vllm2.LLM, lora_path: str, lora_id: int,
+def do_sample(llm: vllm.LLM, lora_path: str, lora_id: int,
               prompts: List[str]) -> List[str]:
 
-    sampling_params = vllm2.SamplingParams(temperature=0, max_tokens=MAX_TOKENS)
+    sampling_params = vllm.SamplingParams(temperature=0, max_tokens=MAX_TOKENS)
     outputs = llm.generate(
         prompts,
         sampling_params,
@@ -40,7 +40,7 @@ def test_jamba_lora(jamba_lora_files, tp_size):
 
     prompts = ["Write a story about a sheep and a goat."]
 
-    llm = vllm2.LLM(
+    llm = vllm.LLM(
         MODEL_PATH,
         enable_lora=True,
         max_num_seqs=16,

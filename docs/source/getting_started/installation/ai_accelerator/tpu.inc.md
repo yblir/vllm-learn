@@ -139,7 +139,7 @@ conda activate vllm
 Clone the vLLM repository and go to the vLLM directory:
 
 ```bash
-git clone https://github.com/vllm-project/vllm2.git && cd vllm
+git clone https://github.com/vllm-project/vllm.git && cd vllm
 ```
 
 Uninstall the existing `torch` and `torch_xla` packages:

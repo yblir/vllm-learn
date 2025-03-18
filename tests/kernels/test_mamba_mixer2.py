@@ -98,11 +98,11 @@ def mixer2_gated_norm_tensor_parallel(
     # create gated-norm without TP to compute reference
     # - utilize mock patching to disable TP when
     with (unittest.mock.patch(
-            "vllm2.model_executor.layers.mamba.mamba_mixer2."
+            "vllm.model_executor.layers.mamba.mamba_mixer2."
             "get_tensor_model_parallel_world_size",
             return_value=1),
           unittest.mock.patch(
-              "vllm2.model_executor.layers.mamba.mamba_mixer2."
+              "vllm.model_executor.layers.mamba.mamba_mixer2."
               "get_tensor_model_parallel_rank",
               return_value=0)):
         mixer_single_gpu = Mixer2RMSNormGated(

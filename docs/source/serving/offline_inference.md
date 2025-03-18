@@ -4,7 +4,7 @@
 
 You can run vLLM in your own code on a list of prompts.
 
-The offline API is based on the {class}`~vllm2.LLM` class.
+The offline API is based on the {class}`~vllm.LLM` class.
 To initialize the vLLM engine, create a new instance of `LLM` and specify the model to run.
 
 For example, the following code downloads the [`facebook/opt-125m`](https://huggingface.co/facebook/opt-125m) model from HuggingFace

@@ -105,7 +105,7 @@ def test_scaled_mm(M, N, K, in_dtype, out_dtype, use_scalar_scale_a,
         bias = torch.rand((N, ), device=device, dtype=out_dtype)
 
     triton_scaled_mm_module = importlib.import_module(
-        "vllm2.model_executor.layers.quantization.compressed_tensors."
+        "vllm.model_executor.layers.quantization.compressed_tensors."
         "triton_scaled_mm")
     triton_scaled_mm = triton_scaled_mm_module.triton_scaled_mm
 

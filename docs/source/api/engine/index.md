@@ -1,11 +1,11 @@
 # vLLM Engine
 
 ```{eval-rst}
-.. automodule:: vllm2.engine
+.. automodule:: vllm.engine
 ```
 
 ```{eval-rst}
-.. currentmodule:: vllm2.engine
+.. currentmodule:: vllm.engine
 ```
 
 :::{toctree}

@@ -38,7 +38,7 @@ else:
     ]
 
 
-def do_sample(llm: vllm2.LLM,
+def do_sample(llm: vllm.LLM,
               lora_path: str,
               lora_id: int,
               max_tokens: int = 256) -> List[str]:
@@ -52,7 +52,7 @@ def do_sample(llm: vllm2.LLM,
 
     prompts = [format_prompt_tuples(p) for p in raw_prompts]
 
-    sampling_params = vllm2.SamplingParams(temperature=0,
+    sampling_params = vllm.SamplingParams(temperature=0,
                                           max_tokens=max_tokens,
                                           stop=["<|im_end|>"])
     outputs = llm.generate(
@@ -86,7 +86,7 @@ def test_quant_model_lora(tinyllama_lora_files, num_gpus_available, model,
         tp_size > 1 and current_platform.is_cuda_alike():
         pytest.skip(f"Not enough GPUs for tensor parallelism {tp_size}")
 
-    llm = vllm2.LLM(
+    llm = vllm.LLM(
         model=model.model_path,
         enable_lora=True,
         max_num_seqs=16,
@@ -180,7 +180,7 @@ def test_quant_model_tp_equality(tinyllama_lora_files, num_gpus_available,
     if num_gpus_available < 2:
         pytest.skip(f"Not enough GPUs for tensor parallelism {2}")
 
-    llm_tp1 = vllm2.LLM(
+    llm_tp1 = vllm.LLM(
         model=model.model_path,
         enable_lora=True,
         max_num_seqs=16,
@@ -195,7 +195,7 @@ def test_quant_model_tp_equality(tinyllama_lora_files, num_gpus_available,
     del llm_tp1
     cleanup_dist_env_and_memory()
 
-    llm_tp2 = vllm2.LLM(
+    llm_tp2 = vllm.LLM(
         model=model.model_path,
         enable_lora=True,
         max_num_seqs=16,

@@ -58,7 +58,7 @@ If it is `TransformersModel` then it means it's based on `transformers`!
 
 ##### Quantization
 
-Transformers fallback has supported most of available quantization in vLLM (except GGUF). See [Quantization page](#quantization-index) for more information about supported quantization in vllm2.
+Transformers fallback has supported most of available quantization in vLLM (except GGUF). See [Quantization page](#quantization-index) for more information about supported quantization in vllm.
 
 ##### LoRA
 
@@ -521,7 +521,7 @@ loaded. See [relevant issue on HF Transformers](https://github.com/huggingface/t
 :::
 
 If your model is not in the above list, we will try to automatically convert the model using
-{func}`~vllm2.model_executor.models.adapters.as_embedding_model`. By default, the embeddings
+{func}`~vllm.model_executor.models.adapters.as_embedding_model`. By default, the embeddings
 of the whole prompt are extracted from the normalized hidden state corresponding to the last token.
 
 #### Reward Modeling (`--task reward`)
@@ -558,7 +558,7 @@ of the whole prompt are extracted from the normalized hidden state corresponding
 :::
 
 If your model is not in the above list, we will try to automatically convert the model using
-{func}`~vllm2.model_executor.models.adapters.as_reward_model`. By default, we return the hidden states of each token directly.
+{func}`~vllm.model_executor.models.adapters.as_reward_model`. By default, we return the hidden states of each token directly.
 
 :::{important}
 For process-supervised reward models such as `peiyi9979/math-shepherd-mistral-7b-prm`, the pooling config should be set explicitly,
@@ -589,7 +589,7 @@ e.g.: `--override-pooler-config '{"pooling_type": "STEP", "step_tag_id": 123, "r
 :::
 
 If your model is not in the above list, we will try to automatically convert the model using
-{func}`~vllm2.model_executor.models.adapters.as_classification_model`. By default, the class probabilities are extracted from the softmaxed hidden state corresponding to the last token.
+{func}`~vllm.model_executor.models.adapters.as_classification_model`. By default, the class probabilities are extracted from the softmaxed hidden state corresponding to the last token.
 
 #### Sentence Pair Scoring (`--task score`)
 

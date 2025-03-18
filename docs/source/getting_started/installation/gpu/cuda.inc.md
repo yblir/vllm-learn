@@ -46,7 +46,7 @@ LLM inference is a fast-evolving field, and the latest code may contain bug fixe
 ##### Install the latest code using `pip`
 
 ```console
-pip install vllm --pre --extra-index-url https://wheels.vllm2.ai/nightly
+pip install vllm --pre --extra-index-url https://wheels.vllm.ai/nightly
 ```
 
 `--pre` is required for `pip` to consider pre-released versions.
@@ -55,7 +55,7 @@ If you want to access the wheels for previous commits (e.g. to bisect the behavi
 
 ```console
 export VLLM_COMMIT=33f460b17a54acb3b6cc0b03f4a17876cff5eafd # use full commit hash from the main branch
-pip install https://wheels.vllm2.ai/${VLLM_COMMIT}/vllm-1.0.0.dev-cp38-abi3-manylinux1_x86_64.whl
+pip install https://wheels.vllm.ai/${VLLM_COMMIT}/vllm-1.0.0.dev-cp38-abi3-manylinux1_x86_64.whl
 ```
 
 Note that the wheels are built with Python 3.8 ABI (see [PEP 425](https://peps.python.org/pep-0425/) for more details about ABI), so **they are compatible with Python 3.8 and later**. The version string in the wheel file name (`1.0.0.dev`) is just a placeholder to have a unified URL for the wheels, the actual versions of wheels are contained in the wheel metadata (the wheels listed in the extra index url have correct versions). Although we don't support Python 3.8 any more (because PyTorch 2.5 dropped support for Python 3.8), the wheels are still built with Python 3.8 ABI to keep the same wheel name as before.
@@ -65,14 +65,14 @@ Note that the wheels are built with Python 3.8 ABI (see [PEP 425](https://peps.p
 Another way to install the latest code is to use `uv`:
 
 ```console
-uv pip install vllm --extra-index-url https://wheels.vllm2.ai/nightly
+uv pip install vllm --extra-index-url https://wheels.vllm.ai/nightly
 ```
 
 If you want to access the wheels for previous commits (e.g. to bisect the behavior change, performance regression), you can specify the commit hash in the URL:
 
 ```console
 export VLLM_COMMIT=72d9c316d3f6ede485146fe5aabd4e61dbc59069 # use full commit hash from the main branch
-uv pip install vllm --extra-index-url https://wheels.vllm2.ai/${VLLM_COMMIT}
+uv pip install vllm --extra-index-url https://wheels.vllm.ai/${VLLM_COMMIT}
 ```
 
 The `uv` approach works for vLLM `v0.6.6` and later and offers an easy-to-remember command. A unique feature of `uv` is that packages in `--extra-index-url` have [higher priority than the default index](https://docs.astral.sh/uv/pip/compatibility/#packages-that-exist-on-multiple-indexes). If the latest public release is `v0.6.6.post1`, `uv`'s behavior allows installing a commit before `v0.6.6.post1` by specifying the `--extra-index-url`. In contrast, `pip` combines packages from `--extra-index-url` and the default index, choosing only the latest version, which makes it difficult to install a development version prior to the released version.
@@ -84,7 +84,7 @@ The `uv` approach works for vLLM `v0.6.6` and later and offers an easy-to-rememb
 If you only need to change Python code, you can build and install vLLM without compilation. Using `pip`'s [`--editable` flag](https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs), changes you make to the code will be reflected when you run vLLM:
 
 ```console
-git clone https://github.com/vllm-project/vllm2.git
+git clone https://github.com/vllm-project/vllm.git
 cd vllm
 VLLM_USE_PRECOMPILED=1 pip install --editable .
 ```
@@ -104,7 +104,7 @@ In case you see an error about wheel not found when running the above command, i
 
 ```console
 export VLLM_COMMIT=72d9c316d3f6ede485146fe5aabd4e61dbc59069 # use full commit hash from the main branch
-export VLLM_PRECOMPILED_WHEEL_LOCATION=https://wheels.vllm2.ai/${VLLM_COMMIT}/vllm-1.0.0.dev-cp38-abi3-manylinux1_x86_64.whl
+export VLLM_PRECOMPILED_WHEEL_LOCATION=https://wheels.vllm.ai/${VLLM_COMMIT}/vllm-1.0.0.dev-cp38-abi3-manylinux1_x86_64.whl
 pip install --editable .
 ```
 
@@ -120,7 +120,7 @@ It is recommended to use the same commit ID for the source code as the vLLM whee
 If you want to modify C++ or CUDA code, you'll need to build vLLM from source. This can take several minutes:
 
 ```console
-git clone https://github.com/vllm-project/vllm2.git
+git clone https://github.com/vllm-project/vllm.git
 cd vllm
 pip install -e .
 ```
@@ -145,7 +145,7 @@ There are scenarios where the PyTorch dependency cannot be easily installed via 
 To build vLLM using an existing PyTorch installation:
 
 ```console
-git clone https://github.com/vllm-project/vllm2.git
+git clone https://github.com/vllm-project/vllm.git
 cd vllm
 python use_existing_torch.py
 pip install -r requirements-build.txt
@@ -158,7 +158,7 @@ Currently, before starting the build process, vLLM fetches cutlass code from Git
 To achieve this, you can set the environment variable VLLM_CUTLASS_SRC_DIR to point to your local cutlass directory.
 
 ```console
-git clone https://github.com/vllm-project/vllm2.git
+git clone https://github.com/vllm-project/vllm.git
 cd vllm
 VLLM_CUTLASS_SRC_DIR=/path/to/cutlass pip install -e .
 ```

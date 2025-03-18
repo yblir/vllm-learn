@@ -3,7 +3,7 @@
 ## Module Contents
 
 ```{eval-rst}
-.. automodule:: vllm2.multimodal.parse
+.. automodule:: vllm.multimodal.parse
     :members:
     :member-order: bysource
 ```

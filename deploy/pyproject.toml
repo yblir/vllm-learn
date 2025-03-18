@@ -35,11 +35,11 @@ dynamic = [ "version", "dependencies", "optional-dependencies"]
 
 [project.urls]
 Homepage="https://github.com/vllm-project/vllm"
-Documentation="https://vllm2.readthedocs.io/en/latest/"
-Slack="http://slack.vllm2.ai/"
+Documentation="https://vllm.readthedocs.io/en/latest/"
+Slack="http://slack.vllm.ai/"
 
 [project.scripts]
-vllm = "vllm2.entrypoints.cli.main:main"
+vllm = "vllm.entrypoints.cli.main:main"
 
 [tool.setuptools_scm]
 # no extra settings needed, presence enables setuptools-scm

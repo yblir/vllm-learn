@@ -4,21 +4,21 @@
 
 vLLM provides first-class support for generative models, which covers most of LLMs.
 
-In vLLM, generative models implement the {class}`~vllm2.model_executor.models.VllmModelForTextGeneration` interface.
+In vLLM, generative models implement the {class}`~vllm.model_executor.models.VllmModelForTextGeneration` interface.
 Based on the final hidden states of the input, these models output log probabilities of the tokens to generate,
-which are then passed through {class}`~vllm2.model_executor.layers.Sampler` to obtain the final text.
+which are then passed through {class}`~vllm.model_executor.layers.Sampler` to obtain the final text.
 
 For generative models, the only supported `--task` option is `"generate"`.
 Usually, this is automatically inferred so you don't have to specify it.
 
 ## Offline Inference
 
-The {class}`~vllm2.LLM` class provides various methods for offline inference.
+The {class}`~vllm.LLM` class provides various methods for offline inference.
 See [Engine Arguments](#engine-args) for a list of options when initializing the model.
 
 ### `LLM.generate`
 
-The {class}`~vllm2.LLM.generate` method is available to all generative models in vLLM.
+The {class}`~vllm.LLM.generate` method is available to all generative models in vLLM.
 It is similar to [its counterpart in HF Transformers](https://huggingface.co/docs/transformers/main/en/main_classes/text_generation#transformers.GenerationMixin.generate),
 except that tokenization and detokenization are also performed automatically.
 
@@ -32,7 +32,7 @@ for output in outputs:
     print(f"Prompt: {prompt!r}, Generated text: {generated_text!r}")
 ```
 
-You can optionally control the language generation by passing {class}`~vllm2.SamplingParams`.
+You can optionally control the language generation by passing {class}`~vllm.SamplingParams`.
 For example, you can use greedy sampling by setting `temperature=0`:
 
 ```python
@@ -50,7 +50,7 @@ A code example can be found here: <gh-file:examples/offline_inference/basic/basi
 
 ### `LLM.beam_search`
 
-The {class}`~vllm2.LLM.beam_search` method implements [beam search](https://huggingface.co/docs/transformers/en/generation_strategies#beam-search-decoding) on top of {class}`~vllm2.LLM.generate`.
+The {class}`~vllm.LLM.beam_search` method implements [beam search](https://huggingface.co/docs/transformers/en/generation_strategies#beam-search-decoding) on top of {class}`~vllm.LLM.generate`.
 For example, to search using 5 beams and output at most 50 tokens:
 
 ```python
@@ -66,7 +66,7 @@ for output in outputs:
 
 ### `LLM.chat`
 
-The {class}`~vllm2.LLM.chat` method implements chat functionality on top of {class}`~vllm2.LLM.generate`.
+The {class}`~vllm.LLM.chat` method implements chat functionality on top of {class}`~vllm.LLM.generate`.
 In particular, it accepts input similar to [OpenAI Chat Completions API](https://platform.openai.com/docs/api-reference/chat)
 and automatically applies the model's [chat template](https://huggingface.co/docs/transformers/en/chat_templating) to format the prompt.
 

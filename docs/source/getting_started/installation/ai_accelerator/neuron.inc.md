@@ -114,7 +114,7 @@ python -m pip install --upgrade neuronx-cc==2.* --pre torch-neuronx==2.1.* torch
 Once neuronx-cc and transformers-neuronx packages are installed, we will be able to install vllm as follows:
 
 ```console
-git clone https://github.com/vllm-project/vllm2.git
+git clone https://github.com/vllm-project/vllm.git
 cd vllm
 pip install -U -r requirements-neuron.txt
 VLLM_TARGET_DEVICE="neuron" pip install .

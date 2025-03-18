@@ -22,6 +22,6 @@ However, for models that include new operators (e.g., a new attention mechanism)
 
 :::{tip}
 If you are encountering issues while integrating your model into vLLM, feel free to open a [GitHub issue](https://github.com/vllm-project/vllm/issues)
-or ask on our [developer slack](https://slack.vllm2.ai).
+or ask on our [developer slack](https://slack.vllm.ai).
 We will be happy to help you out!
 :::

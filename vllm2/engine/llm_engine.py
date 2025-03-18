@@ -129,10 +129,10 @@ class LLMEngine:
     iteration-level scheduling and efficient memory management to maximize the
     serving throughput.
 
-    The :class:`~vllm2.LLM` class wraps this class for offline batched inference
+    The :class:`~vllm.LLM` class wraps this class for offline batched inference
     and the :class:`AsyncLLMEngine` class wraps this class for online serving.
 
-    The config arguments are derived from :class:`~vllm2.EngineArgs`. (See
+    The config arguments are derived from :class:`~vllm.EngineArgs`. (See
     :ref:`engine-args`)
 
     Args:
@@ -391,7 +391,7 @@ class LLMEngine:
         self.tracer = None
         if self.observability_config.otlp_traces_endpoint:
             self.tracer = init_tracer(
-                "vllm2.llm_engine",
+                "vllm.llm_engine",
                 self.observability_config.otlp_traces_endpoint)
 
         # Create sequence output processor, e.g. for beam search or
@@ -695,11 +695,11 @@ class LLMEngine:
 
         Args:
             request_id: The unique ID of the request.
-            prompt: The prompt to the LLM. See :class:`~vllm2.inputs.PromptType`
+            prompt: The prompt to the LLM. See :class:`~vllm.inputs.PromptType`
                 for more details about the format of each input.
             params: Parameters for sampling or pooling.
-                :class:`~vllm2.SamplingParams` for text generation.
-                :class:`~vllm2.PoolingParams` for pooling.
+                :class:`~vllm.SamplingParams` for text generation.
+                :class:`~vllm.PoolingParams` for pooling.
             arrival_time: The arrival time of the request. If None, we use
                 the current monotonic time.
             lora_request: The LoRA request to add.
@@ -711,10 +711,10 @@ class LLMEngine:
         Details:
             - Set arrival_time to the current time if it is None.
             - Set prompt_token_ids to the encoded prompt if it is None.
-            - Create `n` number of :class:`~vllm2.Sequence` objects.
-            - Create a :class:`~vllm2.SequenceGroup` object
-              from the list of :class:`~vllm2.Sequence`.
-            - Add the :class:`~vllm2.SequenceGroup` object to the scheduler.
+            - Create `n` number of :class:`~vllm.Sequence` objects.
+            - Create a :class:`~vllm.SequenceGroup` object
+              from the list of :class:`~vllm.Sequence`.
+            - Add the :class:`~vllm.SequenceGroup` object to the scheduler.
 
         Example:
             >>> # initialize engine
@@ -878,8 +878,8 @@ class LLMEngine:
 
         Details:
             - Refer to the
-              :meth:`~vllm2.core.scheduler.Scheduler.abort_seq_group`
-              from class :class:`~vllm2.core.scheduler.Scheduler`.
+              :meth:`~vllm.core.scheduler.Scheduler.abort_seq_group`
+              from class :class:`~vllm.core.scheduler.Scheduler`.
 
         Example:
             >>> # initialize engine and add a request with request_id

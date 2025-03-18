@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-"""vllm2.entrypoints.api_server with some extra logging for testing."""
+"""vllm.entrypoints.api_server with some extra logging for testing."""
 from typing import Any, Dict, Iterable
 
 import uvicorn
@@ -10,7 +10,7 @@ from vllm2.engine.arg_utils import AsyncEngineArgs
 from vllm2.engine.async_llm_engine import AsyncLLMEngine
 from vllm2.utils import FlexibleArgumentParser
 
-app = vllm2.entrypoints.api_server.app
+app = vllm.entrypoints.api_server.app
 
 
 class AsyncLLMEngineWithStats(AsyncLLMEngine):
@@ -43,10 +43,10 @@ if __name__ == "__main__":
 
     engine_args = AsyncEngineArgs.from_cli_args(args)
     engine = AsyncLLMEngineWithStats.from_engine_args(engine_args)
-    vllm2.entrypoints.api_server.engine = engine
+    vllm.entrypoints.api_server.engine = engine
     uvicorn.run(
         app,
         host=args.host,
         port=args.port,
         log_level="debug",
-        timeout_keep_alive=vllm2.entrypoints.api_server.TIMEOUT_KEEP_ALIVE)
+        timeout_keep_alive=vllm.entrypoints.api_server.TIMEOUT_KEEP_ALIVE)

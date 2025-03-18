@@ -44,7 +44,7 @@ for output in outputs:
 To perform the same with an online mode launch the server:
 
 ```bash
-python -m vllm2.entrypoints.openai.api_server --host 0.0.0.0 --port 8000 --model facebook/opt-6.7b \
+python -m vllm.entrypoints.openai.api_server --host 0.0.0.0 --port 8000 --model facebook/opt-6.7b \
     --seed 42 -tp 1 --speculative_model facebook/opt-125m \
     --num_speculative_tokens 5 --gpu_memory_utilization 0.8
 ```

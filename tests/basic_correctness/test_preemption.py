@@ -121,7 +121,7 @@ def test_preemption(
     )
 
     assert ("is preempted by PreemptionMode.RECOMPUTE mode because there "
-            "is not enough KV cache space." in caplog_vllm2.text)
+            "is not enough KV cache space." in caplog_vllm.text)
     # Ensure the count bucket of request-level histogram metrics matches
     # the number of requests as a simple sanity check to ensure metrics are
     # generated

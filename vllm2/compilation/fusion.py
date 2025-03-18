@@ -4,7 +4,7 @@ from typing import Callable, Dict, List, NamedTuple, Optional, Tuple
 
 import torch
 import torch._inductor.pattern_matcher as pm
-# TODO(luka) use vllm2.utils once #10836 landed
+# TODO(luka) use vllm.utils once #10836 landed
 from compressed_tensors.quantization import FP8_DTYPE
 from torch import fx
 from torch._higher_order_ops.auto_functionalize import auto_functionalized

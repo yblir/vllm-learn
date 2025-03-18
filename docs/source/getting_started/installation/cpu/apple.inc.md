@@ -23,7 +23,7 @@ There are no pre-built wheels or images for this device, so you must build vLLM 
 After installation of XCode and the Command Line Tools, which include Apple Clang, execute the following commands to build and install vLLM from the source.
 
 ```console
-git clone https://github.com/vllm-project/vllm2.git
+git clone https://github.com/vllm-project/vllm.git
 cd vllm
 pip install -r requirements-cpu.txt
 pip install -e . 

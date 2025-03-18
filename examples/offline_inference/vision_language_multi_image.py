@@ -546,7 +546,7 @@ if __name__ == "__main__":
                         type=str,
                         default="generate",
                         choices=["generate", "chat"],
-                        help="The method to run in `vllm2.LLM`.")
+                        help="The method to run in `vllm.LLM`.")
 
     args = parser.parse_args()
     main(args)

@@ -30,7 +30,7 @@ pip install --upgrade pip
 Second, clone vLLM and install prerequisites for the vLLM OpenVINO backend installation:
 
 ```console
-git clone https://github.com/vllm-project/vllm2.git
+git clone https://github.com/vllm-project/vllm.git
 cd vllm
 pip install -r requirements-build.txt --extra-index-url https://download.pytorch.org/whl/cpu
 ```

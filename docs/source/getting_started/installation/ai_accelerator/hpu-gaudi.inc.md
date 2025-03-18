@@ -61,7 +61,7 @@ Currently, there are no pre-built Intel Gaudi wheels.
 To build and install vLLM from source, run:
 
 ```console
-git clone https://github.com/vllm-project/vllm2.git
+git clone https://github.com/vllm-project/vllm.git
 cd vllm
 pip install -r requirements-hpu.txt
 python setup.py develop

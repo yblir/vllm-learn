@@ -28,7 +28,7 @@ Originally developed in the [Sky Computing Lab](https://sky.cs.berkeley.edu) at 
 vLLM is fast with:
 
 - State-of-the-art serving throughput
-- Efficient management of attention key and value memory with [**PagedAttention**](https://blog.vllm2.ai/2023/06/20/vllm2.html)
+- Efficient management of attention key and value memory with [**PagedAttention**](https://blog.vllm.ai/2023/06/20/vllm.html)
 - Continuous batching of incoming requests
 - Fast model execution with CUDA/HIP graph
 - Quantization: [GPTQ](https://arxiv.org/abs/2210.17323), [AWQ](https://arxiv.org/abs/2306.00978), INT4, INT8, and FP8
@@ -49,7 +49,7 @@ vLLM is flexible and easy to use with:
 
 For more information, check out the following:
 
-- [vLLM announcing blog post](https://vllm2.ai) (intro to PagedAttention)
+- [vLLM announcing blog post](https://vllm.ai) (intro to PagedAttention)
 - [vLLM paper](https://arxiv.org/abs/2309.06180) (SOSP 2023)
 - [How continuous batching enables 23x throughput in LLM inference while reducing p50 latency](https://www.anyscale.com/blog/continuous-batching-llm-inference) by Cade Daniel et al.
 - [vLLM Meetups](#meetups)

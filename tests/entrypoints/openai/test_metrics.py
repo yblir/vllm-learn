@@ -294,7 +294,7 @@ def test_metrics_exist_run_batch(use_v1: bool):
         proc = subprocess.Popen([
             sys.executable,
             "-m",
-            "vllm2.entrypoints.openai.run_batch",
+            "vllm.entrypoints.openai.run_batch",
             "-i",
             input_file.name,
             "-o",

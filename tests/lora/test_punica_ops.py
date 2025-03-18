@@ -96,7 +96,7 @@ def check_sgmv_shrink(batches: int, num_loras: int, rank: int,
                       hidden_size: int, nslices: int, dtype: torch.dtype,
                       device: str, seq_length: int, scaling: float):
     """
-    Compare outputs of vllm2.sgmv_shrink kernel against a reference
+    Compare outputs of vllm.sgmv_shrink kernel against a reference
     implementation.
     """
     data: PunicaTensors = generate_data_for_nslices(
@@ -115,7 +115,7 @@ def check_sgmv_shrink(batches: int, num_loras: int, rank: int,
     # Preventing cache error pointer.
     with _dict_lock:
         _LORA_A_PTR_DICT.clear()
-        torch.ops.vllm2.sgmv_shrink(
+        torch.ops.vllm.sgmv_shrink(
             data.inputs_tensor,
             data.lora_weights,
             data.our_out_tensor,
@@ -148,7 +148,7 @@ def check_sgmv_expand(batches: int, num_loras: int, rank: int,
                       hidden_size: int, nslices: int, dtype: torch.dtype,
                       device: str, seq_length: int, add_inputs: bool):
     """
-    Compare outputs of vllm2.sgmv_expand kernel against a reference
+    Compare outputs of vllm.sgmv_expand kernel against a reference
     implementation.
     """
     data: PunicaTensors = generate_data_for_nslices(
@@ -167,7 +167,7 @@ def check_sgmv_expand(batches: int, num_loras: int, rank: int,
 
     with _dict_lock:
         _LORA_B_PTR_DICT.clear()
-        torch.ops.vllm2.sgmv_expand(
+        torch.ops.vllm.sgmv_expand(
             data.inputs_tensor,
             data.lora_weights,
             data.our_out_tensor,
@@ -201,7 +201,7 @@ def check_bgmv_shrink(batches: int, num_loras: int, rank: int,
                       hidden_size: int, dtype: torch.dtype, device: str,
                       scaling: float):
     """
-    Compare vllm2.bgmv_shrink against a reference implementation.
+    Compare vllm.bgmv_shrink against a reference implementation.
     """
     seq_length = 1
     data: PunicaTensors = generate_data(
@@ -215,7 +215,7 @@ def check_bgmv_shrink(batches: int, num_loras: int, rank: int,
         device,
     )
 
-    torch.ops.vllm2.bgmv_shrink(
+    torch.ops.vllm.bgmv_shrink(
         data.inputs_tensor,
         data.lora_weights,
         data.our_out_tensor,
@@ -239,7 +239,7 @@ def check_bgmv_expand(batches: int, num_loras: int, rank: int,
                       hidden_size: int, dtype: torch.dtype, device: str,
                       add_inputs: bool):
     """
-    Compare vllm2.bgmv_expand against a reference implementation.
+    Compare vllm.bgmv_expand against a reference implementation.
     """
     seq_length = 1
     data: PunicaTensors = generate_data(
@@ -253,7 +253,7 @@ def check_bgmv_expand(batches: int, num_loras: int, rank: int,
         device,
     )
 
-    torch.ops.vllm2.bgmv_expand(
+    torch.ops.vllm.bgmv_expand(
         data.inputs_tensor,
         data.lora_weights,
         data.our_out_tensor,
@@ -274,7 +274,7 @@ def check_bgmv_expand_slice(batches: int, num_loras: int, rank: int,
                             hidden_size: int, nslices: int, dtype: torch.dtype,
                             device: str, add_inputs: bool):
     """
-    Compare vllm2.bgmv_expand_slice against a reference implementation.
+    Compare vllm.bgmv_expand_slice against a reference implementation.
     """
     seq_length = 1
     data: PunicaTensors = generate_data_for_expand_nslices(
@@ -290,7 +290,7 @@ def check_bgmv_expand_slice(batches: int, num_loras: int, rank: int,
 
     slice_offset = 0
     for index in range(nslices):
-        torch.ops.vllm2.bgmv_expand_slice(
+        torch.ops.vllm.bgmv_expand_slice(
             data.inputs_tensor,
             data.lora_weights[index],
             data.our_out_tensor,

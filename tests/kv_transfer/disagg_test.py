@@ -26,7 +26,7 @@ def setup_servers():
     prefill_cmd = [
         sys.executable,
         "-m",
-        "vllm2.entrypoints.openai.api_server",
+        "vllm.entrypoints.openai.api_server",
         "--model",
         "meta-llama/Llama-3.2-1B-Instruct",
         "--port",
@@ -47,7 +47,7 @@ def setup_servers():
     decode_cmd = [
         sys.executable,
         "-m",
-        "vllm2.entrypoints.openai.api_server",
+        "vllm.entrypoints.openai.api_server",
         "--model",
         "meta-llama/Llama-3.2-1B-Instruct",
         "--port",

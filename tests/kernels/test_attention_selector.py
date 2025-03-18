@@ -32,17 +32,17 @@ def test_env(name: str, device: str, monkeypatch):
     override_backend_env_variable(monkeypatch, name)
 
     if device == "cpu":
-        with patch("vllm2.attention.selector.current_platform", CpuPlatform()):
+        with patch("vllm.attention.selector.current_platform", CpuPlatform()):
             backend = get_attn_backend(16, torch.float16, torch.float16, 16,
                                        False)
         assert backend.get_name() == "TORCH_SDPA"
     elif device == "hip":
-        with patch("vllm2.attention.selector.current_platform", RocmPlatform()):
+        with patch("vllm.attention.selector.current_platform", RocmPlatform()):
             backend = get_attn_backend(16, torch.float16, torch.float16, 16,
                                        False)
         assert backend.get_name() == "ROCM_FLASH"
     elif device == "openvino":
-        with patch("vllm2.attention.selector.current_platform",
+        with patch("vllm.attention.selector.current_platform",
                    OpenVinoPlatform()), patch.dict('sys.modules',
                                                    {'openvino': Mock()}):
             backend = get_attn_backend(16, torch.float16, torch.float16, 16,
@@ -50,7 +50,7 @@ def test_env(name: str, device: str, monkeypatch):
         assert backend.get_name() == "OPENVINO"
     else:
         if name in ["XFORMERS", "FLASHINFER"]:
-            with patch("vllm2.attention.selector.current_platform",
+            with patch("vllm.attention.selector.current_platform",
                        CudaPlatform()):
                 backend = get_attn_backend(16, torch.float16, torch.float16,
                                            16, False)
@@ -98,7 +98,7 @@ def test_flash_attn(monkeypatch):
 def test_invalid_env(monkeypatch):
     """Ignore the invalid env variable if it is set."""
     override_backend_env_variable(monkeypatch, STR_INVALID_VAL)
-    with patch("vllm2.attention.selector.current_platform", CudaPlatform()):
+    with patch("vllm.attention.selector.current_platform", CudaPlatform()):
         backend = get_attn_backend(32, torch.float16, None, 16, False)
         assert backend.get_name() == "FLASH_ATTN"
 

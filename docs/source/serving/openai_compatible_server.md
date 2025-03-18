@@ -164,7 +164,7 @@ print(completion._request_id)
 The `vllm serve` command is used to launch the OpenAI-compatible server.
 
 :::{argparse}
-:module: vllm2.entrypoints.openai.cli_args
+:module: vllm.entrypoints.openai.cli_args
 :func: create_parser_for_docs
 :prog: vllm serve
 :::

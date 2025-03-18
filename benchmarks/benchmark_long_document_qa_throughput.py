@@ -35,7 +35,7 @@ Commandline arguments:
                     (Optional, default: 0)
 
 In the meantime, it also supports all the vLLM engine args to initialize the 
-LLM engine. You can refer to the `vllm2.engine.arg_utils.EngineArgs` for more
+LLM engine. You can refer to the `vllm.engine.arg_utils.EngineArgs` for more
 details.
 """
 

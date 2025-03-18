@@ -207,7 +207,7 @@ autodoc_mock_imports = [
     "psutil",
     "prometheus_client",
     "sentencepiece",
-    "vllm2._C",
+    "vllm._C",
     "PIL",
     "numpy",
     'triton',

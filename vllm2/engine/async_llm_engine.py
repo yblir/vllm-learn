@@ -943,7 +943,7 @@ class AsyncLLMEngine(EngineClient):
         from the LLMEngine to the caller.
 
         Args:
-            prompt: The prompt to the LLM. See :class:`~vllm2.inputs.PromptType`
+            prompt: The prompt to the LLM. See :class:`~vllm.inputs.PromptType`
                 for more details about the format of each input.
             sampling_params: The sampling parameters of the request.
             request_id: The unique id of the request.
@@ -961,7 +961,7 @@ class AsyncLLMEngine(EngineClient):
         Details:
             - If the engine is not running, start the background loop,
               which iteratively invokes
-              :meth:`~vllm2.engine.async_llm_engine.AsyncLLMEngine.engine_step`
+              :meth:`~vllm.engine.async_llm_engine.AsyncLLMEngine.engine_step`
               to process the waiting requests.
             - Add the request to the engine's `RequestTracker`.
               On the next background loop, this request will be sent to
@@ -1033,7 +1033,7 @@ class AsyncLLMEngine(EngineClient):
         from the LLMEngine to the caller.
 
         Args:
-            prompt: The prompt to the LLM. See :class:`~vllm2.inputs.PromptType`
+            prompt: The prompt to the LLM. See :class:`~vllm.inputs.PromptType`
                 for more details about the format of each input.
             pooling_params: The pooling parameters of the request.
             request_id: The unique id of the request.
@@ -1049,7 +1049,7 @@ class AsyncLLMEngine(EngineClient):
         Details:
             - If the engine is not running, start the background loop,
               which iteratively invokes
-              :meth:`~vllm2.engine.async_llm_engine.AsyncLLMEngine.engine_step`
+              :meth:`~vllm.engine.async_llm_engine.AsyncLLMEngine.engine_step`
               to process the waiting requests.
             - Add the request to the engine's `RequestTracker`.
               On the next background loop, this request will be sent to

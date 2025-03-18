@@ -106,7 +106,7 @@ def run_test(
     num_logprobs: int,
     **kwargs,
 ):
-    """Inference result should be the same between hf and vllm2."""
+    """Inference result should be the same between hf and vllm."""
     torch_dtype = STR_DTYPE_TO_TORCH_DTYPE[dtype]
 
     # NOTE: take care of the order. run vLLM first, and then run HF.
