@@ -1,10 +1,12 @@
+# SPDX-License-Identifier: Apache-2.0
+
 from typing import List
 
 import pytest
 
-from vllm_module.core.block.block_table import BlockTable
-from vllm_module.core.block.cpu_gpu_block_allocator import CpuGpuBlockAllocator
-from vllm_module.utils import Device, cdiv, chunk_list
+from vllm2.core.block.block_table import BlockTable
+from vllm2.core.block.cpu_gpu_block_allocator import CpuGpuBlockAllocator
+from vllm2.utils import Device, cdiv, chunk_list
 
 
 @pytest.mark.parametrize("block_size", [16])

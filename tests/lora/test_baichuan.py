@@ -1,18 +1,19 @@
+# SPDX-License-Identifier: Apache-2.0
+
 from typing import List
 
 import pytest
 
-import vllm_module
-from vllm_module.lora.request import LoRARequest
-
-from .conftest import cleanup
+import vllm2
+from vllm2.distributed import cleanup_dist_env_and_memory
+from vllm2.lora.request import LoRARequest
 
 MODEL_PATH = "baichuan-inc/Baichuan-7B"
 
 PROMPT_TEMPLATE = """I want you to act as a SQL terminal in front of an example database, you need only to return the sql command to me.Below is an instruction that describes a task, Write a response that appropriately completes the request.\n"\n##Instruction:\nconcert_singer contains tables such as stadium, singer, concert, singer_in_concert. Table stadium has columns such as Stadium_ID, Location, Name, Capacity, Highest, Lowest, Average. Stadium_ID is the primary key.\nTable singer has columns such as Singer_ID, Name, Country, Song_Name, Song_release_year, Age, Is_male. Singer_ID is the primary key.\nTable concert has columns such as concert_ID, concert_Name, Theme, Stadium_ID, Year. concert_ID is the primary key.\nTable singer_in_concert has columns such as concert_ID, Singer_ID. concert_ID is the primary key.\nThe Stadium_ID of concert is the foreign key of Stadium_ID of stadium.\nThe Singer_ID of singer_in_concert is the foreign key of Singer_ID of singer.\nThe concert_ID of singer_in_concert is the foreign key of concert_ID of concert.\n\n###Input:\n{query}\n\n###Response:"""  # noqa: E501
 
 
-def do_sample(llm: vllm_module.LLM, lora_path: str, lora_id: int) -> List[str]:
+def do_sample(llm: vllm2.LLM, lora_path: str, lora_id: int) -> List[str]:
     prompts = [
         PROMPT_TEMPLATE.format(query="How many singers do we have?"),
         PROMPT_TEMPLATE.format(
@@ -25,7 +26,7 @@ def do_sample(llm: vllm_module.LLM, lora_path: str, lora_id: int) -> List[str]:
         ),
     ]
     print(prompts)
-    sampling_params = vllm_module.SamplingParams(temperature=0, max_tokens=256)
+    sampling_params = vllm2.SamplingParams(temperature=0, max_tokens=256)
     outputs = llm.generate(
         prompts,
         sampling_params,
@@ -41,13 +42,21 @@ def do_sample(llm: vllm_module.LLM, lora_path: str, lora_id: int) -> List[str]:
     return generated_texts
 
 
+@pytest.fixture(autouse=True)
+def v1(run_with_both_engines_lora):
+    # Simple autouse wrapper to run both engines for each test
+    # This can be promoted up to conftest.py to run for every
+    # test in a package
+    pass
+
+
 def test_baichuan_lora(baichuan_lora_files):
-    llm = vllm_module.LLM(MODEL_PATH,
-                          max_model_len=1024,
-                          enable_lora=True,
-                          max_loras=4,
-                          max_lora_rank=64,
-                          trust_remote_code=True)
+    llm = vllm2.LLM(MODEL_PATH,
+                   max_model_len=1024,
+                   enable_lora=True,
+                   max_loras=4,
+                   max_lora_rank=64,
+                   trust_remote_code=True)
 
     expected_lora_output = [
         "SELECT count(*) FROM singer",
@@ -63,52 +72,51 @@ def test_baichuan_lora(baichuan_lora_files):
         assert output2[i] == expected_lora_output[i]
 
 
-@pytest.mark.skip("Requires multiple GPUs")
 @pytest.mark.parametrize("fully_sharded", [True, False])
-def test_baichuan_tensor_parallel_equality(baichuan_lora_files, fully_sharded):
-    # Cannot use as it will initialize torch.cuda too early...
-    # if torch.cuda.device_count() < 4:
-    #     pytest.skip(f"Not enough GPUs for tensor parallelism {4}")
+def test_baichuan_tensor_parallel_equality(baichuan_lora_files,
+                                           num_gpus_available, fully_sharded):
+    if num_gpus_available < 4:
+        pytest.skip(f"Not enough GPUs for tensor parallelism {4}")
 
-    llm_tp1 = vllm_module.LLM(MODEL_PATH,
-                              enable_lora=True,
-                              max_num_seqs=16,
-                              max_loras=4,
-                              max_lora_rank=64,
-                              tensor_parallel_size=1,
-                              trust_remote_code=True,
-                              fully_sharded_loras=fully_sharded)
+    llm_tp1 = vllm2.LLM(MODEL_PATH,
+                       enable_lora=True,
+                       max_num_seqs=16,
+                       max_loras=4,
+                       max_lora_rank=64,
+                       tensor_parallel_size=1,
+                       trust_remote_code=True,
+                       fully_sharded_loras=fully_sharded)
     output_tp1 = do_sample(llm_tp1, baichuan_lora_files, lora_id=1)
 
     del llm_tp1
-    cleanup()
+    cleanup_dist_env_and_memory()
 
-    llm_tp2 = vllm_module.LLM(MODEL_PATH,
-                              enable_lora=True,
-                              max_num_seqs=16,
-                              max_loras=4,
-                              max_lora_rank=64,
-                              tensor_parallel_size=2,
-                              trust_remote_code=True,
-                              fully_sharded_loras=fully_sharded)
+    llm_tp2 = vllm2.LLM(MODEL_PATH,
+                       enable_lora=True,
+                       max_num_seqs=16,
+                       max_loras=4,
+                       max_lora_rank=64,
+                       tensor_parallel_size=2,
+                       trust_remote_code=True,
+                       fully_sharded_loras=fully_sharded)
     output_tp2 = do_sample(llm_tp2, baichuan_lora_files, lora_id=2)
 
     del llm_tp2
-    cleanup()
+    cleanup_dist_env_and_memory()
 
     assert output_tp1 == output_tp2
 
-    llm_tp4 = vllm_module.LLM(MODEL_PATH,
-                              enable_lora=True,
-                              max_num_seqs=16,
-                              max_loras=4,
-                              max_lora_rank=64,
-                              tensor_parallel_size=4,
-                              trust_remote_code=True,
-                              fully_sharded_loras=fully_sharded)
+    llm_tp4 = vllm2.LLM(MODEL_PATH,
+                       enable_lora=True,
+                       max_num_seqs=16,
+                       max_loras=4,
+                       max_lora_rank=64,
+                       tensor_parallel_size=4,
+                       trust_remote_code=True,
+                       fully_sharded_loras=fully_sharded)
     output_tp4 = do_sample(llm_tp4, baichuan_lora_files, lora_id=2)
 
     del llm_tp4
-    cleanup()
+    cleanup_dist_env_and_memory()
 
     assert output_tp1 == output_tp4

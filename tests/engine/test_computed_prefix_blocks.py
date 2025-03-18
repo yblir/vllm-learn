@@ -1,11 +1,17 @@
+# SPDX-License-Identifier: Apache-2.0
+
 import pytest
 
-from vllm_module.engine.arg_utils import EngineArgs
-from vllm_module.engine.llm_engine import LLMEngine
-from vllm_module.sampling_params import SamplingParams
+from vllm2.config import LoadFormat
+from vllm2.engine.arg_utils import EngineArgs
+from vllm2.engine.llm_engine import LLMEngine
+from vllm2.sampling_params import SamplingParams
+
+from ..conftest import MODEL_WEIGHTS_S3_BUCKET
 
 
-@pytest.mark.parametrize("model", ["facebook/opt-125m"])
+@pytest.mark.parametrize("model",
+                         [f"{MODEL_WEIGHTS_S3_BUCKET}/distilbert/distilgpt2"])
 @pytest.mark.parametrize("block_size", [16])
 def test_computed_prefix_blocks(model: str, block_size: int):
     # This test checks if we are able to run the engine to completion
@@ -22,6 +28,7 @@ def test_computed_prefix_blocks(model: str, block_size: int):
         "decoration.")
 
     engine_args = EngineArgs(model=model,
+                             load_format=LoadFormat.RUNAI_STREAMER,
                              block_size=block_size,
                              enable_prefix_caching=True)
 

@@ -1,17 +1,19 @@
+# SPDX-License-Identifier: Apache-2.0
+
 import random
 from unittest.mock import MagicMock
 
 import pytest
 from transformers import PreTrainedTokenizer
 
-from vllm_module.core.scheduler import Scheduler
-from vllm_module.engine.output_processor.multi_step import MultiStepOutputProcessor
-from vllm_module.engine.output_processor.stop_checker import StopChecker
-from vllm_module.sampling_params import SamplingParams
-from vllm_module.sequence import (CompletionSequenceGroupOutput, Logprob,
-                                  SequenceOutput, SequenceStatus)
-from vllm_module.transformers_utils.detokenizer import Detokenizer
-from vllm_module.utils import Counter
+from vllm2.core.scheduler import Scheduler
+from vllm2.engine.output_processor.multi_step import MultiStepOutputProcessor
+from vllm2.engine.output_processor.stop_checker import StopChecker
+from vllm2.sampling_params import SamplingParams
+from vllm2.sequence import (CompletionSequenceGroupOutput, Logprob,
+                           SequenceOutput, SequenceStatus)
+from vllm2.transformers_utils.detokenizer import Detokenizer
+from vllm2.utils import Counter
 
 from ...core.utils import create_seq_group
 

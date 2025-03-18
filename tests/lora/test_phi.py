@@ -1,14 +1,18 @@
+# SPDX-License-Identifier: Apache-2.0
+
 from typing import List
 
-import vllm_module
-from vllm_module.lora.request import LoRARequest
+import pytest
+
+import vllm
+from vllm2.lora.request import LoRARequest
 
 MODEL_PATH = "microsoft/phi-2"
 
 PROMPT_TEMPLATE = "### Instruct: {sql_prompt}\n\n### Context: {context}\n\n### Output:"  # noqa: E501
 
 
-def do_sample(llm: vllm_module.LLM, lora_path: str, lora_id: int) -> List[str]:
+def do_sample(llm: vllm2.LLM, lora_path: str, lora_id: int) -> List[str]:
     prompts = [
         PROMPT_TEMPLATE.format(
             sql_prompt=
@@ -27,9 +31,9 @@ def do_sample(llm: vllm_module.LLM, lora_path: str, lora_id: int) -> List[str]:
             "CREATE TABLE marine_species (name VARCHAR(50), common_name VARCHAR(50), location VARCHAR(50));"  # noqa: E501
         ),
     ]
-    sampling_params = vllm_module.SamplingParams(temperature=0,
-                                                 max_tokens=64,
-                                                 stop="### End")
+    sampling_params = vllm2.SamplingParams(temperature=0,
+                                          max_tokens=64,
+                                          stop="### End")
     outputs = llm.generate(
         prompts,
         sampling_params,
@@ -46,14 +50,26 @@ def do_sample(llm: vllm_module.LLM, lora_path: str, lora_id: int) -> List[str]:
     return generated_texts
 
 
+@pytest.fixture(autouse=True)
+def v1(run_with_both_engines_lora):
+    # Simple autouse wrapper to run both engines for each test
+    # This can be promoted up to conftest.py to run for every
+    # test in a package
+    pass
+
+
+# Skipping for V1 for now as we are hitting,
+# "Head size 80 is not supported by FlashAttention." error.
+@pytest.mark.skip_v1
 def test_phi2_lora(phi2_lora_files):
     # We enable enforce_eager=True here to reduce VRAM usage for lora-test CI,
     # Otherwise, the lora-test will fail due to CUDA OOM.
-    llm = vllm_module.LLM(MODEL_PATH,
-                          max_model_len=1024,
-                          enable_lora=True,
-                          max_loras=2,
-                          enforce_eager=True)
+    llm = vllm2.LLM(MODEL_PATH,
+                   max_model_len=1024,
+                   enable_lora=True,
+                   max_loras=2,
+                   enforce_eager=True,
+                   enable_chunked_prefill=True)
 
     expected_lora_output = [
         "SELECT catalog_publisher, COUNT(*) as num_catalogs FROM catalogs GROUP BY catalog_publisher ORDER BY num_catalogs DESC LIMIT 1;",  # noqa: E501

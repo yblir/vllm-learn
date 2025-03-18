@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0
+
 import asyncio
 import os
 import sys
@@ -7,9 +9,9 @@ from unittest.mock import patch
 import pytest
 from transformers import AutoTokenizer, PreTrainedTokenizerBase
 
-from vllm_module.transformers_utils.tokenizer_group import (TokenizerGroup,
-                                                            get_tokenizer_group)
-from vllm_module.transformers_utils.tokenizer_group.ray_tokenizer_group import (
+from vllm2.transformers_utils.tokenizer_group import (TokenizerGroup,
+                                                     get_tokenizer_group)
+from vllm2.transformers_utils.tokenizer_group.ray_tokenizer_group import (
     RayTokenizerGroupPool)
 
 from ..conftest import get_tokenizer_pool_config

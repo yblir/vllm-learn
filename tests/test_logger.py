@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0
+
 import json
 import logging
 import os
@@ -11,9 +13,9 @@ from uuid import uuid4
 
 import pytest
 
-from vllm_module.logger import (_DATE_FORMAT, _FORMAT, _configure_vllm_root_logger,
-                                enable_trace_function_call, init_logger)
-from vllm_module.logging import NewLineFormatter
+from vllm2.logger import (_DATE_FORMAT, _FORMAT, _configure_vllm_root_logger,
+                         enable_trace_function_call, init_logger)
+from vllm2.logging_utils import NewLineFormatter
 
 
 def f1(x):
@@ -29,7 +31,7 @@ def test_trace_function_call():
     cur_dir = os.path.dirname(__file__)
     enable_trace_function_call(path, cur_dir)
     f1(1)
-    with open(path, 'r') as f:
+    with open(path) as f:
         content = f.read()
 
     assert "f1" in content
@@ -42,14 +44,15 @@ def test_default_vllm_root_logger_configuration():
     """This test presumes that VLLM_CONFIGURE_LOGGING (default: True) and
     VLLM_LOGGING_CONFIG_PATH (default: None) are not configured and default
     behavior is activated."""
-    logger = logging.getLogger("vllm_module")
+    logger = logging.getLogger("vllm")
     assert logger.level == logging.DEBUG
     assert not logger.propagate
 
     handler = logger.handlers[0]
     assert isinstance(handler, logging.StreamHandler)
     assert handler.stream == sys.stdout
-    assert handler.level == logging.INFO
+    # we use DEBUG level for testing by default
+    # assert handler.level == logging.INFO
 
     formatter = handler.formatter
     assert formatter is not None
@@ -58,16 +61,16 @@ def test_default_vllm_root_logger_configuration():
     assert formatter.datefmt == _DATE_FORMAT
 
 
-@patch("vllm_module.logger.VLLM_CONFIGURE_LOGGING", 1)
-@patch("vllm_module.logger.VLLM_LOGGING_CONFIG_PATH", None)
+@patch("vllm2.logger.VLLM_CONFIGURE_LOGGING", 1)
+@patch("vllm2.logger.VLLM_LOGGING_CONFIG_PATH", None)
 def test_descendent_loggers_depend_on_and_propagate_logs_to_root_logger():
     """This test presumes that VLLM_CONFIGURE_LOGGING (default: True) and
     VLLM_LOGGING_CONFIG_PATH (default: None) are not configured and default
     behavior is activated."""
-    root_logger = logging.getLogger("vllm_module")
+    root_logger = logging.getLogger("vllm")
     root_handler = root_logger.handlers[0]
 
-    unique_name = f"vllm_module.{uuid4()}"
+    unique_name = f"vllm2.{uuid4()}"
     logger = init_logger(unique_name)
     assert logger.name == unique_name
     assert logger.level == logging.NOTSET
@@ -87,21 +90,21 @@ def test_descendent_loggers_depend_on_and_propagate_logs_to_root_logger():
     assert log_record.levelno == logging.INFO
 
 
-@patch("vllm_module.logger.VLLM_CONFIGURE_LOGGING", 0)
-@patch("vllm_module.logger.VLLM_LOGGING_CONFIG_PATH", None)
+@patch("vllm2.logger.VLLM_CONFIGURE_LOGGING", 0)
+@patch("vllm2.logger.VLLM_LOGGING_CONFIG_PATH", None)
 def test_logger_configuring_can_be_disabled():
     """This test calls _configure_vllm_root_logger again to test custom logging
     config behavior, however mocks are used to ensure no changes in behavior or
     configuration occur."""
 
-    with patch("logging.config.dictConfig") as dict_config_mock:
+    with patch("vllm2.logger.dictConfig") as dict_config_mock:
         _configure_vllm_root_logger()
     dict_config_mock.assert_not_called()
 
 
-@patch("vllm_module.logger.VLLM_CONFIGURE_LOGGING", 1)
+@patch("vllm2.logger.VLLM_CONFIGURE_LOGGING", 1)
 @patch(
-    "vllm_module.logger.VLLM_LOGGING_CONFIG_PATH",
+    "vllm2.logger.VLLM_LOGGING_CONFIG_PATH",
     "/if/there/is/a/file/here/then/you/did/this/to/yourself.json",
 )
 def test_an_error_is_raised_when_custom_logging_config_file_does_not_exist():
@@ -110,11 +113,11 @@ def test_an_error_is_raised_when_custom_logging_config_file_does_not_exist():
     configuration occurs."""
     with pytest.raises(RuntimeError) as ex_info:
         _configure_vllm_root_logger()
-    assert ex_info.type == RuntimeError
+    assert ex_info.type == RuntimeError  # noqa: E721
     assert "File does not exist" in str(ex_info)
 
 
-@patch("vllm_module.logger.VLLM_CONFIGURE_LOGGING", 1)
+@patch("vllm2.logger.VLLM_CONFIGURE_LOGGING", 1)
 def test_an_error_is_raised_when_custom_logging_config_is_invalid_json():
     """This test calls _configure_vllm_root_logger again to test custom logging
     config behavior, however it fails before any change in behavior or
@@ -122,7 +125,7 @@ def test_an_error_is_raised_when_custom_logging_config_is_invalid_json():
     with NamedTemporaryFile(encoding="utf-8", mode="w") as logging_config_file:
         logging_config_file.write("---\nloggers: []\nversion: 1")
         logging_config_file.flush()
-        with patch("vllm_module.logger.VLLM_LOGGING_CONFIG_PATH",
+        with patch("vllm2.logger.VLLM_LOGGING_CONFIG_PATH",
                    logging_config_file.name):
             with pytest.raises(JSONDecodeError) as ex_info:
                 _configure_vllm_root_logger()
@@ -130,7 +133,7 @@ def test_an_error_is_raised_when_custom_logging_config_is_invalid_json():
             assert "Expecting value" in str(ex_info)
 
 
-@patch("vllm_module.logger.VLLM_CONFIGURE_LOGGING", 1)
+@patch("vllm2.logger.VLLM_CONFIGURE_LOGGING", 1)
 @pytest.mark.parametrize("unexpected_config", (
     "Invalid string",
     [{
@@ -147,22 +150,22 @@ def test_an_error_is_raised_when_custom_logging_config_is_unexpected_json(
     with NamedTemporaryFile(encoding="utf-8", mode="w") as logging_config_file:
         logging_config_file.write(json.dumps(unexpected_config))
         logging_config_file.flush()
-        with patch("vllm_module.logger.VLLM_LOGGING_CONFIG_PATH",
+        with patch("vllm2.logger.VLLM_LOGGING_CONFIG_PATH",
                    logging_config_file.name):
             with pytest.raises(ValueError) as ex_info:
                 _configure_vllm_root_logger()
-            assert ex_info.type == ValueError
+            assert ex_info.type == ValueError  # noqa: E721
             assert "Invalid logging config. Expected Dict, got" in str(ex_info)
 
 
-@patch("vllm_module.logger.VLLM_CONFIGURE_LOGGING", 1)
+@patch("vllm2.logger.VLLM_CONFIGURE_LOGGING", 1)
 def test_custom_logging_config_is_parsed_and_used_when_provided():
     """This test calls _configure_vllm_root_logger again to test custom logging
     config behavior, however mocks are used to ensure no changes in behavior or
     configuration occur."""
     valid_logging_config = {
         "loggers": {
-            "vllm_module.test_logger.logger": {
+            "vllm2.test_logger.logger": {
                 "handlers": [],
                 "propagate": False,
             }
@@ -172,21 +175,21 @@ def test_custom_logging_config_is_parsed_and_used_when_provided():
     with NamedTemporaryFile(encoding="utf-8", mode="w") as logging_config_file:
         logging_config_file.write(json.dumps(valid_logging_config))
         logging_config_file.flush()
-        with patch("vllm_module.logger.VLLM_LOGGING_CONFIG_PATH",
+        with patch("vllm2.logger.VLLM_LOGGING_CONFIG_PATH",
                    logging_config_file.name), patch(
-                       "logging.config.dictConfig") as dict_config_mock:
+                       "vllm2.logger.dictConfig") as dict_config_mock:
             _configure_vllm_root_logger()
-            assert dict_config_mock.called_with(valid_logging_config)
+            dict_config_mock.assert_called_with(valid_logging_config)
 
 
-@patch("vllm_module.logger.VLLM_CONFIGURE_LOGGING", 0)
+@patch("vllm2.logger.VLLM_CONFIGURE_LOGGING", 0)
 def test_custom_logging_config_causes_an_error_if_configure_logging_is_off():
     """This test calls _configure_vllm_root_logger again to test custom logging
     config behavior, however mocks are used to ensure no changes in behavior or
     configuration occur."""
     valid_logging_config = {
         "loggers": {
-            "vllm_module.test_logger.logger": {
+            "vllm2.test_logger.logger": {
                 "handlers": [],
             }
         },
@@ -195,7 +198,7 @@ def test_custom_logging_config_causes_an_error_if_configure_logging_is_off():
     with NamedTemporaryFile(encoding="utf-8", mode="w") as logging_config_file:
         logging_config_file.write(json.dumps(valid_logging_config))
         logging_config_file.flush()
-        with patch("vllm_module.logger.VLLM_LOGGING_CONFIG_PATH",
+        with patch("vllm2.logger.VLLM_LOGGING_CONFIG_PATH",
                    logging_config_file.name):
             with pytest.raises(RuntimeError) as ex_info:
                 _configure_vllm_root_logger()
@@ -207,8 +210,8 @@ def test_custom_logging_config_causes_an_error_if_configure_logging_is_off():
 
         # Remember! The root logger is assumed to have been configured as
         # though VLLM_CONFIGURE_LOGGING=1 and VLLM_LOGGING_CONFIG_PATH=None.
-        root_logger = logging.getLogger("vllm_module")
-        other_logger_name = f"vllm_module.test_logger.{uuid4()}"
+        root_logger = logging.getLogger("vllm")
+        other_logger_name = f"vllm2.test_logger.{uuid4()}"
         other_logger = init_logger(other_logger_name)
         assert other_logger.handlers != root_logger.handlers
         assert other_logger.level != root_logger.level

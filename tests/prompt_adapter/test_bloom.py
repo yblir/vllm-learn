@@ -1,7 +1,9 @@
+# SPDX-License-Identifier: Apache-2.0
+
 import pytest
 
-import vllm_module
-from vllm_module.prompt_adapter.request import PromptAdapterRequest
+import vllm
+from vllm2.prompt_adapter.request import PromptAdapterRequest
 
 MODEL_PATH = "bigscience/bloomz-560m"
 PA_PATH = 'stevhliu/bloomz-560m_PROMPT_TUNING_CAUSAL_LM'
@@ -14,9 +16,9 @@ def do_sample(llm, pa_name: str, pa_id: int):
         current and paid. Can you do something about this? Label : ",
         "Tweet text : @nationalgridus Looks good thanks! Label : "
     ]
-    sampling_params = vllm_module.SamplingParams(temperature=0.0,
-                                                 max_tokens=3,
-                                                 stop_token_ids=[3])
+    sampling_params = vllm2.SamplingParams(temperature=0.0,
+                                          max_tokens=3,
+                                          stop_token_ids=[3])
 
     outputs = llm.generate(prompts,
                            sampling_params,
@@ -35,10 +37,10 @@ def do_sample(llm, pa_name: str, pa_id: int):
 
 @pytest.mark.parametrize("enforce_eager", [True, False])
 def test_twitter_prompt_adapter(enforce_eager: bool):
-    llm = vllm_module.LLM(MODEL_PATH,
-                          enforce_eager=enforce_eager,
-                          enable_prompt_adapter=True,
-                          max_prompt_adapter_token=8)
+    llm = vllm2.LLM(MODEL_PATH,
+                   enforce_eager=enforce_eager,
+                   enable_prompt_adapter=True,
+                   max_prompt_adapter_token=8)
 
     expected_output = ['complaint', 'no complaint']
 

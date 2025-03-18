@@ -1,15 +1,16 @@
-"""vllm_module.entrypoints.api_server with some extra logging for testing."""
-from typing import Any, Dict
+# SPDX-License-Identifier: Apache-2.0
+"""vllm2.entrypoints.api_server with some extra logging for testing."""
+from typing import Any, Dict, Iterable
 
 import uvicorn
 from fastapi.responses import JSONResponse, Response
 
-import vllm_module.entrypoints.api_server
-from vllm_module.engine.arg_utils import AsyncEngineArgs
-from vllm_module.engine.async_llm_engine import AsyncLLMEngine
-from vllm_module.utils import FlexibleArgumentParser
+import vllm2.entrypoints.api_server
+from vllm2.engine.arg_utils import AsyncEngineArgs
+from vllm2.engine.async_llm_engine import AsyncLLMEngine
+from vllm2.utils import FlexibleArgumentParser
 
-app = vllm_module.entrypoints.api_server.app
+app = vllm2.entrypoints.api_server.app
 
 
 class AsyncLLMEngineWithStats(AsyncLLMEngine):
@@ -18,9 +19,10 @@ class AsyncLLMEngineWithStats(AsyncLLMEngine):
         super().__init__(*args, **kwargs)
         self._num_aborts = 0
 
-    async def abort(self, request_id: str) -> None:
-        await super().abort(request_id)
-        self._num_aborts += 1
+    async def _engine_abort(self, request_ids: Iterable[str]):
+        ids = list(request_ids)
+        self._num_aborts += len(ids)
+        await super()._engine_abort(ids)
 
     def testing_stats(self) -> Dict[str, Any]:
         return {"num_aborted_requests": self._num_aborts}
@@ -41,10 +43,10 @@ if __name__ == "__main__":
 
     engine_args = AsyncEngineArgs.from_cli_args(args)
     engine = AsyncLLMEngineWithStats.from_engine_args(engine_args)
-    vllm_module.entrypoints.api_server.engine = engine
+    vllm2.entrypoints.api_server.engine = engine
     uvicorn.run(
         app,
         host=args.host,
         port=args.port,
         log_level="debug",
-        timeout_keep_alive=vllm_module.entrypoints.api_server.TIMEOUT_KEEP_ALIVE)
+        timeout_keep_alive=vllm2.entrypoints.api_server.TIMEOUT_KEEP_ALIVE)

@@ -1,14 +1,16 @@
+# SPDX-License-Identifier: Apache-2.0
+
 import ast
 from typing import List, Optional, Tuple
 
 import numpy as np
 import pytest
 
-import vllm_module
-from vllm_module import SamplingParams
-from vllm_module.lora.layers import LinearScalingRotaryEmbeddingWithLora
-from vllm_module.lora.request import LoRARequest
-from vllm_module.model_executor.layers.rotary_embedding import (
+import vllm
+from vllm2 import SamplingParams
+from vllm2.lora.layers import LinearScalingRotaryEmbeddingWithLora
+from vllm2.lora.request import LoRARequest
+from vllm2.model_executor.layers.rotary_embedding import (
     LinearScalingRotaryEmbedding)
 
 from .data.long_context_test_data import prompts_and_responses
@@ -28,9 +30,15 @@ sampling_params = SamplingParams(
 def _create_lora_request(lora_id, long_context_infos):
     context_len = long_context_infos[lora_id]["context_length"]
     scaling_factor = context_len_to_scaling_factor[context_len]
-    return LoRARequest(context_len, lora_id,
-                       long_context_infos[lora_id]["lora"], None,
-                       4096 * scaling_factor)
+    return LoRARequest(
+        # There are 2 LoRAs for 16K, we need to add lora_id to indicate
+        # they are different LoRAs.
+        context_len + str(lora_id),
+        lora_id,
+        long_context_infos[lora_id]["lora"],
+        None,
+        4096 * scaling_factor,
+    )
 
 
 def evaluate_json_response(model_response, golden_response):
@@ -77,7 +85,7 @@ def evaluate_json_response(model_response, golden_response):
 
 
 def generate(
-    llm: vllm_module.LLM,
+    llm: vllm2.LLM,
     inputs: Tuple[str, SamplingParams, Optional[LoRARequest]],
 ):
     prompts, sampling_param, lora_request = inputs
@@ -86,7 +94,7 @@ def generate(
 
 
 def batched_generate(
-    llm: vllm_module.LLM,
+    llm: vllm2.LLM,
     inputs: List[Tuple[str, SamplingParams, Optional[LoRARequest]]],
 ):
     for input in inputs:
@@ -108,34 +116,32 @@ def lora_llm(long_context_infos):
         for info in long_context_infos.values()
     ]
 
-    llm = vllm_module.LLM("meta-llama/Llama-2-13b-chat-hf",
-                          enable_lora=True,
-                          max_num_seqs=16,
-                          max_loras=2,
-                          long_lora_scaling_factors=tuple(scaling_factors),
-                          max_num_batched_tokens=4096 * 8,
-                          tensor_parallel_size=4,
-                          distributed_executor_backend="mp")
+    llm = vllm2.LLM(
+        "meta-llama/Llama-2-13b-chat-hf",
+        enable_lora=True,
+        max_num_seqs=16,
+        max_loras=2,
+        long_lora_scaling_factors=tuple(scaling_factors),
+        max_num_batched_tokens=4096 * 8,
+        tensor_parallel_size=4,
+        # FIXME enable async output processor
+        disable_async_output_proc=True,
+        distributed_executor_backend="mp",
+        enable_chunked_prefill=True)
     yield llm
     del llm
 
 
 def test_rotary_emb_replaced(dist_init):
     """Verify rotary emb in all the layers are replaced"""
-    from vllm_module.engine.arg_utils import EngineArgs
-    from vllm_module.worker.model_runner import ModelRunner
+    from vllm2.engine.arg_utils import EngineArgs
+    from vllm2.worker.model_runner import ModelRunner
     engine_args = EngineArgs("meta-llama/Llama-2-7b-hf",
                              long_lora_scaling_factors=(4.0, ),
                              enable_lora=True)
     engine_config = engine_args.create_engine_config()
     model_runner = ModelRunner(
-        model_config=engine_config.model_config,
-        parallel_config=engine_config.parallel_config,
-        scheduler_config=engine_config.scheduler_config,
-        device_config=engine_config.device_config,
-        cache_config=engine_config.cache_config,
-        load_config=engine_config.load_config,
-        lora_config=engine_config.lora_config,
+        vllm_config=engine_config,
         is_driver_worker=True,
     )
     model_runner.load_model()

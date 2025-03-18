@@ -1,24 +1,26 @@
+# SPDX-License-Identifier: Apache-2.0
+
 from typing import List
 
 import torch
 import torch.utils.benchmark as benchmark
 from benchmark_shapes import WEIGHT_SHAPES
 
-from vllm_module import _custom_ops as ops
-from vllm_module.model_executor.layers.quantization.gptq_marlin_24 import (
+from vllm2 import _custom_ops as ops
+from vllm2.model_executor.layers.quantization.gptq_marlin_24 import (
     GPTQ_MARLIN_24_MAX_PARALLEL, GPTQ_MARLIN_24_MIN_THREAD_N,
     GPTQ_MARLIN_24_SUPPORTED_GROUP_SIZES, GPTQ_MARLIN_24_SUPPORTED_QUANT_TYPES)
-from vllm_module.model_executor.layers.quantization.utils.marlin_utils import (
+from vllm2.model_executor.layers.quantization.utils.marlin_utils import (
     GPTQ_MARLIN_MAX_PARALLEL, GPTQ_MARLIN_MIN_THREAD_N,
     MARLIN_SUPPORTED_GROUP_SIZES, query_marlin_supported_quant_types)
-from vllm_module.model_executor.layers.quantization.utils.marlin_utils_test import (
+from vllm2.model_executor.layers.quantization.utils.marlin_utils_test import (
     MarlinWorkspace, marlin_quantize)
-from vllm_module.model_executor.layers.quantization.utils.marlin_utils_test_24 import (
+from vllm2.model_executor.layers.quantization.utils.marlin_utils_test_24 import (
     marlin_24_quantize)
-from vllm_module.model_executor.layers.quantization.utils.quant_utils import (
+from vllm2.model_executor.layers.quantization.utils.quant_utils import (
     gptq_pack, gptq_quantize_weights, sort_weights)
-from vllm_module.scalar_type import ScalarType
-from vllm_module.utils import FlexibleArgumentParser
+from vllm2.scalar_type import ScalarType
+from vllm2.utils import FlexibleArgumentParser
 
 DEFAULT_MODELS = ["meta-llama/Llama-2-7b-hf/TP1"]
 DEFAULT_BATCH_SIZES = [1, 16, 32, 64, 128, 256, 512]
@@ -131,7 +133,7 @@ def bench_run(results: List[benchmark.Measurement], model: str,
     results.append(
         benchmark.Timer(
             stmt=
-            "output = gptq_marlin_gemm(a, marlin_q_w, marlin_s, marlin_zp, marlin_g_idx, marlin_sort_indices, marlin_workspace.scratch, quant_type, size_m, size_n, size_k, is_k_full, False, False)",  # noqa: E501
+            "output = gptq_marlin_gemm(a, marlin_q_w, marlin_s, marlin_zp, marlin_g_idx, marlin_sort_indices, marlin_workspace.scratch, quant_type, size_m, size_n, size_k, is_k_full, False, False, False)",  # noqa: E501
             globals=globals,
             label=label,
             sub_label=sub_label,
@@ -141,7 +143,7 @@ def bench_run(results: List[benchmark.Measurement], model: str,
     results.append(
         benchmark.Timer(
             stmt=
-            "output = gptq_marlin_gemm(a, marlin_q_w, marlin_s, marlin_zp, marlin_g_idx, marlin_sort_indices, marlin_workspace.scratch, quant_type, size_m, size_n, size_k, is_k_full, False, True)",  # noqa: E501
+            "output = gptq_marlin_gemm(a, marlin_q_w, marlin_s, marlin_zp, marlin_g_idx, marlin_sort_indices, marlin_workspace.scratch, quant_type, size_m, size_n, size_k, is_k_full, False, True, False)",  # noqa: E501
             globals=globals,
             label=label,
             sub_label=sub_label,

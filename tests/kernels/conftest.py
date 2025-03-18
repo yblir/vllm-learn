@@ -1,7 +1,9 @@
+# SPDX-License-Identifier: Apache-2.0
+
 import pytest
 
-from vllm_module.utils import (create_kv_caches_with_random,
-                               create_kv_caches_with_random_flash)
+from vllm2.utils import (create_kv_caches_with_random,
+                        create_kv_caches_with_random_flash)
 
 
 @pytest.fixture()

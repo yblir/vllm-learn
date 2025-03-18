@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0
+
 from collections import OrderedDict
 from unittest.mock import patch
 
@@ -5,43 +7,47 @@ import pytest
 from huggingface_hub.utils import HfHubHTTPError
 from torch import nn
 
-from vllm_module.lora.utils import (get_adapter_absolute_path,
-                                    parse_fine_tuned_lora_name, replace_submodule)
-from vllm_module.utils import LRUCache
+from vllm2.lora.utils import (get_adapter_absolute_path,
+                             parse_fine_tuned_lora_name, replace_submodule)
+from vllm2.utils import LRUCache
 
 
 def test_parse_fine_tuned_lora_name_valid():
     fixture = {
-        ("base_model.model.lm_head.lora_A.weight", "lm_head", True),
-        ("base_model.model.lm_head.lora_B.weight", "lm_head", False),
+        ("base_model.model.lm_head.lora_A.weight", "lm_head", True, False),
+        ("base_model.model.lm_head.lora_B.weight", "lm_head", False, False),
         (
             "base_model.model.model.embed_tokens.lora_embedding_A",
             "model.embed_tokens",
             True,
+            False,
         ),
         (
             "base_model.model.model.embed_tokens.lora_embedding_B",
             "model.embed_tokens",
+            False,
             False,
         ),
         (
             "base_model.model.model.layers.9.mlp.down_proj.lora_A.weight",
             "model.layers.9.mlp.down_proj",
             True,
+            False,
         ),
         (
             "base_model.model.model.layers.9.mlp.down_proj.lora_B.weight",
             "model.layers.9.mlp.down_proj",
             False,
+            False,
         ),
     }
-    for name, module_name, is_lora_a in fixture:
-        assert (module_name, is_lora_a) == parse_fine_tuned_lora_name(name)
+    for name, module_name, is_lora_a, is_bias in fixture:
+        assert (module_name, is_lora_a,
+                is_bias) == parse_fine_tuned_lora_name(name)
 
 
 def test_parse_fine_tuned_lora_name_invalid():
     fixture = {
-        "weight",
         "base_model.weight",
         "base_model.model.weight",
     }

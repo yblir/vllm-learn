@@ -1,13 +1,15 @@
+# SPDX-License-Identifier: Apache-2.0
+
 from unittest.mock import MagicMock, patch
 
 import pytest
 import torch
 
-from vllm_module.sequence import ExecuteModelRequest
-from vllm_module.spec_decode.metrics import AsyncMetricsCollector
-from vllm_module.spec_decode.multi_step_worker import MultiStepWorker
-from vllm_module.spec_decode.spec_decode_worker import SpecDecodeWorker
-from vllm_module.spec_decode.top1_proposer import Top1Proposer
+from vllm2.sequence import ExecuteModelRequest
+from vllm2.spec_decode.metrics import AsyncMetricsCollector
+from vllm2.spec_decode.multi_step_worker import MultiStepWorker
+from vllm2.spec_decode.spec_decode_worker import SpecDecodeWorker
+from vllm2.spec_decode.top1_proposer import Top1Proposer
 
 from .test_utils import mock_spec_decode_sampler
 from .utils import create_batch, mock_worker

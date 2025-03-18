@@ -1,5 +1,7 @@
-from vllm_module import EngineArgs, LLMEngine, SamplingParams
-from vllm_module.prompt_adapter.request import PromptAdapterRequest
+# SPDX-License-Identifier: Apache-2.0
+
+from vllm2 import EngineArgs, LLMEngine, SamplingParams
+from vllm2.prompt_adapter.request import PromptAdapterRequest
 
 MODEL_PATH = "bigscience/bloomz-560m"
 pa_path = 'stevhliu/bloomz-560m_PROMPT_TUNING_CAUSAL_LM'

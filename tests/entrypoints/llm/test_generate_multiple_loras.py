@@ -1,15 +1,17 @@
+# SPDX-License-Identifier: Apache-2.0
+
 import weakref
 
 import pytest
 # downloading lora to test lora requests
 from huggingface_hub import snapshot_download
 
-from vllm_module import LLM
-from vllm_module.lora.request import LoRARequest
+from vllm2 import LLM
+from vllm2.config import LoadFormat
+from vllm2.distributed import cleanup_dist_env_and_memory
+from vllm2.lora.request import LoRARequest
 
-from ...conftest import cleanup
-
-MODEL_NAME = "HuggingFaceH4/zephyr-7b-beta"
+MODEL_NAME = "s3://vllm-ci-model-weights/zephyr-7b-beta"
 
 PROMPTS = [
     "Hello, my name is",
@@ -26,6 +28,7 @@ def llm():
     # pytest caches the fixture so we use weakref.proxy to
     # enable garbage collection
     llm = LLM(model=MODEL_NAME,
+              load_format=LoadFormat.RUNAI_STREAMER,
               tensor_parallel_size=1,
               max_model_len=8192,
               enable_lora=True,
@@ -39,7 +42,7 @@ def llm():
 
         del llm
 
-    cleanup()
+    cleanup_dist_env_and_memory()
 
 
 @pytest.fixture(scope="module")
@@ -50,7 +53,7 @@ def zephyr_lora_files():
 @pytest.mark.skip_global_cleanup
 def test_multiple_lora_requests(llm: LLM, zephyr_lora_files):
     lora_request = [
-        LoRARequest(LORA_NAME, idx + 1, zephyr_lora_files)
+        LoRARequest(LORA_NAME + str(idx), idx + 1, zephyr_lora_files)
         for idx in range(len(PROMPTS))
     ]
     # Multiple SamplingParams should be matched with each prompt

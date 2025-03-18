@@ -1,10 +1,12 @@
+# SPDX-License-Identifier: Apache-2.0
+
 import math
 from unittest.mock import MagicMock
 
 import pytest
 import torch
 
-from vllm_module.spec_decode.metrics import AsyncMetricsCollector
+from vllm2.spec_decode.metrics import AsyncMetricsCollector
 
 
 def test_initial_call_returns_none():

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0
+
 import os
 import tempfile
 
@@ -5,7 +7,7 @@ import huggingface_hub.constants
 import pytest
 from huggingface_hub.utils import LocalEntryNotFoundError
 
-from vllm_module.model_executor.model_loader.weight_utils import (
+from vllm2.model_executor.model_loader.weight_utils import (
     download_weights_from_hf, enable_hf_transfer)
 
 

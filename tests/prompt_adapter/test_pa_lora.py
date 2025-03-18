@@ -1,8 +1,10 @@
+# SPDX-License-Identifier: Apache-2.0
+
 from huggingface_hub import snapshot_download
 
-from vllm_module import EngineArgs, LLMEngine, SamplingParams
-from vllm_module.lora.request import LoRARequest
-from vllm_module.prompt_adapter.request import PromptAdapterRequest
+from vllm2 import EngineArgs, LLMEngine, SamplingParams
+from vllm2.lora.request import LoRARequest
+from vllm2.prompt_adapter.request import PromptAdapterRequest
 
 MODEL_PATH = "meta-llama/Llama-2-7b-hf"
 pa_path = snapshot_download(repo_id="swapnilbp/llama_tweet_ptune")

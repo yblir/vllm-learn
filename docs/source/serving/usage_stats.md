@@ -4,7 +4,7 @@ vLLM collects anonymous usage data by default to help the engineering team bette
 
 ## What data is collected?
 
-You can see the up to date list of data collected by vLLM in the [usage_lib.py](https://github.com/vllm-project/vllm/blob/main/vllm/usage/usage_lib.py).
+The list of data collected by the latest version of vLLM can be found here: <gh-file:vllm/usage/usage_lib.py>
 
 Here is an example as of v0.4.0:
 
@@ -42,16 +42,16 @@ Here is an example as of v0.4.0:
 You can preview the collected data by running the following command:
 
 ```bash
-tail ~/.config/vllm_module/usage_stats.json
+tail ~/.config/vllm/usage_stats.json
 ```
 
-## Opt-out of Usage Stats Collection
+## Opting out
 
-You can opt-out of usage stats collection by setting the VLLM_NO_USAGE_STATS or DO_NOT_TRACK environment variable, or by creating a ~/.config/vllm/do_not_track file:
+You can opt-out of usage stats collection by setting the `VLLM_NO_USAGE_STATS` or `DO_NOT_TRACK` environment variable, or by creating a `~/.config/vllm/do_not_track` file:
 
 ```bash
 # Any of the following methods can disable usage stats collection
 export VLLM_NO_USAGE_STATS=1
 export DO_NOT_TRACK=1
-mkdir -p ~/.config/vllm_module && touch ~/.config/vllm_module/do_not_track
+mkdir -p ~/.config/vllm && touch ~/.config/vllm/do_not_track
 ```

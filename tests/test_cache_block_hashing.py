@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Test hashing of cache blocks.
 
 Run `pytest tests/test_cache_block_hashing.py`.
@@ -6,9 +7,10 @@ from typing import List, Optional
 
 import pytest
 
-from vllm_module.lora.request import LoRARequest
-from vllm_module.sequence import Sequence
-from vllm_module.transformers_utils.tokenizer_group import TokenizerGroup
+from vllm2.inputs import token_inputs
+from vllm2.lora.request import LoRARequest
+from vllm2.sequence import Sequence
+from vllm2.transformers_utils.tokenizer_group import TokenizerGroup
 
 # Make two prefixes with different first blocks.
 prefix_start = [("You are an expert"), ("You are a")]
@@ -66,15 +68,12 @@ def test_auto_prefix_caching(model: str, block_size: int, max_num_seqs: int,
 
             hashes.append([])
             prompts = [prefix + prompt for prompt in sample_prompts]
-            seq_id = 0
-            for prompt in prompts:
+            for seq_id, prompt in enumerate(prompts):
                 hashes[-1].append([])
                 prompt_token_ids = tokenizer.encode(prompt)
                 seq = Sequence(seq_id,
-                               inputs={
-                                   "prompt": prompt,
-                                   "prompt_token_ids": prompt_token_ids,
-                               },
+                               inputs=token_inputs(prompt_token_ids,
+                                                   prompt=prompt),
                                block_size=block_size,
                                eos_token_id=tokenizer.tokenizer.eos_token_id,
                                lora_request=lora_request)
@@ -82,8 +81,6 @@ def test_auto_prefix_caching(model: str, block_size: int, max_num_seqs: int,
                 num_blocks = len(prompt_token_ids) // block_size
                 for idx in range(num_blocks):
                     hashes[-1][-1].append(seq.hash_of_block(idx))
-
-                seq_id += 1
 
     # Check that hashes made with two prefixes with different first blocks are
     # different everywhere.

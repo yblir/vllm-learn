@@ -1,8 +1,10 @@
+# SPDX-License-Identifier: Apache-2.0
+
 from copy import deepcopy
 
 from transformers import AutoTokenizer
 
-from vllm_module.transformers_utils.tokenizer import get_cached_tokenizer
+from vllm2.transformers_utils.tokenizer import get_cached_tokenizer
 
 
 def test_cached_tokenizer():

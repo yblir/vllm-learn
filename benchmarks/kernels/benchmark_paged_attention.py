@@ -1,12 +1,15 @@
+# SPDX-License-Identifier: Apache-2.0
+
 import random
 import time
 from typing import List, Optional
 
 import torch
 
-from vllm_module import _custom_ops as ops
-from vllm_module.utils import (STR_DTYPE_TO_TORCH_DTYPE, FlexibleArgumentParser,
-                               create_kv_caches_with_random)
+from vllm2 import _custom_ops as ops
+from vllm2.platforms import current_platform
+from vllm2.utils import (STR_DTYPE_TO_TORCH_DTYPE, FlexibleArgumentParser,
+                        create_kv_caches_with_random)
 
 NUM_BLOCKS = 1024
 PARTITION_SIZE = 512
@@ -28,10 +31,7 @@ def main(
     device: str = "cuda",
     kv_cache_dtype: Optional[str] = None,
 ) -> None:
-    random.seed(seed)
-    torch.random.manual_seed(seed)
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed(seed)
+    current_platform.seed_everything(seed)
 
     scale = float(1.0 / (head_size**0.5))
     query = torch.empty(num_seqs,
@@ -100,7 +100,9 @@ def main(
         start_time = time.perf_counter()
 
         # Using default kv_scale
-        k_scale = v_scale = 1.0
+        k_scale = v_scale = torch.tensor(1.0,
+                                         dtype=torch.float32,
+                                         device=device)
 
         for _ in range(num_iters):
             if version == "v1":

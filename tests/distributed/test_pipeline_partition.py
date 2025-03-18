@@ -1,8 +1,10 @@
+# SPDX-License-Identifier: Apache-2.0
+
 import os
 
 import pytest
 
-from vllm_module.distributed.utils import get_pp_indices
+from vllm2.distributed.utils import get_pp_indices
 
 
 def test_custom_layer_partition():

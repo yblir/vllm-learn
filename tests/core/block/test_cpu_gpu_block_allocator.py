@@ -1,7 +1,9 @@
+# SPDX-License-Identifier: Apache-2.0
+
 import pytest
 
-from vllm_module.core.block.cpu_gpu_block_allocator import CpuGpuBlockAllocator
-from vllm_module.utils import Device, chunk_list
+from vllm2.core.block.cpu_gpu_block_allocator import CpuGpuBlockAllocator
+from vllm2.utils import Device, chunk_list
 
 
 @pytest.mark.parametrize("num_cpu_blocks", [0, 512])

@@ -1,8 +1,10 @@
+# SPDX-License-Identifier: Apache-2.0
+
 import random
 
 import pytest
 
-from vllm_module.core.block.common import RefCounter
+from vllm2.core.block.common import RefCounter
 
 
 @pytest.mark.parametrize("seed", list(range(20)))

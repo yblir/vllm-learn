@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0
+
 import math
 import random
 import time
@@ -7,8 +9,10 @@ import torch
 from xformers import ops as xops
 from xformers.ops.fmha.attn_bias import BlockDiagonalCausalFromBottomRightMask
 
-from vllm_module.attention.backends.xformers import _make_alibi_bias
-from vllm_module.attention.ops.prefix_prefill import context_attention_fwd
+from vllm2.attention.backends.xformers import _make_alibi_bias
+from vllm2.attention.ops.prefix_prefill import context_attention_fwd
+from vllm2.platforms import current_platform
+from vllm2.utils import STR_DTYPE_TO_TORCH_DTYPE
 
 NUM_HEADS = [64]
 NUM_QUERIES_PER_KV = [1, 8, 64]
@@ -18,12 +22,14 @@ CUDA_DEVICES = [
     f"cuda:{i}" for i in range(1 if torch.cuda.device_count() == 1 else 2)
 ]
 SLIDING_WINDOW = [0, 16, 64, 128, 256, 512, 2048]
+KV_CACHE_DTYPES = ["auto", "fp8", "fp8_e5m2"]
 
 
 @pytest.mark.parametrize("num_heads", NUM_HEADS)
 @pytest.mark.parametrize("num_queries_per_kv", NUM_QUERIES_PER_KV)
 @pytest.mark.parametrize("head_size", HEAD_SIZES)
 @pytest.mark.parametrize("dtype", DTYPES)
+@pytest.mark.parametrize("kv_cache_dtype", KV_CACHE_DTYPES)
 @pytest.mark.parametrize("device", CUDA_DEVICES)
 @pytest.mark.parametrize("sliding_window", SLIDING_WINDOW)
 @torch.inference_mode()
@@ -33,12 +39,17 @@ def test_contexted_kv_attention(
     head_size: int,
     sliding_window: int,
     dtype: torch.dtype,
+    kv_cache_dtype: str,
     device: str,
 ) -> None:
-    random.seed(0)
-    torch.manual_seed(0)
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed(0)
+
+    if 'fp8' in kv_cache_dtype and not current_platform.has_device_capability(
+            89):
+        pytest.skip(
+            'Triton limitation: fp8e4nv data type is not supported on CUDA'
+            ' arch < 89')
+
+    current_platform.seed_everything(0)
     torch.set_default_device(device)
 
     # Need this, otherwise when we capture the graph the process
@@ -67,16 +78,20 @@ def test_contexted_kv_attention(
     kv.uniform_(-1e-3, 1e-3)
     key, value = kv.unbind(dim=1)
 
+    if kv_cache_dtype == "auto":
+        cache_dtype = dtype
+    else:
+        cache_dtype = STR_DTYPE_TO_TORCH_DTYPE[kv_cache_dtype]
     k_cache = torch.zeros(cache_size,
                           block_size,
                           num_kv_heads,
                           head_size,
-                          dtype=dtype)
+                          dtype=cache_dtype)
     v_cache = torch.zeros(cache_size,
                           block_size,
                           num_kv_heads,
                           head_size,
-                          dtype=dtype)
+                          dtype=cache_dtype)
     k = torch.zeros(sum(query_lens), num_kv_heads, head_size, dtype=dtype)
     v = torch.zeros(sum(query_lens), num_kv_heads, head_size, dtype=dtype)
     values = torch.arange(0, cache_size, dtype=torch.long)
@@ -125,6 +140,7 @@ def test_contexted_kv_attention(
     # to V_cache[num_blocks, num_kv_heads, head_size, block_size]
     v_cache = v_cache.view(-1, block_size, num_kv_heads,
                            head_size).permute(0, 2, 3, 1).contiguous()
+    k_scale = v_scale = torch.tensor(1.0, dtype=torch.float32, device=device)
 
     # Warm up the Triton kernel by calling it once before actually measuring
     # generation time
@@ -132,6 +148,7 @@ def test_contexted_kv_attention(
                           k,
                           v,
                           output,
+                          kv_cache_dtype,
                           k_cache,
                           v_cache,
                           block_table,
@@ -139,6 +156,8 @@ def test_contexted_kv_attention(
                           b_seq_len,
                           b_ctx_len,
                           max_input_len,
+                          k_scale,
+                          v_scale,
                           sliding_window=sliding_window)
     torch.cuda.synchronize()
     start_time = time.time()
@@ -146,6 +165,7 @@ def test_contexted_kv_attention(
                           k,
                           v,
                           output,
+                          kv_cache_dtype,
                           k_cache,
                           v_cache,
                           block_table,
@@ -153,6 +173,8 @@ def test_contexted_kv_attention(
                           b_seq_len,
                           b_ctx_len,
                           max_input_len,
+                          k_scale,
+                          v_scale,
                           sliding_window=sliding_window)
     torch.cuda.synchronize()
     end_time = time.time()
@@ -167,7 +189,7 @@ def test_contexted_kv_attention(
         # project the key and value tensors to the desired number of
         # heads.
         #
-        # see also: vllm_module/model_executor/layers/attention.py
+        # see also: vllm/model_executor/layers/attention.py
         query = query.view(query.shape[0], num_kv_heads, num_queries_per_kv,
                            query.shape[-1])
         key = key[:, :, None, :].expand(key.shape[0], num_kv_heads,
@@ -208,13 +230,15 @@ def test_contexted_kv_attention(
     end_time = time.time()
     print(f"xformers Time: {(end_time - start_time)*1000:.2f} ms")
     output_ref = output_ref.reshape(output.shape)
-    assert torch.allclose(output_ref, output, atol=1e-6, rtol=0)
+    atol = 1e-3 if "fp8" in kv_cache_dtype else 1e-6
+    torch.testing.assert_close(output, output_ref, atol=atol, rtol=0)
 
 
 @pytest.mark.parametrize("num_heads", NUM_HEADS)
 @pytest.mark.parametrize("num_queries_per_kv", NUM_QUERIES_PER_KV)
 @pytest.mark.parametrize("head_size", HEAD_SIZES)
 @pytest.mark.parametrize("dtype", DTYPES)
+@pytest.mark.parametrize("kv_cache_dtype", KV_CACHE_DTYPES)
 @pytest.mark.parametrize("device", CUDA_DEVICES)
 @torch.inference_mode()
 def test_contexted_kv_attention_alibi(
@@ -222,12 +246,17 @@ def test_contexted_kv_attention_alibi(
     num_queries_per_kv: int,
     head_size: int,
     dtype: torch.dtype,
+    kv_cache_dtype: str,
     device: str,
 ) -> None:
-    random.seed(0)
-    torch.manual_seed(0)
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed(0)
+
+    if 'fp8' in kv_cache_dtype and not current_platform.has_device_capability(
+            89):
+        pytest.skip(
+            'Triton limitation: fp8e4nv data type is not supported on CUDA'
+            ' arch < 89')
+
+    current_platform.seed_everything(0)
     torch.set_default_device(device)
 
     # Need this, otherwise when we capture the graph the process
@@ -237,7 +266,7 @@ def test_contexted_kv_attention_alibi(
     torch.cuda.set_device(device)
 
     def _get_alibi_slopes(total_num_heads: int) -> torch.Tensor:
-        # Fork from: vllm_module/vllm_module/model_executor/models/bloom.py#L44
+        # Fork from: vllm/vllm/model_executor/models/bloom.py#L44
         closest_power_of_2 = 2**math.floor(math.log2(total_num_heads))
         base = torch.tensor(
             2**(-(2**-(math.log2(closest_power_of_2) - 3))),
@@ -282,17 +311,20 @@ def test_contexted_kv_attention_alibi(
     kv = torch.empty(sum(seq_lens), 2, num_kv_heads, head_size, dtype=dtype)
     kv.uniform_(-1e-3, 1e-3)
     key, value = kv.unbind(dim=1)
-
+    if kv_cache_dtype == "auto":
+        cache_dtype = dtype
+    else:
+        cache_dtype = STR_DTYPE_TO_TORCH_DTYPE[kv_cache_dtype]
     k_cache = torch.zeros(cache_size,
                           block_size,
                           num_kv_heads,
                           head_size,
-                          dtype=dtype)
+                          dtype=cache_dtype)
     v_cache = torch.zeros(cache_size,
                           block_size,
                           num_kv_heads,
                           head_size,
-                          dtype=dtype)
+                          dtype=cache_dtype)
     k = torch.zeros(sum(query_lens), num_kv_heads, head_size, dtype=dtype)
     v = torch.zeros(sum(query_lens), num_kv_heads, head_size, dtype=dtype)
     values = torch.arange(0, cache_size, dtype=torch.long)
@@ -341,6 +373,7 @@ def test_contexted_kv_attention_alibi(
     # to V_cache[num_blocks, num_kv_heads, head_size, block_size]
     v_cache = v_cache.view(-1, block_size, num_kv_heads,
                            head_size).permute(0, 2, 3, 1).contiguous()
+    k_scale = v_scale = torch.tensor(1.0, dtype=torch.float32, device=device)
 
     # Warm up the Triton kernel by calling it once before actually measuring
     # generation time
@@ -348,6 +381,7 @@ def test_contexted_kv_attention_alibi(
                           k,
                           v,
                           output,
+                          kv_cache_dtype,
                           k_cache,
                           v_cache,
                           block_table,
@@ -355,6 +389,8 @@ def test_contexted_kv_attention_alibi(
                           b_seq_len,
                           b_ctx_len,
                           max_input_len,
+                          k_scale,
+                          v_scale,
                           alibi_slopes=alibi_slopes)
     torch.cuda.synchronize()
     start_time = time.time()
@@ -362,6 +398,7 @@ def test_contexted_kv_attention_alibi(
                           k,
                           v,
                           output,
+                          kv_cache_dtype,
                           k_cache,
                           v_cache,
                           block_table,
@@ -369,6 +406,8 @@ def test_contexted_kv_attention_alibi(
                           b_seq_len,
                           b_ctx_len,
                           max_input_len,
+                          k_scale,
+                          v_scale,
                           alibi_slopes=alibi_slopes)
     torch.cuda.synchronize()
     end_time = time.time()
@@ -403,7 +442,7 @@ def test_contexted_kv_attention_alibi(
         # project the key and value tensors to the desired number of
         # heads.
         #
-        # see also: vllm_module/model_executor/layers/attention.py
+        # see also: vllm/model_executor/layers/attention.py
         query = query.view(query.shape[0], num_kv_heads, num_queries_per_kv,
                            query.shape[-1])
         key = key[:, :, None, :].expand(key.shape[0], num_kv_heads,
@@ -425,7 +464,7 @@ def test_contexted_kv_attention_alibi(
     # FIXME(DefTruth): Because xformers does not support dynamic sequence
     # lengths with custom attention bias, we process each prompt one by
     # one. This is inefficient, especially when we have many short prompts.
-    # modified from: vllm_module/attention/backends/xformers.py#L343
+    # modified from: vllm/attention/backends/xformers.py#L343
     for i, (query_len, seq_len) in enumerate(zip(query_lens, seq_lens)):
         seq_end = seq_start + seq_len
         query_end = query_start + query_len
@@ -447,4 +486,54 @@ def test_contexted_kv_attention_alibi(
     torch.cuda.synchronize()
     end_time = time.time()
     print(f"xformers Time: {(end_time - start_time)*1000:.2f} ms")
-    assert torch.allclose(output_ref, output, atol=1e-6, rtol=0)
+    atol = 1e-3 if "fp8" in kv_cache_dtype else 1e-6
+    torch.testing.assert_close(output, output_ref, atol=atol, rtol=0)
+
+
+# These tests are optional to only run when explicitly invoked
+#
+# pytest -v -s --optional \
+# tests/kernels/test_prefix_prefill.py::test_contexted_kv_attention_f32
+#
+# These tests are useful to test model dtype float32 on Turing devices.
+# We skip them to not increase the time when running tests on CI
+@pytest.mark.optional
+@pytest.mark.parametrize("num_heads", NUM_HEADS)
+@pytest.mark.parametrize("num_queries_per_kv", NUM_QUERIES_PER_KV)
+@pytest.mark.parametrize("head_size", HEAD_SIZES)
+@pytest.mark.parametrize("dtype", [torch.float32])
+@pytest.mark.parametrize("kv_cache_dtype", KV_CACHE_DTYPES)
+@pytest.mark.parametrize("device", CUDA_DEVICES)
+@pytest.mark.parametrize("sliding_window", SLIDING_WINDOW)
+@torch.inference_mode()
+def test_contexted_kv_attention_f32(
+    num_heads: int,
+    num_queries_per_kv: int,
+    head_size: int,
+    sliding_window: int,
+    dtype: torch.dtype,
+    kv_cache_dtype: str,
+    device: str,
+) -> None:
+    test_contexted_kv_attention(num_heads, num_queries_per_kv, head_size,
+                                sliding_window, dtype, kv_cache_dtype, device)
+
+
+@pytest.mark.optional
+@pytest.mark.parametrize("num_heads", NUM_HEADS)
+@pytest.mark.parametrize("num_queries_per_kv", NUM_QUERIES_PER_KV)
+@pytest.mark.parametrize("head_size", HEAD_SIZES)
+@pytest.mark.parametrize("dtype", [torch.float32])
+@pytest.mark.parametrize("kv_cache_dtype", KV_CACHE_DTYPES)
+@pytest.mark.parametrize("device", CUDA_DEVICES)
+@torch.inference_mode()
+def test_contexted_kv_attention_alibi_f32(
+    num_heads: int,
+    num_queries_per_kv: int,
+    head_size: int,
+    dtype: torch.dtype,
+    kv_cache_dtype: str,
+    device: str,
+) -> None:
+    test_contexted_kv_attention_alibi(num_heads, num_queries_per_kv, head_size,
+                                      dtype, kv_cache_dtype, device)

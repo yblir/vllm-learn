@@ -1,6 +1,7 @@
+# SPDX-License-Identifier: Apache-2.0
 """Tests for the SamplingParams class.
 """
-from vllm_module import SamplingParams
+from vllm2 import SamplingParams
 
 
 def test_max_tokens_none():

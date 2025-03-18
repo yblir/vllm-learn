@@ -1,11 +1,14 @@
+# SPDX-License-Identifier: Apache-2.0
+
 from unittest.mock import MagicMock
 
 import pytest
 from transformers import PreTrainedTokenizer
 
-from vllm_module.engine.output_processor.stop_checker import StopChecker
-from vllm_module.sampling_params import SamplingParams
-from vllm_module.sequence import Logprob, Sequence, SequenceStatus
+from vllm2.engine.output_processor.stop_checker import StopChecker
+from vllm2.inputs import token_inputs
+from vllm2.sampling_params import SamplingParams
+from vllm2.sequence import Logprob, Sequence, SequenceStatus
 
 
 def sequence_with_eos(text: str, eos_token: str,
@@ -15,7 +18,7 @@ def sequence_with_eos(text: str, eos_token: str,
     """
     seq = Sequence(
         seq_id=0,
-        inputs={"prompt_token_ids": []},
+        inputs=token_inputs([]),
         block_size=16,
         eos_token_id=eos_token_id,
     )

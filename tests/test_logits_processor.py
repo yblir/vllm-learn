@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0
+
 import random
 from typing import Tuple
 from unittest.mock import patch
@@ -5,11 +7,11 @@ from unittest.mock import patch
 import pytest
 import torch
 
-from vllm_module.model_executor.layers.logits_processor import LogitsProcessor
-from vllm_module.model_executor.sampling_metadata import SamplingMetadata
-from vllm_module.model_executor.utils import set_random_seed
-from vllm_module.sequence import SamplingParams, SequenceData, SequenceGroupMetadata
-from vllm_module.utils import is_pin_memory_available
+from vllm2.model_executor.layers.logits_processor import LogitsProcessor
+from vllm2.model_executor.sampling_metadata import SamplingMetadata
+from vllm2.model_executor.utils import set_random_seed
+from vllm2.sequence import SamplingParams, SequenceData, SequenceGroupMetadata
+from vllm2.utils import is_pin_memory_available
 
 
 class MockLogitsProcessor(LogitsProcessor):
@@ -21,10 +23,10 @@ class MockLogitsProcessor(LogitsProcessor):
 
     def forward(self, *args, **kwargs):
         with patch(
-                "vllm_module.model_executor.layers.logits_processor._prune_hidden_states",
+                "vllm2.model_executor.layers.logits_processor._prune_hidden_states",
                 lambda x, y: x
         ), patch(
-                "vllm_module.model_executor.layers.logits_processor.LogitsProcessor._get_logits",
+                "vllm2.model_executor.layers.logits_processor.LogitsProcessor._get_logits",
                 lambda *args, **kwargs: self.fake_logits):
             return super().forward(*args, **kwargs)
 
@@ -69,7 +71,7 @@ def test_logits_processors(seed: int, device: str):
             SequenceGroupMetadata(
                 request_id=f"test_{i}",
                 is_prompt=True,
-                seq_data={0: SequenceData([1, 2, 3])},
+                seq_data={0: SequenceData.from_seqs([1, 2, 3])},
                 sampling_params=SamplingParams(temperature=0,
                                                logits_processors=[pick_ith]),
                 block_tables={0: [1]},
@@ -90,5 +92,7 @@ def test_logits_processors(seed: int, device: str):
     assert torch.isinf(logits_processor_output[:, 0]).all()
 
     fake_logits *= logits_processor.scale
-    assert torch.allclose(logits_processor_output[:, 1], fake_logits[:, 1],
-                          1e-4)
+    torch.testing.assert_close(logits_processor_output[:, 1],
+                               fake_logits[:, 1],
+                               rtol=1e-4,
+                               atol=0.0)
