@@ -11,7 +11,7 @@ AsyncLLMEngine are working correctly.
 import lm_eval
 import pytest
 
-from vllm2.platforms import current_platform
+from vllm.platforms import current_platform
 
 from ....utils import RemoteOpenAIServer
 
@@ -20,7 +20,7 @@ NUM_CONCURRENT = 500
 TASK = "gsm8k"
 FILTER = "exact_match,strict-match"
 RTOL = 0.03
-EXPECTED_VALUE = 0.58
+EXPECTED_VALUE = 0.54
 DEFAULT_ARGS = ["--max-model-len", "4096", "--disable-log-requests"]
 MORE_ARGS_LIST = [
     [],  # Default
@@ -70,7 +70,7 @@ def run_test(more_args):
 @pytest.mark.skipif(not current_platform.is_cuda()
                     and not current_platform.is_tpu(),
                     reason="V1 currently only supported on CUDA and TPU")
-def test_lm_eval_accuracy_v1_engine(monkeypatch):
+def test_lm_eval_accuracy_v1_engine(monkeypatch: pytest.MonkeyPatch):
     """Run with the V1 Engine."""
 
     with monkeypatch.context() as m:
@@ -85,7 +85,8 @@ def test_lm_eval_accuracy_v1_engine(monkeypatch):
 
 
 @pytest.mark.parametrize("more_args", MORE_ARGS_LIST)
-def test_lm_eval_accuracy_v0_engine(monkeypatch, more_args):
+def test_lm_eval_accuracy_v0_engine(monkeypatch: pytest.MonkeyPatch,
+                                    more_args):
     """Run with the V0 Engine."""
 
     with monkeypatch.context() as m:

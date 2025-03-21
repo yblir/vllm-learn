@@ -6,7 +6,14 @@ Run `pytest tests/samplers/test_ignore_eos.py`.
 
 import pytest
 
-from vllm2 import SamplingParams
+from vllm import SamplingParams
+
+
+@pytest.fixture(autouse=True)
+def v1(run_with_both_engines):
+    """We can run both engines for this test."""
+    pass
+
 
 # We also test with llama because it has generation_config to specify EOS
 # (past regression).

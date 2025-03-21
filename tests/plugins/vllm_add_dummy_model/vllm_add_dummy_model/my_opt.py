@@ -4,8 +4,8 @@ from typing import Optional
 
 import torch
 
-from vllm2.model_executor.models.opt import OPTForCausalLM
-from vllm2.model_executor.sampling_metadata import SamplingMetadata
+from vllm.model_executor.models.opt import OPTForCausalLM
+from vllm.model_executor.sampling_metadata import SamplingMetadata
 
 
 class MyOPTForCausalLM(OPTForCausalLM):

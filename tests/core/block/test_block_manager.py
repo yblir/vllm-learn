@@ -2,12 +2,12 @@
 
 import pytest
 
-from vllm2.core.block.utils import (STR_NOT_IMPL_ENC_DEC_PREFIX_CACHE,
+from vllm.core.block.utils import (STR_NOT_IMPL_ENC_DEC_PREFIX_CACHE,
                                    STR_NOT_IMPL_ENC_DEC_SWA)
-from vllm2.core.block_manager import SelfAttnBlockSpaceManager
-from vllm2.core.interfaces import AllocStatus
-from vllm2.sequence import Logprob, SequenceStatus
-from vllm2.utils import chunk_list
+from vllm.core.block_manager import SelfAttnBlockSpaceManager
+from vllm.core.interfaces import AllocStatus
+from vllm.sequence import Logprob, SequenceStatus
+from vllm.utils import chunk_list
 
 from ..utils import (create_dummy_prompt, create_seq_group,
                      create_seq_group_encoder_decoder)

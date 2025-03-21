@@ -26,7 +26,7 @@ setup(name='vllm_add_dummy_model',
 
 # inside `vllm_add_dummy_model.py` file
 def register():
-    from vllm2 import ModelRegistry
+    from vllm import ModelRegistry
 
     if "MyLlava" not in ModelRegistry.get_supported_archs():
         ModelRegistry.register_model("MyLlava",

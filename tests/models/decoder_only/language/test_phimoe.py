@@ -6,7 +6,7 @@ Run `pytest tests/models/test_phimoe.py`.
 import pytest
 import torch
 
-from vllm2.platforms import current_platform
+from vllm.platforms import current_platform
 
 from ....utils import large_gpu_test
 from ...utils import check_logprobs_close
@@ -17,7 +17,7 @@ MODELS = [
 
 
 def test_phimoe_routing_function():
-    from vllm2.model_executor.models.phimoe import phimoe_routing_function
+    from vllm.model_executor.models.phimoe import phimoe_routing_function
     test_case = {
         0: {
             "hidden_states":

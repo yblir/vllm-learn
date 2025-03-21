@@ -2,8 +2,8 @@
 
 import msgspec
 
-from vllm2.executor.msgspec_utils import decode_hook, encode_hook
-from vllm2.sequence import ExecuteModelRequest
+from vllm.executor.msgspec_utils import decode_hook, encode_hook
+from vllm.sequence import ExecuteModelRequest
 
 from ..spec_decode.utils import create_batch
 

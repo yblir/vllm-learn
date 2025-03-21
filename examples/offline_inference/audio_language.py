@@ -8,9 +8,9 @@ on HuggingFace model repository.
 """
 from transformers import AutoTokenizer
 
-from vllm2 import LLM, SamplingParams
-from vllm2.assets.audio import AudioAsset
-from vllm2.utils import FlexibleArgumentParser
+from vllm import LLM, SamplingParams
+from vllm.assets.audio import AudioAsset
+from vllm.utils import FlexibleArgumentParser
 
 audio_assets = [AudioAsset("mary_had_lamb"), AudioAsset("winning_call")]
 question_per_audio_count = {

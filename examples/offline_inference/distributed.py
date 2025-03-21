@@ -13,7 +13,7 @@ import ray
 from packaging.version import Version
 from ray.util.scheduling_strategies import PlacementGroupSchedulingStrategy
 
-from vllm2 import LLM, SamplingParams
+from vllm import LLM, SamplingParams
 
 assert Version(ray.__version__) >= Version(
     "2.22.0"), "Ray version must be at least 2.22.0"

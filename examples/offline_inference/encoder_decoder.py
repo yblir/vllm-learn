@@ -4,8 +4,8 @@ Demonstrate prompting of text-to-text
 encoder/decoder models, specifically BART
 '''
 
-from vllm2 import LLM, SamplingParams
-from vllm2.inputs import (ExplicitEncoderDecoderPrompt, TextPrompt,
+from vllm import LLM, SamplingParams
+from vllm.inputs import (ExplicitEncoderDecoderPrompt, TextPrompt,
                          TokensPrompt, zip_enc_dec_prompts)
 
 dtype = "float"

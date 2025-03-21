@@ -3,14 +3,14 @@
 
 Run `pytest tests/test_cache_block_hashing.py`.
 """
-from typing import List, Optional
+from typing import Optional
 
 import pytest
 
-from vllm2.inputs import token_inputs
-from vllm2.lora.request import LoRARequest
-from vllm2.sequence import Sequence
-from vllm2.transformers_utils.tokenizer_group import TokenizerGroup
+from vllm.inputs import token_inputs
+from vllm.lora.request import LoRARequest
+from vllm.sequence import Sequence
+from vllm.transformers_utils.tokenizer_group import TokenizerGroup
 
 # Make two prefixes with different first blocks.
 prefix_start = [("You are an expert"), ("You are a")]
@@ -44,7 +44,7 @@ def flatten_2d(li):
 @pytest.mark.parametrize("concurrent_lora_int_ids",
                          [[None], [1], [None, 1], [None, 1, 2], [1, 2]])
 def test_auto_prefix_caching(model: str, block_size: int, max_num_seqs: int,
-                             concurrent_lora_int_ids: List[Optional[int]]):
+                             concurrent_lora_int_ids: list[Optional[int]]):
 
     tokenizer = TokenizerGroup(
         tokenizer_id="facebook/opt-125m",
@@ -53,7 +53,7 @@ def test_auto_prefix_caching(model: str, block_size: int, max_num_seqs: int,
         max_input_length=None,
     )
 
-    hashes: List[List[List[int]]] = []
+    hashes: list[list[list[int]]] = []
 
     for prefix in prefixes:
         for lora_int_id in concurrent_lora_int_ids:

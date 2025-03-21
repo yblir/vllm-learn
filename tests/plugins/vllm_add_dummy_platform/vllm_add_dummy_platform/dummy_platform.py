@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
-from vllm2.platforms.cuda import CudaPlatform
+from vllm.platforms.cuda import CudaPlatform
 
 
 class DummyPlatform(CudaPlatform):

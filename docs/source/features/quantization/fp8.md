@@ -26,7 +26,7 @@ Dynamic quantization of an original precision BF16/FP16 model to FP8 can be achi
 In this mode, all Linear modules (except for the final `lm_head`) have their weights quantized down to FP8_E4M3 precision with a per-tensor scale. Activations have their minimum and maximum values calculated during each forward pass to provide a dynamic per-tensor scale for high accuracy. As a result, latency improvements are limited in this mode.
 
 ```python
-from vllm2 import LLM
+from vllm import LLM
 model = LLM("facebook/opt-125m", quantization="fp8")
 # INFO 06-10 17:55:42 model_runner.py:157] Loading model weights took 0.1550 GB
 result = model.generate("Hello, my name is")
@@ -103,7 +103,7 @@ pip install vllm lm-eval==0.4.4
 Load and run the model in `vllm`:
 
 ```python
-from vllm2 import LLM
+from vllm import LLM
 model = LLM("./Meta-Llama-3-8B-Instruct-FP8-Dynamic")
 model.generate("Hello my name is")
 ```
@@ -184,7 +184,7 @@ Your model checkpoint with quantized weights and activations should be available
 Finally, you can load the quantized model checkpoint directly in vLLM.
 
 ```python
-from vllm2 import LLM
+from vllm import LLM
 model = LLM(model="Meta-Llama-3-8B-Instruct-FP8/")
 # INFO 06-10 21:15:41 model_runner.py:159] Loading model weights took 8.4596 GB
 result = model.generate("Hello, my name is")

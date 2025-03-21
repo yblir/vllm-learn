@@ -6,8 +6,8 @@ import shutil
 
 import pytest
 
-from vllm2.config import LoRAConfig
-from vllm2.lora.peft_helper import PEFTHelper
+from vllm.config import LoRAConfig
+from vllm.lora.peft_helper import PEFTHelper
 
 ERROR_CASES = [
     (

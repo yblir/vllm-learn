@@ -2,21 +2,21 @@
 
 import asyncio
 import multiprocessing
-from typing import Callable, Tuple, Union
+from typing import Callable, Union
 
-from vllm2 import SamplingParams
-from vllm2.engine.arg_utils import AsyncEngineArgs
-from vllm2.engine.multiprocessing.client import MQLLMEngineClient
-from vllm2.engine.multiprocessing.engine import MQLLMEngine
-from vllm2.outputs import RequestOutput
-from vllm2.usage.usage_lib import UsageContext
+from vllm import SamplingParams
+from vllm.engine.arg_utils import AsyncEngineArgs
+from vllm.engine.multiprocessing.client import MQLLMEngineClient
+from vllm.engine.multiprocessing.engine import MQLLMEngine
+from vllm.outputs import RequestOutput
+from vllm.usage.usage_lib import UsageContext
 
 
 async def generate(
         client: MQLLMEngineClient,
         request_id: str,
         num_tokens: int,
-        return_output: bool = False) -> Union[RequestOutput, Tuple[int, str]]:
+        return_output: bool = False) -> Union[RequestOutput, tuple[int, str]]:
 
     final_output = None
     count = 0

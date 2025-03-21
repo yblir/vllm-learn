@@ -3,7 +3,7 @@
 import pytest
 
 import vllm
-from vllm2.prompt_adapter.request import PromptAdapterRequest
+from vllm.prompt_adapter.request import PromptAdapterRequest
 
 MODEL_PATH = "bigscience/bloomz-560m"
 PA_PATH = 'stevhliu/bloomz-560m_PROMPT_TUNING_CAUSAL_LM'

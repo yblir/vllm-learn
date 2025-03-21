@@ -2,17 +2,18 @@
 
 import pickle as pkl
 import time
+from collections.abc import Iterable
 from dataclasses import dataclass
 from itertools import product
-from typing import Callable, Iterable, List, Optional
+from typing import Callable, Optional
 
 import torch
 import torch.utils.benchmark as TBenchmark
 from torch.utils.benchmark import Measurement as TMeasurement
 from tqdm import tqdm
 
-import vllm2._custom_ops as ops
-from vllm2.model_executor.layers.layernorm import RMSNorm
+import vllm._custom_ops as ops
+from vllm.model_executor.layers.layernorm import RMSNorm
 
 
 @dataclass
@@ -29,7 +30,7 @@ class bench_params_t:
                 f'x DT {self.dtype}')
 
 
-def get_bench_params() -> List[bench_params_t]:
+def get_bench_params() -> list[bench_params_t]:
     ## Test Fixtures
     NUM_TOKENS = [2**x for x in range(11)]
     HIDDEN_SIZES = list(range(1024, 8129, 1024))

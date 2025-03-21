@@ -3,7 +3,7 @@
 import pytest
 import torch
 
-from vllm2.scalar_type import scalar_types
+from vllm.scalar_type import scalar_types
 
 
 @pytest.mark.parametrize("type_tuple", (

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
-from vllm2 import LLM, SamplingParams
-from vllm2.distributed import cleanup_dist_env_and_memory
+from vllm import LLM, SamplingParams
+from vllm.distributed import cleanup_dist_env_and_memory
 
 # NOTE: This is just a running example. For benchmarking purpose,
 # please see benchmarks/benchmark_prefix_caching.py

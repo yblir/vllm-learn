@@ -82,7 +82,7 @@ if world_size <= 1:
     exit()
 
 # Test vLLM NCCL, with cuda graph
-from vllm2.distributed.device_communicators.pynccl import PyNcclCommunicator
+from vllm.distributed.device_communicators.pynccl import PyNcclCommunicator
 
 pynccl = PyNcclCommunicator(group=gloo_group, device=local_rank)
 # pynccl is enabled by default for 0.6.5+,
@@ -253,6 +253,10 @@ ValueError: Model architectures ['<arch>'] are not supported for now. Supported 
 ```
 
 But you are sure that the model is in the [list of supported models](#supported-models), there may be some issue with vLLM's model resolution. In that case, please follow [these steps](#model-resolution) to explicitly specify the vLLM implementation for the model.
+
+## Failed to infer device type
+
+If you see an error like `RuntimeError: Failed to infer device type`, it means that vLLM failed to infer the device type of the runtime environment. You can check [the code](gh-file:vllm/platforms/__init__.py) to see how vLLM infers the device type and why it is not working as expected. After [this PR](gh-pr:14195), you can also set the environment variable `VLLM_LOGGING_LEVEL=DEBUG` to see more detailed logs to help debug the issue.
 
 ## Known Issues
 

@@ -1,21 +1,20 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import random
-from typing import List
 
 import pytest
 import torch
 
-from vllm2.sequence import ExecuteModelRequest
-from vllm2.spec_decode.batch_expansion import BatchExpansionTop1Scorer
-from vllm2.spec_decode.interfaces import SpeculativeProposals, SpeculativeScores
-from vllm2.spec_decode.mqa_scorer import MQAScorer
-from vllm2.worker.worker import Worker
+from vllm.sequence import ExecuteModelRequest
+from vllm.spec_decode.batch_expansion import BatchExpansionTop1Scorer
+from vllm.spec_decode.interfaces import SpeculativeProposals, SpeculativeScores
+from vllm.spec_decode.mqa_scorer import MQAScorer
+from vllm.worker.worker import Worker
 
 from .utils import create_batch, create_worker
 
 
-def create_proposal(propose_lens: List[int], vocab_size: int,
+def create_proposal(propose_lens: list[int], vocab_size: int,
                     device: str) -> SpeculativeProposals:
     batch_size = len(propose_lens)
     max_propose_len = max(propose_lens)

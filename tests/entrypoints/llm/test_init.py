@@ -2,7 +2,7 @@
 
 import pytest
 
-from vllm2 import LLM
+from vllm import LLM
 
 from ...utils import error_on_warning
 

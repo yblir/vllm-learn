@@ -9,7 +9,7 @@ import pytest
 import torch
 
 from tests.kernels.utils import opcheck
-from vllm2.model_executor.layers.rotary_embedding import RotaryEmbedding
+from vllm.model_executor.layers.rotary_embedding import RotaryEmbedding
 
 
 def rotary_embedding_opcheck(rot,

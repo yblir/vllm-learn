@@ -4,7 +4,7 @@ import gc
 import time
 from typing import List
 
-from vllm2 import LLM, SamplingParams
+from vllm import LLM, SamplingParams
 
 
 def time_generation(llm: LLM, prompts: List[str],

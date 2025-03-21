@@ -8,8 +8,8 @@ import os
 import time
 from multiprocessing import Event, Process
 
-from vllm2 import LLM, SamplingParams
-from vllm2.config import KVTransferConfig
+from vllm import LLM, SamplingParams
+from vllm.config import KVTransferConfig
 
 
 def run_prefill(prefill_done):

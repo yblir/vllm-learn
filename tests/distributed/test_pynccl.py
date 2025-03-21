@@ -2,27 +2,26 @@
 
 import multiprocessing
 import os
-from typing import Dict, List
 
 import pytest
 import torch
 import torch.distributed
 
-from vllm2.distributed.communication_op import (  # noqa
+from vllm.distributed.communication_op import (  # noqa
     tensor_model_parallel_all_reduce)
-from vllm2.distributed.device_communicators.pynccl import PyNcclCommunicator
-from vllm2.distributed.device_communicators.pynccl_wrapper import NCCLLibrary
-from vllm2.distributed.parallel_state import (ensure_model_parallel_initialized,
+from vllm.distributed.device_communicators.pynccl import PyNcclCommunicator
+from vllm.distributed.device_communicators.pynccl_wrapper import NCCLLibrary
+from vllm.distributed.parallel_state import (ensure_model_parallel_initialized,
                                              get_world_group, graph_capture,
                                              init_distributed_environment)
-from vllm2.utils import update_environment_variables
+from vllm.utils import update_environment_variables
 
 
 def distributed_run(fn, world_size):
     number_of_processes = world_size
-    processes: List[multiprocessing.Process] = []
+    processes: list[multiprocessing.Process] = []
     for i in range(number_of_processes):
-        env: Dict[str, str] = {}
+        env: dict[str, str] = {}
         env['RANK'] = str(i)
         env['LOCAL_RANK'] = str(i)
         env['WORLD_SIZE'] = str(number_of_processes)

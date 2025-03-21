@@ -6,11 +6,11 @@ import itertools
 import pytest
 import torch
 
-from vllm2.model_executor.layers.activation import SiluAndMul
-from vllm2.model_executor.layers.fused_moe import fused_moe
-from vllm2.model_executor.layers.quantization.utils.fp8_utils import (
+from vllm.model_executor.layers.activation import SiluAndMul
+from vllm.model_executor.layers.fused_moe import fused_moe
+from vllm.model_executor.layers.quantization.utils.fp8_utils import (
     per_token_group_quant_fp8, w8a8_block_fp8_matmul)
-from vllm2.platforms import current_platform
+from vllm.platforms import current_platform
 
 if current_platform.get_device_capability() < (9, 0):
     pytest.skip("FP8 Triton requires CUDA 9.0 or higher",
@@ -30,8 +30,8 @@ M_moe = [1, 7, 83, 512, 2048]
 N_moe = [4608]  # [128, 4608, 13824]
 K_moe = [7168]  # [256, 7168, 13824]
 BLOCK_SIZE = [[128, 128]]
-E = [256]  # [8, 24, 128, 256]
-TOP_KS = [1]  # [1, 2, 6]
+E = [8, 24]  # [8, 24, 128, 256]
+TOP_KS = [2]  # [1, 2, 6]
 OUT_DTYPES = [torch.bfloat16]  # [torch.float32, torch.half, torch.bfloat16]
 SEEDS = [0]
 

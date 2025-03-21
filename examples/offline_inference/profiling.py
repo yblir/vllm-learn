@@ -11,10 +11,10 @@ from typing import Any, Dict, Generator, List, Optional, TypeAlias
 import torch
 import tqdm
 
-from vllm2 import LLM, SamplingParams
-from vllm2.engine.arg_utils import EngineArgs
-from vllm2.profiler import layerwise_profile
-from vllm2.utils import FlexibleArgumentParser
+from vllm import LLM, SamplingParams
+from vllm.engine.arg_utils import EngineArgs
+from vllm.profiler import layerwise_profile
+from vllm.utils import FlexibleArgumentParser
 
 BATCH_SIZE_DEFAULT = 1
 PROMPT_LEN_DEFAULT = 256

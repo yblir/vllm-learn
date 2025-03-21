@@ -4,7 +4,7 @@ import pytest
 import torch
 
 from tests.kernels.utils import opcheck
-from vllm2._custom_ops import permute_cols
+from vllm._custom_ops import permute_cols
 
 
 @pytest.mark.parametrize('shape', [(1, 512), (544, 4096), (67, 8192)])

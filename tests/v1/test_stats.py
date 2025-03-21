@@ -2,8 +2,8 @@
 
 import pytest
 
-from vllm2.sampling_params import SamplingParams
-from vllm2.v1.stats.common import RequestStats, RequestStatsUpdate
+from vllm.sampling_params import SamplingParams
+from vllm.v1.stats.common import RequestStats, RequestStatsUpdate
 
 
 def make_update(

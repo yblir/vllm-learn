@@ -4,8 +4,8 @@ from typing import Optional
 
 import torch
 
-from vllm2.compilation.wrapper import TorchCompileWrapperWithCustomDispatcher
-from vllm2.config import CompilationLevel
+from vllm.compilation.wrapper import TorchCompileWrapperWithCustomDispatcher
+from vllm.config import CompilationLevel
 
 
 class MyMod(torch.nn.Module):

@@ -104,7 +104,7 @@ This process creates a W8A8 model with weights and activations quantized to 8-bi
 After quantization, you can load and run the model in vLLM:
 
 ```python
-from vllm2 import LLM
+from vllm import LLM
 model = LLM("./Meta-Llama-3-8B-Instruct-W8A8-Dynamic-Per-Token")
 ```
 

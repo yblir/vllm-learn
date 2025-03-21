@@ -1,17 +1,16 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import random
-from typing import Type
 
 import pytest
 import torch
 
 from tests.kernels.utils import opcheck
-from vllm2.model_executor.layers.activation import (FastGELU, FatreluAndMul,
+from vllm.model_executor.layers.activation import (FastGELU, FatreluAndMul,
                                                    GeluAndMul, MulAndSilu,
                                                    NewGELU, QuickGELU,
                                                    SiluAndMul)
-from vllm2.platforms import current_platform
+from vllm.platforms import current_platform
 
 from .allclose_default import get_default_atol, get_default_rtol
 
@@ -86,7 +85,7 @@ def test_act_and_mul(
 @pytest.mark.parametrize("device", CUDA_DEVICES)
 @torch.inference_mode()
 def test_activation(
-    activation: Type[torch.nn.Module],
+    activation: type[torch.nn.Module],
     num_tokens: int,
     d: int,
     dtype: torch.dtype,

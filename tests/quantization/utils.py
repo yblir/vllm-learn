@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
-from vllm2.model_executor.layers.quantization import get_quantization_config
-from vllm2.platforms import current_platform
+from vllm.model_executor.layers.quantization import get_quantization_config
+from vllm.platforms import current_platform
 
 
 def is_quant_method_supported(quant_method: str) -> bool:

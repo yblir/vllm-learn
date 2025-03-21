@@ -2,9 +2,9 @@
 import pytest
 import torch
 
-from vllm2 import _custom_ops as ops
-from vllm2.platforms import current_platform
-from vllm2.scalar_type import scalar_types
+from vllm import _custom_ops as ops
+from vllm.platforms import current_platform
+from vllm.scalar_type import scalar_types
 
 if not current_platform.has_device_capability(100):
     pytest.skip(reason="Nvfp4 Requires compute capability of 10 or above.",

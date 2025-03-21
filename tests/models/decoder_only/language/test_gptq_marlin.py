@@ -14,7 +14,7 @@ import os
 import pytest
 
 from tests.quantization.utils import is_quant_method_supported
-from vllm2.model_executor.layers.rotary_embedding import _ROPE_DICT
+from vllm.model_executor.layers.rotary_embedding import _ROPE_DICT
 
 from ...utils import check_logprobs_close
 

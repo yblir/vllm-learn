@@ -1,14 +1,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import List, Optional, Tuple
+from typing import Optional
 
 import pytest
 import torch
 
-from vllm2.platforms import current_platform
-from vllm2.v1.attention.backends.flash_attn import (cascade_attention,
+from vllm.platforms import current_platform
+from vllm.v1.attention.backends.flash_attn import (cascade_attention,
                                                    merge_attn_states)
-from vllm2.vllm_flash_attn import (fa_version_unsupported_reason,
+from vllm.vllm_flash_attn import (fa_version_unsupported_reason,
                                   flash_attn_varlen_func,
                                   is_fa_version_supported)
 
@@ -25,7 +25,7 @@ DTYPES = [torch.float16, torch.bfloat16]
 @torch.inference_mode()
 def test_merge_kernel(
     num_tokens: int,
-    num_heads: Tuple[int, int],
+    num_heads: tuple[int, int],
     head_size: int,
     dtype: torch.dtype,
 ):
@@ -85,8 +85,8 @@ CASES = [
 @pytest.mark.parametrize("fa_version", [2, 3])
 @torch.inference_mode()
 def test_cascade(
-    seq_lens_and_common_prefix: Tuple[List[Tuple[int, int]], int],
-    num_heads: Tuple[int, int],
+    seq_lens_and_common_prefix: tuple[list[tuple[int, int]], int],
+    num_heads: tuple[int, int],
     head_size: int,
     dtype: torch.dtype,
     block_size: int,

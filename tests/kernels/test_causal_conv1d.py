@@ -7,11 +7,11 @@ import torch
 import torch.nn.functional as F
 
 from tests.kernels.utils import opcheck
-from vllm2 import _custom_ops as ops  # noqa: F401
-from vllm2.attention.backends.utils import PAD_SLOT_ID
-from vllm2.model_executor.layers.mamba.ops.causal_conv1d import (
+from vllm import _custom_ops as ops  # noqa: F401
+from vllm.attention.backends.utils import PAD_SLOT_ID
+from vllm.model_executor.layers.mamba.ops.causal_conv1d import (
     causal_conv1d_fn, causal_conv1d_update)
-from vllm2.platforms import current_platform
+from vllm.platforms import current_platform
 
 
 def causal_conv1d_ref(

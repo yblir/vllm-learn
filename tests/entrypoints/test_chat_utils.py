@@ -5,16 +5,16 @@ from typing import Optional
 
 import pytest
 
-from vllm2.assets.image import ImageAsset
-from vllm2.config import ModelConfig
-from vllm2.entrypoints.chat_utils import (_try_extract_ast, load_chat_template,
+from vllm.assets.image import ImageAsset
+from vllm.config import ModelConfig
+from vllm.entrypoints.chat_utils import (_try_extract_ast, load_chat_template,
                                          parse_chat_messages,
                                          parse_chat_messages_futures,
                                          resolve_chat_template_content_format)
-from vllm2.entrypoints.llm import apply_hf_chat_template
-from vllm2.multimodal import MultiModalDataDict
-from vllm2.multimodal.utils import encode_image_base64
-from vllm2.transformers_utils.tokenizer_group import TokenizerGroup
+from vllm.entrypoints.llm import apply_hf_chat_template
+from vllm.multimodal import MultiModalDataDict
+from vllm.multimodal.utils import encode_image_base64
+from vllm.transformers_utils.tokenizer_group import TokenizerGroup
 
 from ..utils import VLLM_PATH
 
@@ -34,7 +34,7 @@ def phi3v_model_config():
                        tokenizer=PHI3V_MODEL_ID,
                        tokenizer_mode="auto",
                        trust_remote_code=True,
-                       dtype="bfloat16",
+                       dtype="auto",
                        seed=0,
                        limit_mm_per_prompt={
                            "image": 2,
@@ -58,7 +58,7 @@ def mllama_model_config():
                        tokenizer=MLLAMA_MODEL_ID,
                        tokenizer_mode="auto",
                        trust_remote_code=True,
-                       dtype="bfloat16",
+                       dtype="auto",
                        seed=0,
                        limit_mm_per_prompt={
                            "image": 2,
@@ -669,7 +669,7 @@ def test_multimodal_image_parsing_matches_hf(model, image_url):
                                tokenizer=MLLAMA_MODEL_ID,
                                tokenizer_mode="auto",
                                trust_remote_code=True,
-                               dtype="bfloat16",
+                               dtype="auto",
                                seed=0,
                                limit_mm_per_prompt={
                                    "image": 2,

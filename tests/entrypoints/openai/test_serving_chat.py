@@ -6,13 +6,13 @@ from dataclasses import dataclass
 from typing import Optional
 from unittest.mock import MagicMock
 
-from vllm2.config import MultiModalConfig
-from vllm2.engine.multiprocessing.client import MQLLMEngineClient
-from vllm2.entrypoints.openai.protocol import ChatCompletionRequest
-from vllm2.entrypoints.openai.serving_chat import OpenAIServingChat
-from vllm2.entrypoints.openai.serving_models import (BaseModelPath,
+from vllm.config import MultiModalConfig
+from vllm.engine.multiprocessing.client import MQLLMEngineClient
+from vllm.entrypoints.openai.protocol import ChatCompletionRequest
+from vllm.entrypoints.openai.serving_chat import OpenAIServingChat
+from vllm.entrypoints.openai.serving_models import (BaseModelPath,
                                                     OpenAIServingModels)
-from vllm2.transformers_utils.tokenizer import get_tokenizer
+from vllm.transformers_utils.tokenizer import get_tokenizer
 
 MODEL_NAME = "openai-community/gpt2"
 CHAT_TEMPLATE = "Dummy chat template for testing {}"
@@ -38,6 +38,7 @@ class MockModelConfig:
     diff_sampling_param: Optional[dict] = None
     allowed_local_media_path: str = ""
     encoder_config = None
+    generation_config: str = "auto"
 
     def get_diff_sampling_param(self):
         return self.diff_sampling_param or {}

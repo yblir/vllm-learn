@@ -43,8 +43,8 @@ def run_intern_vit_test(
         for pixel_value in pixel_values
     ]
 
-    from vllm2.distributed import cleanup_dist_env_and_memory
-    from vllm2.model_executor.models.intern_vit import InternVisionModel
+    from vllm.distributed import cleanup_dist_env_and_memory
+    from vllm.model_executor.models.intern_vit import InternVisionModel
     vllm_model = InternVisionModel(config)
     vllm_model.load_weights(hf_model.state_dict().items())
 

@@ -4,9 +4,9 @@ from argparse import ArgumentTypeError
 
 import pytest
 
-from vllm2.config import PoolerConfig
-from vllm2.engine.arg_utils import EngineArgs, nullable_kvs
-from vllm2.utils import FlexibleArgumentParser
+from vllm.config import PoolerConfig
+from vllm.engine.arg_utils import EngineArgs, nullable_kvs
+from vllm.utils import FlexibleArgumentParser
 
 
 @pytest.mark.parametrize(("arg", "expected"), [

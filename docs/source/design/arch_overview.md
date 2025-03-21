@@ -27,7 +27,7 @@ server.
 Here is a sample of `LLM` class usage:
 
 ```python
-from vllm2 import LLM, SamplingParams
+from vllm import LLM, SamplingParams
 
 # Define a list of input prompts
 prompts = [
@@ -199,7 +199,7 @@ class MyOldModel(nn.Module):
     ) -> None:
         ...
 
-from vllm2.config import VllmConfig
+from vllm.config import VllmConfig
 class MyNewModel(MyOldModel):
     def __init__(self, *, vllm_config: VllmConfig, prefix: str = ""):
         config = vllm_config.model_config.hf_config

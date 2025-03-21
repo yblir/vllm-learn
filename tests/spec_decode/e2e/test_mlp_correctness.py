@@ -24,7 +24,7 @@ from unittest.mock import patch
 
 import pytest
 
-from vllm2.model_executor.layers.vocab_parallel_embedding import pad_vocab_size
+from vllm.model_executor.layers.vocab_parallel_embedding import pad_vocab_size
 
 from ..utils import maybe_enable_chunked_prefill
 from .conftest import run_equality_correctness_test

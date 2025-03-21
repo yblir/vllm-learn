@@ -4,20 +4,20 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 from time import sleep
-from typing import Any, List, Tuple
+from typing import Any
 
 import pytest
 
-from vllm2.config import VllmConfig
-from vllm2.executor.multiproc_worker_utils import (ProcessWorkerWrapper,
+from vllm.config import VllmConfig
+from vllm.executor.multiproc_worker_utils import (ProcessWorkerWrapper,
                                                   ResultHandler, WorkerMonitor)
-from vllm2.worker.worker_base import WorkerWrapperBase
+from vllm.worker.worker_base import WorkerWrapperBase
 
 
 class DummyWorkerWrapper(WorkerWrapperBase):
     """Dummy version of vllm.worker.worker.Worker"""
 
-    def worker_method(self, worker_input: Any) -> Tuple[int, Any]:
+    def worker_method(self, worker_input: Any) -> tuple[int, Any]:
         sleep(0.05)
 
         if isinstance(worker_input, Exception):
@@ -27,7 +27,7 @@ class DummyWorkerWrapper(WorkerWrapperBase):
         return self.rpc_rank, input
 
 
-def _start_workers() -> Tuple[List[ProcessWorkerWrapper], WorkerMonitor]:
+def _start_workers() -> tuple[list[ProcessWorkerWrapper], WorkerMonitor]:
     result_handler = ResultHandler()
     vllm_config = VllmConfig()
     workers = [

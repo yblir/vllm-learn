@@ -20,9 +20,9 @@ from ray.util.placement_group import placement_group
 from ray.util.scheduling_strategies import PlacementGroupSchedulingStrategy
 from transformers import AutoModelForCausalLM
 
-from vllm2 import LLM, SamplingParams
-from vllm2.utils import get_ip, get_open_port
-from vllm2.worker.worker import Worker
+from vllm import LLM, SamplingParams
+from vllm.utils import get_ip, get_open_port
+from vllm.worker.worker import Worker
 
 
 def stateless_init_process_group(master_address, master_port, rank, world_size,
@@ -34,8 +34,8 @@ def stateless_init_process_group(master_address, master_port, rank, world_size,
     the data-plane communication (NCCL) between external (train processes) 
     and vLLM workers.
     """
-    from vllm2.distributed.device_communicators.pynccl import PyNcclCommunicator
-    from vllm2.distributed.utils import StatelessProcessGroup
+    from vllm.distributed.device_communicators.pynccl import PyNcclCommunicator
+    from vllm.distributed.utils import StatelessProcessGroup
     pg = StatelessProcessGroup.create(host=master_address,
                                       port=master_port,
                                       rank=rank,
@@ -55,7 +55,7 @@ class MyWorker(Worker):
 
     def init_weight_update_group(self, master_address, master_port,
                                  rank_offset, world_size):
-        from vllm2.distributed.parallel_state import get_world_group
+        from vllm.distributed.parallel_state import get_world_group
         rank = get_world_group().rank + rank_offset
         self.model_update_group = stateless_init_process_group(
             master_address,

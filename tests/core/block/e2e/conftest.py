@@ -1,12 +1,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Callable, Iterable, Optional
+from collections.abc import Iterable
+from typing import Callable, Optional
 
 import pytest
 
-from vllm2 import LLM
-from vllm2.distributed import cleanup_dist_env_and_memory
-from vllm2.model_executor.utils import set_random_seed
+from vllm import LLM
+from vllm.distributed import cleanup_dist_env_and_memory
+from vllm.model_executor.utils import set_random_seed
 
 
 @pytest.fixture

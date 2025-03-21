@@ -15,10 +15,10 @@ import pytest
 import ray
 from ray.util.scheduling_strategies import PlacementGroupSchedulingStrategy
 
-from vllm2 import initialize_ray_cluster
-from vllm2.config import ParallelConfig
-from vllm2.executor.ray_utils import _wait_until_pg_removed
-from vllm2.utils import get_ip
+from vllm import initialize_ray_cluster
+from vllm.config import ParallelConfig
+from vllm.executor.ray_utils import _wait_until_pg_removed
+from vllm.utils import get_ip
 
 VLLM_MULTI_NODE = os.getenv("VLLM_MULTI_NODE", "0") == "1"
 

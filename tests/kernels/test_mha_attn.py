@@ -9,12 +9,12 @@ from unittest.mock import patch
 import pytest
 import torch
 
-from vllm2.attention.layer import MultiHeadAttention
-from vllm2.attention.selector import _Backend, _cached_get_attn_backend
-from vllm2.platforms import current_platform
-from vllm2.platforms.cpu import CpuPlatform
-from vllm2.platforms.cuda import CudaPlatform
-from vllm2.platforms.rocm import RocmPlatform
+from vllm.attention.layer import MultiHeadAttention
+from vllm.attention.selector import _Backend, _cached_get_attn_backend
+from vllm.platforms import current_platform
+from vllm.platforms.cpu import CpuPlatform
+from vllm.platforms.cuda import CudaPlatform
+from vllm.platforms.rocm import RocmPlatform
 
 
 @pytest.fixture(autouse=True)

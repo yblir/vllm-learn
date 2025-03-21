@@ -9,8 +9,8 @@ import ctypes
 import torch
 import torch.distributed as dist
 
-from vllm2.distributed.device_communicators.cuda_wrapper import CudaRTLibrary
-from vllm2.distributed.device_communicators.custom_all_reduce import (  # noqa
+from vllm.distributed.device_communicators.cuda_wrapper import CudaRTLibrary
+from vllm.distributed.device_communicators.custom_all_reduce import (  # noqa
     CustomAllreduce)
 
 # create a cpu process group for communicating metadata (ipc handle)

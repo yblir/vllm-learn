@@ -3,7 +3,7 @@
 import pytest
 import torch
 
-from vllm2.attention.ops.triton_decode_attention import decode_attention_fwd
+from vllm.attention.ops.triton_decode_attention import decode_attention_fwd
 
 
 def cdiv(a, b):

@@ -20,7 +20,7 @@ And usually, these repositories have a config.json file that includes a quantiza
 ## Read quantized checkpoint
 
 ```python
-from vllm2 import LLM
+from vllm import LLM
 import torch
 # unsloth/tinyllama-bnb-4bit is a pre-quantized checkpoint.
 model_id = "unsloth/tinyllama-bnb-4bit"
@@ -31,7 +31,7 @@ quantization="bitsandbytes", load_format="bitsandbytes")
 ## Inflight quantization: load as 4bit quantization
 
 ```python
-from vllm2 import LLM
+from vllm import LLM
 import torch
 model_id = "huggyllama/llama-7b"
 llm = LLM(model=model_id, dtype=torch.bfloat16, trust_remote_code=True, \

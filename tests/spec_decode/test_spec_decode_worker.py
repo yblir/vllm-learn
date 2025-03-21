@@ -3,24 +3,23 @@
 import random
 from collections import defaultdict
 from types import SimpleNamespace
-from typing import Dict, List, Set
 from unittest.mock import MagicMock
 
 import pytest
 import torch
 
-from vllm2.model_executor.layers.sampler import SamplerOutput
-from vllm2.model_executor.utils import set_random_seed
-from vllm2.sequence import ExecuteModelRequest, SequenceOutput
-from vllm2.spec_decode.batch_expansion import BatchExpansionTop1Scorer
-from vllm2.spec_decode.draft_model_runner import TP1DraftModelRunner
-from vllm2.spec_decode.interfaces import SpeculativeProposals
-from vllm2.spec_decode.metrics import (AsyncMetricsCollector,
+from vllm.model_executor.layers.sampler import SamplerOutput
+from vllm.model_executor.utils import set_random_seed
+from vllm.sequence import ExecuteModelRequest, SequenceOutput
+from vllm.spec_decode.batch_expansion import BatchExpansionTop1Scorer
+from vllm.spec_decode.draft_model_runner import TP1DraftModelRunner
+from vllm.spec_decode.interfaces import SpeculativeProposals
+from vllm.spec_decode.metrics import (AsyncMetricsCollector,
                                       SpecDecodeWorkerMetrics)
-from vllm2.spec_decode.multi_step_worker import MultiStepWorker
-from vllm2.spec_decode.spec_decode_worker import (SpecDecodeWorker,
+from vllm.spec_decode.multi_step_worker import MultiStepWorker
+from vllm.spec_decode.spec_decode_worker import (SpecDecodeWorker,
                                                  split_num_cache_blocks_evenly)
-from vllm2.worker.worker import Worker
+from vllm.worker.worker import Worker
 
 from .test_utils import mock_spec_decode_sampler
 from .utils import (create_batch, create_sampler_output_list, create_worker,
@@ -123,7 +122,7 @@ def test_batch_expansion_correctly_calls_target_model(
             seq_group_metadata_list=seq_group_metadata_list,
             num_lookahead_slots=k))
 
-    seen_contexts: List[List[int]] = []
+    seen_contexts: list[list[int]] = []
 
     call_args_list = target_worker.execute_model.call_args_list
     assert len(call_args_list) == 1
@@ -136,7 +135,7 @@ def test_batch_expansion_correctly_calls_target_model(
             for seq_data in seq_group_metadata.seq_data.values():
                 seen_contexts.append(seq_data.get_token_ids())
 
-    expected_seen_contexts: List[List[int]] = []
+    expected_seen_contexts: list[list[int]] = []
 
     for prompt, prev_generated, draft_tokens in zip(
             prompts, prev_output_tokens, proposal_token_ids.tolist()):
@@ -338,11 +337,11 @@ def test_correctly_formats_output(k: int, batch_size: int,
         next(iter(seq_group_metadata.seq_data.keys()))
         for seq_group_metadata in seq_group_metadata_list
     ]
-    actual_output_by_seq: Dict[int, List[SequenceOutput]] = {
+    actual_output_by_seq: dict[int, list[SequenceOutput]] = {
         seq_id: []
         for seq_id in seq_ids
     }
-    expected_output_by_seq: Dict[int, List[SequenceOutput]] = {
+    expected_output_by_seq: dict[int, list[SequenceOutput]] = {
         seq_id: []
         for seq_id in seq_ids
     }
@@ -728,7 +727,7 @@ def test_populate_seq_ids_with_bonus_tokens():
                                        size=(batch_size, (k + 1)),
                                        dtype=torch.int64,
                                        device='cuda')
-    expected_request_id_seq_ids_mapping: Dict[str, Set[int]] = defaultdict(set)
+    expected_request_id_seq_ids_mapping: dict[str, set[int]] = defaultdict(set)
     for seq_group_metadata in seq_group_metadata_list:
         for seq_id in seq_group_metadata.seq_data:
             expected_request_id_seq_ids_mapping[

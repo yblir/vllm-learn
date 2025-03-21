@@ -1,17 +1,16 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
-from typing import Tuple
 
 import pytest
 import torch
 
 from tests.utils import multi_gpu_test
-from vllm2.distributed.parallel_state import (init_distributed_environment,
+from vllm.distributed.parallel_state import (init_distributed_environment,
                                              initialize_model_parallel)
-from vllm2.model_executor.layers.mamba.mamba_mixer2 import Mixer2RMSNormGated
-from vllm2.platforms import current_platform
-from vllm2.utils import update_environment_variables
+from vllm.model_executor.layers.mamba.mamba_mixer2 import Mixer2RMSNormGated
+from vllm.platforms import current_platform
+from vllm.utils import update_environment_variables
 
 
 @multi_gpu_test(num_gpus=2)
@@ -29,7 +28,7 @@ from vllm2.utils import update_environment_variables
 def test_mixer2_gated_norm_multi_gpu(
     batch_size: int,
     seq_len: int,
-    hidden_size_n_groups: Tuple[int, int],
+    hidden_size_n_groups: tuple[int, int],
     dtype: torch.dtype,
     device: str = 'cuda',
 ):

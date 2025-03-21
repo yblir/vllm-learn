@@ -1,12 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Dict
-
 import pytest
 import requests
 
-from vllm2.entrypoints.openai.protocol import EmbeddingResponse
-from vllm2.multimodal.utils import encode_image_base64, fetch_image
+from vllm.entrypoints.openai.protocol import EmbeddingResponse
+from vllm.multimodal.utils import encode_image_base64, fetch_image
 
 from ...utils import VLLM_PATH, RemoteOpenAIServer
 
@@ -30,8 +28,6 @@ def server():
     args = [
         "--task",
         "embed",
-        "--dtype",
-        "bfloat16",
         "--max-model-len",
         "2048",
         "--max-num-seqs",
@@ -49,7 +45,7 @@ def server():
 
 
 @pytest.fixture(scope="session")
-def base64_encoded_image() -> Dict[str, str]:
+def base64_encoded_image() -> dict[str, str]:
     return {
         image_url: encode_image_base64(fetch_image(image_url))
         for image_url in TEST_IMAGE_URLS

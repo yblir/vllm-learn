@@ -1,15 +1,16 @@
 # SPDX-License-Identifier: Apache-2.0
 
+from collections.abc import Sequence
 from itertools import cycle
-from typing import List, Optional, Sequence, Tuple, Union
+from typing import Optional, Union
 
 import pytest
 import torch
 
-from vllm2 import LLM, SamplingParams
-from vllm2.distributed import cleanup_dist_env_and_memory
-from vllm2.model_executor.utils import set_random_seed
-from vllm2.sequence import PromptLogprobs, SampleLogprobs
+from vllm import LLM, SamplingParams
+from vllm.distributed import cleanup_dist_env_and_memory
+from vllm.model_executor.utils import set_random_seed
+from vllm.sequence import PromptLogprobs, SampleLogprobs
 
 from ...models.utils import (TokensTextLogprobs,
                              TokensTextLogprobsPromptLogprobs,
@@ -56,7 +57,7 @@ def maybe_assert_ngram_worker(llm):
     # Verify the proposer worker is ngram if ngram is specified.
     if (llm.llm_engine.speculative_config is not None
             and llm.llm_engine.speculative_config.ngram_prompt_lookup_max > 0):
-        from vllm2.spec_decode.ngram_worker import NGramWorker
+        from vllm.spec_decode.ngram_worker import NGramWorker
         assert isinstance(
             llm.llm_engine.model_executor.driver_worker.proposer_worker,
             NGramWorker)
@@ -64,9 +65,9 @@ def maybe_assert_ngram_worker(llm):
 
 def get_output_from_llm_generator(
         llm_generator, prompts,
-        sampling_params) -> Tuple[List[str], List[List[int]], float]:
-    tokens: List[str] = []
-    token_ids: List[List[int]] = []
+        sampling_params) -> tuple[list[str], list[list[int]], float]:
+    tokens: list[str] = []
+    token_ids: list[list[int]] = []
     acceptance_rate: float = -1.0
     for llm in llm_generator():
         maybe_assert_ngram_worker(llm)

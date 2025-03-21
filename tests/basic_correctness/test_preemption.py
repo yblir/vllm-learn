@@ -9,9 +9,9 @@ pytest tests/basic_correctness/test_preemption.py`.
 import pytest
 from prometheus_client import REGISTRY
 
-import vllm2.envs as envs
-from vllm2 import SamplingParams
-from vllm2.core.scheduler import (ARTIFICIAL_PREEMPTION_MAX_CNT,
+import vllm.envs as envs
+from vllm import SamplingParams
+from vllm.core.scheduler import (ARTIFICIAL_PREEMPTION_MAX_CNT,
                                  ENABLE_ARTIFICIAL_PREEMPT)
 
 from ..models.utils import check_outputs_equal
@@ -19,6 +19,15 @@ from ..models.utils import check_outputs_equal
 MODELS = [
     "distilbert/distilgpt2",
 ]
+
+
+@pytest.fixture(scope="function", autouse=True)
+def use_v0_only(monkeypatch):
+    """
+    We should enable this for V1, but VLLM_TEST_ENABLE_ARTIFICIAL_PREEMPT,
+    so use VLLM_USE_V1=0 for all tests in the file.
+    """
+    monkeypatch.setenv('VLLM_USE_V1', '0')
 
 
 @pytest.fixture(scope="module", autouse=True)

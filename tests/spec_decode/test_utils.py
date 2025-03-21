@@ -5,12 +5,12 @@ from unittest.mock import MagicMock
 import pytest
 import torch
 
-from vllm2.model_executor.layers.rejection_sampler import RejectionSampler
-from vllm2.model_executor.layers.sampler import _get_ranks
-from vllm2.model_executor.layers.typical_acceptance_sampler import (
+from vllm.model_executor.layers.rejection_sampler import RejectionSampler
+from vllm.model_executor.layers.sampler import _get_ranks
+from vllm.model_executor.layers.typical_acceptance_sampler import (
     TypicalAcceptanceSampler)
-from vllm2.sequence import SequenceGroupMetadata, get_all_seq_ids
-from vllm2.spec_decode.util import (get_sampled_token_logprobs,
+from vllm.sequence import SequenceGroupMetadata, get_all_seq_ids
+from vllm.spec_decode.util import (get_sampled_token_logprobs,
                                    split_batch_by_proposal_len)
 
 

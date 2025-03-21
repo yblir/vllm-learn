@@ -4,7 +4,7 @@ import random
 
 import pytest
 
-from vllm2.core.block.common import RefCounter
+from vllm.core.block.common import RefCounter
 
 
 @pytest.mark.parametrize("seed", list(range(20)))

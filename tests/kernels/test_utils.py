@@ -7,7 +7,7 @@ import pytest
 import torch
 
 from tests.kernels.utils import opcheck
-from vllm2.platforms import current_platform
+from vllm.platforms import current_platform
 
 
 def test_convert_fp8_opcheck():

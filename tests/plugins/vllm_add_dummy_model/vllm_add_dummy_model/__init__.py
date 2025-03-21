@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
-from vllm2 import ModelRegistry
+from vllm import ModelRegistry
 
 
 def register():

@@ -30,7 +30,7 @@ import torch
 from einops import rearrange
 from terratorch.datamodules import Sen1Floods11NonGeoDataModule
 
-from vllm2 import LLM
+from vllm import LLM
 
 NO_DATA = -9999
 NO_DATA_FLOAT = 0.0001

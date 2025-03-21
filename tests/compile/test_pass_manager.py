@@ -6,10 +6,10 @@ import pytest
 import torch
 from torch._inductor.codecache import BypassFxGraphCache
 
-from vllm2.compilation.config import CompilationConfig
-from vllm2.compilation.inductor_pass import (CallableInductorPass,
+from vllm.compilation.config import CompilationConfig
+from vllm.compilation.inductor_pass import (CallableInductorPass,
                                             as_inductor_pass)
-from vllm2.compilation.pass_manager import PostGradPassManager
+from vllm.compilation.pass_manager import PostGradPassManager
 
 
 def simple_callable(graph: torch.fx.Graph):

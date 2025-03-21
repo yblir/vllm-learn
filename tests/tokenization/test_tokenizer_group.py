@@ -3,15 +3,15 @@
 import asyncio
 import os
 import sys
-from typing import List, Optional
+from typing import Optional
 from unittest.mock import patch
 
 import pytest
 from transformers import AutoTokenizer, PreTrainedTokenizerBase
 
-from vllm2.transformers_utils.tokenizer_group import (TokenizerGroup,
+from vllm.transformers_utils.tokenizer_group import (TokenizerGroup,
                                                      get_tokenizer_group)
-from vllm2.transformers_utils.tokenizer_group.ray_tokenizer_group import (
+from vllm.transformers_utils.tokenizer_group.ray_tokenizer_group import (
     RayTokenizerGroupPool)
 
 from ..conftest import get_tokenizer_pool_config
@@ -129,7 +129,7 @@ async def test_tokenizer_group_ray_pool_fault_tolerance(tokenizer_group_type):
 
         def __init__(self,
                      *args,
-                     fail_at: Optional[List[int]] = None,
+                     fail_at: Optional[list[int]] = None,
                      **kwargs):
             super().__init__(*args, **kwargs)
             self.i = 0

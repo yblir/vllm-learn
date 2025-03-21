@@ -1,18 +1,17 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import dataclasses
-from typing import List, Tuple, Type
 
 import torch
 
-from vllm2.attention import AttentionMetadata, AttentionMetadataBuilder
-from vllm2.attention.backends.abstract import AttentionBackend
-from vllm2.attention.backends.utils import CommonAttentionState
-from vllm2.model_executor import SamplingMetadata
-from vllm2.model_executor.pooling_metadata import PoolingMetadata
-from vllm2.worker.model_runner import ModelInputForGPUWithSamplingMetadata
-from vllm2.worker.multi_step_model_runner import StatefulModelInput
-from vllm2.worker.pooling_model_runner import (
+from vllm.attention import AttentionMetadata, AttentionMetadataBuilder
+from vllm.attention.backends.abstract import AttentionBackend
+from vllm.attention.backends.utils import CommonAttentionState
+from vllm.model_executor import SamplingMetadata
+from vllm.model_executor.pooling_metadata import PoolingMetadata
+from vllm.worker.model_runner import ModelInputForGPUWithSamplingMetadata
+from vllm.worker.multi_step_model_runner import StatefulModelInput
+from vllm.worker.pooling_model_runner import (
     ModelInputForGPUWithPoolingMetadata)
 
 
@@ -27,15 +26,15 @@ class MockAttentionBackend(AttentionBackend):
         raise NotImplementedError
 
     @staticmethod
-    def get_metadata_cls() -> Type["AttentionMetadata"]:
+    def get_metadata_cls() -> type["AttentionMetadata"]:
         return AttentionMetadata
 
     @staticmethod
-    def get_builder_cls() -> Type["AttentionMetadataBuilder"]:
+    def get_builder_cls() -> type["AttentionMetadataBuilder"]:
         return AttentionMetadataBuilder
 
     @staticmethod
-    def get_state_cls() -> Type["CommonAttentionState"]:
+    def get_state_cls() -> type["CommonAttentionState"]:
         return CommonAttentionState
 
     @staticmethod
@@ -44,7 +43,7 @@ class MockAttentionBackend(AttentionBackend):
         block_size: int,
         num_kv_heads: int,
         head_size: int,
-    ) -> Tuple[int, ...]:
+    ) -> tuple[int, ...]:
         raise NotImplementedError
 
     @staticmethod
@@ -57,7 +56,7 @@ class MockAttentionBackend(AttentionBackend):
 
     @staticmethod
     def copy_blocks(
-        kv_caches: List[torch.Tensor],
+        kv_caches: list[torch.Tensor],
         src_to_dists: torch.Tensor,
     ) -> None:
         pass

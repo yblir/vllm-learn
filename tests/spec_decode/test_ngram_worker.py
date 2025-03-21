@@ -2,9 +2,9 @@
 
 import torch
 
-from vllm2.sequence import ExecuteModelRequest
-from vllm2.spec_decode.ngram_worker import NGramWorker
-from vllm2.spec_decode.top1_proposer import Top1Proposer
+from vllm.sequence import ExecuteModelRequest
+from vllm.spec_decode.ngram_worker import NGramWorker
+from vllm.spec_decode.top1_proposer import Top1Proposer
 
 from .utils import create_seq_group_metadata_from_prompts, create_worker
 

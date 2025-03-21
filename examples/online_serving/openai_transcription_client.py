@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 from openai import OpenAI
 
-from vllm2.assets.audio import AudioAsset
+from vllm.assets.audio import AudioAsset
 
 mary_had_lamb = AudioAsset('mary_had_lamb').get_local_path()
 winning_call = AudioAsset('winning_call').get_local_path()

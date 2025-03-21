@@ -7,9 +7,9 @@ import pytest
 from huggingface_hub.utils import HfHubHTTPError
 from torch import nn
 
-from vllm2.lora.utils import (get_adapter_absolute_path,
+from vllm.lora.utils import (get_adapter_absolute_path,
                              parse_fine_tuned_lora_name, replace_submodule)
-from vllm2.utils import LRUCache
+from vllm.utils import LRUCache
 
 
 def test_parse_fine_tuned_lora_name_valid():

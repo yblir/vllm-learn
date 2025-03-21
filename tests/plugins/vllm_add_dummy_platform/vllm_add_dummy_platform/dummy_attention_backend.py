@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
-from vllm2.attention.backends.flash_attn import FlashAttentionBackend
+from vllm.attention.backends.flash_attn import FlashAttentionBackend
 
 
 class DummyAttentionBackend(FlashAttentionBackend):

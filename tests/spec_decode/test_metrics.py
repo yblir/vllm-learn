@@ -6,7 +6,7 @@ from unittest.mock import MagicMock
 import pytest
 import torch
 
-from vllm2.spec_decode.metrics import AsyncMetricsCollector
+from vllm.spec_decode.metrics import AsyncMetricsCollector
 
 
 def test_initial_call_returns_none():

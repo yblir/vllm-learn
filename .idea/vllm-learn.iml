@@ -2,9 +2,9 @@
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/vllm2" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/vllm" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.11.8 WSL (Ubuntu-22.04): (/usr/local/miniconda3/bin/python3)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.11" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">

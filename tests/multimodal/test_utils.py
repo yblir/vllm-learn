@@ -4,21 +4,21 @@ import base64
 import mimetypes
 import os
 from tempfile import NamedTemporaryFile, TemporaryDirectory
-from typing import TYPE_CHECKING, Dict, NamedTuple, Optional, Tuple
+from typing import TYPE_CHECKING, NamedTuple, Optional
 
 import numpy as np
 import pytest
 from PIL import Image, ImageChops
 from transformers import AutoConfig, AutoTokenizer
 
-from vllm2.multimodal.inputs import PlaceholderRange
-from vllm2.multimodal.utils import (MediaConnector,
+from vllm.multimodal.inputs import PlaceholderRange
+from vllm.multimodal.utils import (MediaConnector,
                                    merge_and_sort_multimodal_metadata,
                                    repeat_and_pad_placeholder_tokens)
 
 if TYPE_CHECKING:
-    from vllm2.multimodal.hasher import MultiModalHashDict
-    from vllm2.multimodal.inputs import MultiModalPlaceholderDict
+    from vllm.multimodal.hasher import MultiModalHashDict
+    from vllm.multimodal.inputs import MultiModalPlaceholderDict
 
 # Test different image extensions (JPG/PNG) and formats (gray/RGB/RGBA)
 TEST_IMAGE_URLS = [
@@ -30,7 +30,7 @@ TEST_IMAGE_URLS = [
 
 
 @pytest.fixture(scope="module")
-def url_images() -> Dict[str, Image.Image]:
+def url_images() -> dict[str, Image.Image]:
     connector = MediaConnector()
 
     return {
@@ -39,7 +39,7 @@ def url_images() -> Dict[str, Image.Image]:
     }
 
 
-def get_supported_suffixes() -> Tuple[str, ...]:
+def get_supported_suffixes() -> tuple[str, ...]:
     # We should at least test the file types mentioned in GPT-4 with Vision
     OPENAI_SUPPORTED_SUFFIXES = ('.png', '.jpeg', '.jpg', '.webp', '.gif')
 
@@ -66,7 +66,7 @@ async def test_fetch_image_http(image_url: str):
 @pytest.mark.asyncio
 @pytest.mark.parametrize("image_url", TEST_IMAGE_URLS)
 @pytest.mark.parametrize("suffix", get_supported_suffixes())
-async def test_fetch_image_base64(url_images: Dict[str, Image.Image],
+async def test_fetch_image_base64(url_images: dict[str, Image.Image],
                                   image_url: str, suffix: str):
     connector = MediaConnector()
     url_image = url_images[image_url]

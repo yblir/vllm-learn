@@ -8,8 +8,16 @@ import pytest
 import torch
 from typing_extensions import ParamSpec
 
-from vllm2.distributed import cleanup_dist_env_and_memory
-from vllm2.model_executor.model_loader.tensorizer import TensorizerConfig
+from vllm.distributed import cleanup_dist_env_and_memory
+from vllm.model_executor.model_loader.tensorizer import TensorizerConfig
+
+
+@pytest.fixture(scope="function", autouse=True)
+def use_v0_only(monkeypatch):
+    """
+    Tensorizer only tested on V0 so far.
+    """
+    monkeypatch.setenv('VLLM_USE_V1', '0')
 
 
 @pytest.fixture(autouse=True)

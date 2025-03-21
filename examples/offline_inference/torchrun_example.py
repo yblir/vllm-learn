@@ -8,7 +8,7 @@ the argument 2 should match the `tensor_parallel_size` below.
 see `tests/distributed/test_torchrun_example.py` for the unit test.
 """
 
-from vllm2 import LLM, SamplingParams
+from vllm import LLM, SamplingParams
 
 # Create prompts, the same across all ranks
 prompts = [
@@ -44,7 +44,7 @@ Further tips:
 a PyTorch ProcessGroup with GLOO backend.
 
 ```python
-from vllm2.distributed.parallel_state import get_world_group
+from vllm.distributed.parallel_state import get_world_group
 cpu_group = get_world_group().cpu_group
 torch_rank = dist.get_rank(group=cpu_group)
 if torch_rank == 0:
@@ -54,7 +54,7 @@ if torch_rank == 0:
 2. to communicate data across all ranks, use the model's device group,
 a PyTorch ProcessGroup with NCCL backend.
 ```python
-from vllm2.distributed.parallel_state import get_world_group
+from vllm.distributed.parallel_state import get_world_group
 device_group = get_world_group().device_group
 ```
 

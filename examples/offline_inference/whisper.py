@@ -2,8 +2,8 @@
 
 import time
 
-from vllm2 import LLM, SamplingParams
-from vllm2.assets.audio import AudioAsset
+from vllm import LLM, SamplingParams
+from vllm.assets.audio import AudioAsset
 
 # Create a Whisper encoder/decoder model instance
 llm = LLM(

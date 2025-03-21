@@ -8,32 +8,33 @@ import torch
 
 from tests.kernels.utils import DEFAULT_OPCHECK_TEST_UTILS, opcheck
 from tests.quantization.utils import is_quant_method_supported
-from vllm2 import _custom_ops as ops
-from vllm2.model_executor.layers.quantization.gptq_marlin_24 import (
+from vllm import _custom_ops as ops
+from vllm.model_executor.layers.quantization.gptq_marlin_24 import (
     GPTQ_MARLIN_24_MAX_PARALLEL, GPTQ_MARLIN_24_MIN_THREAD_N,
     GPTQ_MARLIN_24_SUPPORTED_GROUP_SIZES, GPTQ_MARLIN_24_SUPPORTED_QUANT_TYPES)
-from vllm2.model_executor.layers.quantization.qqq import (
+from vllm.model_executor.layers.quantization.qqq import (
     MARLIN_QQQ_MAX_PARALLEL, MARLIN_QQQ_MIN_THREAD_N,
     MARLIN_QQQ_SUPPORTED_GROUP_SIZES, MARLIN_QQQ_SUPPORTED_NUM_BITS)
-from vllm2.model_executor.layers.quantization.utils.marlin_utils import (
+from vllm.model_executor.layers.quantization.utils.marlin_utils import (
     GPTQ_MARLIN_MAX_PARALLEL, GPTQ_MARLIN_MIN_THREAD_N,
     MARLIN_SUPPORTED_GROUP_SIZES, marlin_make_empty_g_idx,
     marlin_permute_scales, query_marlin_supported_quant_types)
-from vllm2.model_executor.layers.quantization.utils.marlin_utils_fp8 import (
+from vllm.model_executor.layers.quantization.utils.marlin_utils_fp8 import (
     pack_fp8_to_int32)
-from vllm2.model_executor.layers.quantization.utils.marlin_utils_test import (
+from vllm.model_executor.layers.quantization.utils.marlin_utils_test import (
     MarlinWorkspace, awq_marlin_quantize, get_weight_perm, marlin_quantize,
     marlin_weights)
-from vllm2.model_executor.layers.quantization.utils.marlin_utils_test_24 import (
+from vllm.model_executor.layers.quantization.utils.marlin_utils_test_24 import (
     marlin_24_quantize)
-from vllm2.model_executor.layers.quantization.utils.marlin_utils_test_qqq import (  # noqa: E501
+from vllm.model_executor.layers.quantization.utils.marlin_utils_test_qqq import (  # noqa: E501
     marlin_qqq_quantize)
-from vllm2.model_executor.layers.quantization.utils.quant_utils import (
+from vllm.model_executor.layers.quantization.utils.quant_utils import (
     awq_pack, gptq_pack, gptq_quantize_weights, quantize_weights, sort_weights)
-from vllm2.scalar_type import scalar_types
+from vllm.scalar_type import scalar_types
 
 ACT_ORDER_OPTS = [False, True]
 K_FULL_OPTS = [False, True]
+USE_ATOMIC_ADD_OPTS = [False, True]
 USE_FP32_REDUCE_OPTS = [False, True]
 
 MARLIN_K_CHUNKS = [128]
@@ -194,6 +195,7 @@ def test_awq_marlin_repack(k_chunk, n_chunk, quant_type, group_size,
 @pytest.mark.parametrize("mnk_factors", MNK_FACTORS)
 @pytest.mark.parametrize("act_order", ACT_ORDER_OPTS)
 @pytest.mark.parametrize("is_k_full", K_FULL_OPTS)
+@pytest.mark.parametrize("use_atomic_add", USE_ATOMIC_ADD_OPTS)
 @pytest.mark.parametrize("use_fp32_reduce", USE_FP32_REDUCE_OPTS)
 def test_gptq_marlin_gemm(
     k_chunk,
@@ -203,6 +205,7 @@ def test_gptq_marlin_gemm(
     mnk_factors,
     act_order,
     is_k_full,
+    use_atomic_add,
     use_fp32_reduce,
 ):
     m_factor, n_factor, k_factor = mnk_factors
@@ -228,12 +231,12 @@ def test_gptq_marlin_gemm(
     workspace = MarlinWorkspace(size_n, GPTQ_MARLIN_MIN_THREAD_N,
                                 GPTQ_MARLIN_MAX_PARALLEL)
 
-    opcheck(
-        torch.ops._C.gptq_marlin_gemm,
-        (a_input, marlin_q_w, marlin_s, marlin_zp, g_idx, sort_indices,
-         workspace.scratch, quant_type.id, a_input.shape[0], b_weight.shape[1],
-         a_input.shape[1], is_k_full, False, use_fp32_reduce, False),
-        test_utils=DEFAULT_OPCHECK_TEST_UTILS)
+    opcheck(torch.ops._C.gptq_marlin_gemm,
+            (a_input, marlin_q_w, marlin_s, marlin_zp, g_idx, sort_indices,
+             workspace.scratch, quant_type.id, a_input.shape[0],
+             b_weight.shape[1], a_input.shape[1], is_k_full, False,
+             use_atomic_add, use_fp32_reduce, False),
+            test_utils=DEFAULT_OPCHECK_TEST_UTILS)
 
     output = ops.gptq_marlin_gemm(
         a_input,
@@ -249,6 +252,7 @@ def test_gptq_marlin_gemm(
         a_input.shape[1],
         is_k_full=is_k_full,
         has_zp=False,
+        use_atomic_add=use_atomic_add,
         use_fp32_reduce=use_fp32_reduce,
         is_zp_float=False,
     )

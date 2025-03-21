@@ -12,8 +12,8 @@ from typing import List, Optional, Tuple
 import torch
 from huggingface_hub import snapshot_download
 
-from vllm2 import EngineArgs, LLMEngine, RequestOutput, SamplingParams
-from vllm2.lora.request import LoRARequest
+from vllm import EngineArgs, LLMEngine, RequestOutput, SamplingParams
+from vllm.lora.request import LoRARequest
 
 
 def create_test_prompts(

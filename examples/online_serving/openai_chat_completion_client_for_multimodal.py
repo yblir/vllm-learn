@@ -19,7 +19,7 @@ import base64
 import requests
 from openai import OpenAI
 
-from vllm2.utils import FlexibleArgumentParser
+from vllm.utils import FlexibleArgumentParser
 
 # Modify OpenAI's API key and API base to use vLLM's API server.
 openai_api_key = "EMPTY"
@@ -209,7 +209,7 @@ def run_video() -> None:
 
 # Audio input inference
 def run_audio() -> None:
-    from vllm2.assets.audio import AudioAsset
+    from vllm.assets.audio import AudioAsset
 
     audio_url = AudioAsset("winning_call").url
     audio_base64 = encode_base64_content_from_url(audio_url)

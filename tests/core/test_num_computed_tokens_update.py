@@ -4,9 +4,9 @@ import pytest
 
 from tests.conftest import VllmRunner
 from tests.core.utils import create_dummy_prompt
-from vllm2.engine.llm_engine import LLMEngine
-from vllm2.platforms import current_platform
-from vllm2.sequence import SequenceGroup
+from vllm.engine.llm_engine import LLMEngine
+from vllm.platforms import current_platform
+from vllm.sequence import SequenceGroup
 
 MODEL = "JackFram/llama-160m"
 

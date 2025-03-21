@@ -7,11 +7,11 @@ Run `pytest tests/quantization/test_gptq_dynamic.py --forked`.
 import pytest
 import torch
 
-from vllm2.model_executor.layers.linear import UnquantizedLinearMethod
-from vllm2.model_executor.layers.quantization.gptq import GPTQLinearMethod
-from vllm2.model_executor.layers.quantization.gptq_marlin import (
+from vllm.model_executor.layers.linear import UnquantizedLinearMethod
+from vllm.model_executor.layers.quantization.gptq import GPTQLinearMethod
+from vllm.model_executor.layers.quantization.gptq_marlin import (
     GPTQMarlinLinearMethod)
-from vllm2.model_executor.layers.quantization.utils.gptq_utils import (
+from vllm.model_executor.layers.quantization.utils.gptq_utils import (
     get_dynamic_override)
 
 PROMPT = "On the surface of Mars, we found"
@@ -28,8 +28,10 @@ MODEL_QUANT = [
 
 
 @pytest.mark.parametrize("model_id, use_marlin_kernel", MODEL_QUANT)
-def test_gptq_with_dynamic(vllm_runner, model_id: str,
-                           use_marlin_kernel: bool):
+def test_gptq_with_dynamic(vllm_runner, model_id: str, use_marlin_kernel: bool,
+                           monkeypatch):
+    # vllm_runner.apply_model() relies on V0 internals.
+    monkeypatch.setenv("VLLM_USE_V1", "0")
 
     vllm_model = vllm_runner(model_id, dtype=torch.float16, max_model_len=2048)
 

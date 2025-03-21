@@ -6,10 +6,10 @@ import random
 import torch
 from tqdm import tqdm
 
-from vllm2.config import KVTransferConfig
-from vllm2.distributed.kv_transfer.kv_lookup_buffer.simple_buffer import (
+from vllm.config import KVTransferConfig
+from vllm.distributed.kv_transfer.kv_lookup_buffer.simple_buffer import (
     SimpleBuffer)
-from vllm2.distributed.kv_transfer.kv_pipe.pynccl_pipe import PyNcclPipe
+from vllm.distributed.kv_transfer.kv_pipe.pynccl_pipe import PyNcclPipe
 
 # TODO: the test depends on a lot of fields in the current implementation.
 # We should have standard interface instead direct field access

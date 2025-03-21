@@ -1,11 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import List, Optional
+from typing import Optional
 
 import pytest
 
-from vllm2.core.block.interfaces import Block, BlockAllocator
-from vllm2.core.block.naive_block import NaiveBlock, NaiveBlockAllocator
+from vllm.core.block.interfaces import Block, BlockAllocator
+from vllm.core.block.naive_block import NaiveBlock, NaiveBlockAllocator
 
 
 class TestNaiveBlockAllocator:
@@ -14,7 +14,7 @@ class TestNaiveBlockAllocator:
     def create_allocate_lambda(allocate_type: str,
                                allocator: NaiveBlockAllocator,
                                prev_block: Optional[Block],
-                               token_ids: List[int]):
+                               token_ids: list[int]):
         if allocate_type == "immutable":
             allocate_block = lambda: allocator.allocate_immutable_block(
                 prev_block=prev_block, token_ids=token_ids)

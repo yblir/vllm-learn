@@ -8,7 +8,7 @@ from typing import Optional
 import pytest
 import torch
 
-from vllm2.platforms import current_platform
+from vllm.platforms import current_platform
 
 from .conftest import run_equality_correctness_test_tp
 

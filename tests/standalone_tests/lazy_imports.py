@@ -28,7 +28,7 @@ def any_module_imported():
 use_blame = False
 context = blame(any_module_imported) if use_blame else nullcontext()
 with context as result:
-    import vllm2  # noqa
+    import vllm  # noqa
 
 if use_blame:
     assert isinstance(result, BlameResult)

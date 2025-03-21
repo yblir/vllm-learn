@@ -4,7 +4,7 @@ import pytest
 import pytest_asyncio
 import requests
 
-from vllm2.transformers_utils.tokenizer import get_tokenizer
+from vllm.transformers_utils.tokenizer import get_tokenizer
 
 from ...utils import RemoteOpenAIServer
 from .test_completion import zephyr_lora_added_tokens_files  # noqa: F401

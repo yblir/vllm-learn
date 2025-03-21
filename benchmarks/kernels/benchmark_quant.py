@@ -4,9 +4,9 @@ import time
 
 import torch
 
-from vllm2 import _custom_ops as ops
-from vllm2.platforms import current_platform
-from vllm2.utils import STR_DTYPE_TO_TORCH_DTYPE, FlexibleArgumentParser
+from vllm import _custom_ops as ops
+from vllm.platforms import current_platform
+from vllm.utils import STR_DTYPE_TO_TORCH_DTYPE, FlexibleArgumentParser
 
 
 @torch.inference_mode()
@@ -40,7 +40,7 @@ def main(num_tokens: int,
 
         end_time = time.perf_counter()
         if profile:
-            torch.cuda.cudart().cudaProfilerStart()
+            torch.cuda.cudart().cudaProfilerStop()
         return (end_time - start_time) / num_iters
 
     # Warmup.

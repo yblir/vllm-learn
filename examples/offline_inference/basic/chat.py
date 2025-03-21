@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
-from vllm2 import LLM, EngineArgs
-from vllm2.utils import FlexibleArgumentParser
+from vllm import LLM, EngineArgs
+from vllm.utils import FlexibleArgumentParser
 
 
 def main(args: dict):

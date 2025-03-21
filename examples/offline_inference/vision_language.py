@@ -10,10 +10,10 @@ import random
 
 from transformers import AutoTokenizer
 
-from vllm2 import LLM, SamplingParams
-from vllm2.assets.image import ImageAsset
-from vllm2.assets.video import VideoAsset
-from vllm2.utils import FlexibleArgumentParser
+from vllm import LLM, SamplingParams
+from vllm.assets.image import ImageAsset
+from vllm.assets.video import VideoAsset
+from vllm.utils import FlexibleArgumentParser
 
 # NOTE: The default `max_num_seqs` and `max_model_len` may result in OOM on
 # lower-end GPUs.

@@ -9,7 +9,7 @@
 
 import pytest
 
-from vllm2.platforms import current_platform
+from vllm.platforms import current_platform
 
 MODELS = [
     "AMead10/Llama-3.2-1B-Instruct-AWQ",

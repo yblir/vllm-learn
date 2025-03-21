@@ -5,8 +5,8 @@ import torch
 
 from tests.kernels.quant_utils import ref_dynamic_per_token_quant
 from tests.kernels.utils import opcheck
-from vllm2._custom_ops import scaled_int8_quant
-from vllm2.platforms import current_platform
+from vllm._custom_ops import scaled_int8_quant
+from vllm.platforms import current_platform
 
 DTYPES = [torch.half, torch.bfloat16, torch.float]
 HIDDEN_SIZES = [16, 67, 768, 5137, 8193]  # Arbitrary values for testing

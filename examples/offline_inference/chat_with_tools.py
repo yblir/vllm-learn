@@ -5,8 +5,8 @@ import json
 import random
 import string
 
-from vllm2 import LLM
-from vllm2.sampling_params import SamplingParams
+from vllm import LLM
+from vllm.sampling_params import SamplingParams
 
 # This script is an offline demo for function calling
 #

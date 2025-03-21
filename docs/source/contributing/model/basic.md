@@ -29,8 +29,8 @@ The initialization code should look like this:
 
 ```python
 from torch import nn
-from vllm2.config import VllmConfig
-from vllm2.attention import Attention
+from vllm.config import VllmConfig
+from vllm.attention import Attention
 
 class MyAttention(nn.Module):
     def __init__(self, vllm_config: VllmConfig, prefix: str):
@@ -74,8 +74,6 @@ def forward(
     self,
     input_ids: torch.Tensor,
     positions: torch.Tensor,
-    kv_caches: List[torch.Tensor],
-    attn_metadata: AttentionMetadata,
 ) -> torch.Tensor:
     ...
 ```

@@ -7,10 +7,10 @@ import pytest
 import torch
 
 from tests.quantization.utils import is_quant_method_supported
-from vllm2.model_executor.layers.quantization.fp8 import Fp8KVCacheMethod
-from vllm2.model_executor.layers.quantization.ptpc_fp8 import (
+from vllm.model_executor.layers.quantization.fp8 import Fp8KVCacheMethod
+from vllm.model_executor.layers.quantization.ptpc_fp8 import (
     PTPCFp8LinearMethod)
-from vllm2.platforms import current_platform
+from vllm.platforms import current_platform
 
 
 @pytest.mark.skipif(not is_quant_method_supported("ptpc_fp8"),

@@ -1,15 +1,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import List
-
 import pytest
 
-from vllm2.config import CompilationConfig, VllmConfig, set_current_vllm_config
-from vllm2.model_executor.custom_op import CustomOp
-from vllm2.model_executor.layers.activation import (GeluAndMul,
+from vllm.config import CompilationConfig, VllmConfig, set_current_vllm_config
+from vllm.model_executor.custom_op import CustomOp
+from vllm.model_executor.layers.activation import (GeluAndMul,
                                                    ReLUSquaredActivation,
                                                    SiluAndMul)
-from vllm2.model_executor.layers.layernorm import RMSNorm
+from vllm.model_executor.layers.layernorm import RMSNorm
 
 
 # Registered subclass for test
@@ -51,7 +49,7 @@ class Relu3(ReLUSquaredActivation):
         # All but RMSNorm
         ("all,-rms_norm", 4, [0, 1, 1, 1], True),
     ])
-def test_enabled_ops(env: str, torch_level: int, ops_enabled: List[int],
+def test_enabled_ops(env: str, torch_level: int, ops_enabled: list[int],
                      default_on: bool):
     vllm_config = VllmConfig(compilation_config=CompilationConfig(
         level=torch_level, custom_ops=env.split(",")))

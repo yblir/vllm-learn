@@ -7,11 +7,11 @@ Run `pytest tests/quantization/test_quant_lm_head_true.py --forked`.
 import pytest
 import torch
 
-from vllm2.model_executor.layers.quantization.gptq import GPTQLinearMethod
-from vllm2.model_executor.layers.quantization.gptq_marlin import (
+from vllm.model_executor.layers.quantization.gptq import GPTQLinearMethod
+from vllm.model_executor.layers.quantization.gptq_marlin import (
     GPTQMarlinLinearMethod)
-from vllm2.model_executor.layers.quantization.marlin import MarlinLinearMethod
-from vllm2.model_executor.layers.vocab_parallel_embedding import (
+from vllm.model_executor.layers.quantization.marlin import MarlinLinearMethod
+from vllm.model_executor.layers.vocab_parallel_embedding import (
     UnquantizedEmbeddingMethod)
 
 PROMPT = "On the surface of Mars, we found"
@@ -29,7 +29,10 @@ def test_lm_head(
     vllm_runner,
     model_id: str,
     lm_head_quantized: bool,
+    monkeypatch,
 ) -> None:
+    # vllm_runner.apply_model() relies on V0 internals.
+    monkeypatch.setenv("VLLM_USE_V1", "0")
     with vllm_runner(model_id, dtype=torch.float16,
                      max_model_len=2048) as vllm_model:
 

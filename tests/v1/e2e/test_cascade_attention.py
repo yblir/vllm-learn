@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
-from vllm2 import LLM, SamplingParams
+from vllm import LLM, SamplingParams
 
 
 def test_cascade_attention(example_system_message, monkeypatch):

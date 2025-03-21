@@ -4,7 +4,7 @@ import random
 import numpy as np
 import torch
 
-from vllm2.platforms.interface import Platform
+from vllm.platforms.interface import Platform
 
 
 def test_seed_behavior():

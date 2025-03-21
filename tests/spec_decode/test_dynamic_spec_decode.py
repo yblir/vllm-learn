@@ -5,11 +5,11 @@ from unittest.mock import MagicMock, patch
 import pytest
 import torch
 
-from vllm2.sequence import ExecuteModelRequest
-from vllm2.spec_decode.metrics import AsyncMetricsCollector
-from vllm2.spec_decode.multi_step_worker import MultiStepWorker
-from vllm2.spec_decode.spec_decode_worker import SpecDecodeWorker
-from vllm2.spec_decode.top1_proposer import Top1Proposer
+from vllm.sequence import ExecuteModelRequest
+from vllm.spec_decode.metrics import AsyncMetricsCollector
+from vllm.spec_decode.multi_step_worker import MultiStepWorker
+from vllm.spec_decode.spec_decode_worker import SpecDecodeWorker
+from vllm.spec_decode.top1_proposer import Top1Proposer
 
 from .test_utils import mock_spec_decode_sampler
 from .utils import create_batch, mock_worker

@@ -16,14 +16,14 @@ import torch
 from ray.util.placement_group import placement_group
 from ray.util.scheduling_strategies import PlacementGroupSchedulingStrategy
 
-from vllm2 import LLM
-from vllm2.worker.worker import Worker
+from vllm import LLM
+from vllm.worker.worker import Worker
 
 
 class MyWorker(Worker):
 
     def report_device_id(self) -> str:
-        from vllm2.platforms import current_platform
+        from vllm.platforms import current_platform
         self.device_uuid = current_platform.get_device_uuid(self.device.index)
         return self.device_uuid
 
@@ -81,7 +81,7 @@ class RayTrainingActor:
         torch.cuda.synchronize()
         # the argument for get_device_uuid is the index
         # of the GPU in the visible devices.
-        from vllm2.platforms import current_platform
+        from vllm.platforms import current_platform
         self.device_uuid = current_platform.get_device_uuid(0)
 
     def report_device_id(self) -> str:

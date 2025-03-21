@@ -2,15 +2,15 @@
 
 import pytest
 
-from vllm2.multimodal.inputs import MultiModalKwargs
-from vllm2.sampling_params import SamplingParams
-from vllm2.v1.core.kv_cache_utils import (BlockHashType, FreeKVCacheBlockQueue,
+from vllm.multimodal.inputs import MultiModalKwargs
+from vllm.sampling_params import SamplingParams
+from vllm.v1.core.kv_cache_utils import (BlockHashType, FreeKVCacheBlockQueue,
                                          KVCacheBlock, PrefixCachingMetrics,
                                          generate_block_hash_extra_keys,
                                          hash_block_tokens,
                                          hash_request_tokens)
-from vllm2.v1.metrics.stats import PrefixCacheStats
-from vllm2.v1.request import Request
+from vllm.v1.metrics.stats import PrefixCacheStats
+from vllm.v1.request import Request
 
 
 def make_request(request_id,

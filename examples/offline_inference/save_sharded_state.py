@@ -26,8 +26,8 @@ import os
 import shutil
 from pathlib import Path
 
-from vllm2 import LLM, EngineArgs
-from vllm2.utils import FlexibleArgumentParser
+from vllm import LLM, EngineArgs
+from vllm.utils import FlexibleArgumentParser
 
 parser = FlexibleArgumentParser()
 EngineArgs.add_cli_args(parser)

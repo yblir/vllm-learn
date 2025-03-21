@@ -4,8 +4,8 @@ from enum import Enum
 
 from pydantic import BaseModel
 
-from vllm2 import LLM, SamplingParams
-from vllm2.sampling_params import GuidedDecodingParams
+from vllm import LLM, SamplingParams
+from vllm.sampling_params import GuidedDecodingParams
 
 llm = LLM(model="Qwen/Qwen2.5-3B-Instruct", max_model_len=100)
 

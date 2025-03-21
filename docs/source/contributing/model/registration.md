@@ -32,7 +32,7 @@ You can load an external model using a plugin without modifying the vLLM codebas
 To register the model, use the following code:
 
 ```python
-from vllm2 import ModelRegistry
+from vllm import ModelRegistry
 from your_code import YourModelForCausalLM
 ModelRegistry.register_model("YourModelForCausalLM", YourModelForCausalLM)
 ```
@@ -40,7 +40,7 @@ ModelRegistry.register_model("YourModelForCausalLM", YourModelForCausalLM)
 If your model imports modules that initialize CUDA, consider lazy-importing it to avoid errors like `RuntimeError: Cannot re-initialize CUDA in forked subprocess`:
 
 ```python
-from vllm2 import ModelRegistry
+from vllm import ModelRegistry
 
 ModelRegistry.register_model("YourModelForCausalLM", "your_code:YourModelForCausalLM")
 ```

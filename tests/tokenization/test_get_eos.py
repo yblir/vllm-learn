@@ -4,8 +4,8 @@ This test file includes some cases where it is inappropriate to
 only get the `eos_token_id` from the tokenizer as defined by
 :meth:`vllm.LLMEngine._get_eos_token_id`.
 """
-from vllm2.transformers_utils.config import try_get_generation_config
-from vllm2.transformers_utils.tokenizer import get_tokenizer
+from vllm.transformers_utils.config import try_get_generation_config
+from vllm.transformers_utils.tokenizer import get_tokenizer
 
 
 def test_get_llama3_eos_token():

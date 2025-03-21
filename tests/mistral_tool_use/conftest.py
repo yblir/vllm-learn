@@ -5,7 +5,7 @@ import pytest_asyncio
 from huggingface_hub import snapshot_download
 
 from tests.utils import RemoteOpenAIServer
-from vllm2.platforms import current_platform
+from vllm.platforms import current_platform
 
 from .utils import ARGS, CONFIGS, ServerConfig
 

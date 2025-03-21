@@ -100,7 +100,7 @@ This process creates a W4A16 model with weights quantized to 4-bit integers.
 After quantization, you can load and run the model in vLLM:
 
 ```python
-from vllm2 import LLM
+from vllm import LLM
 model = LLM("./Meta-Llama-3-8B-Instruct-W4A16-G128")
 ```
 

@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
-from vllm2 import SamplingParams
-from vllm2.config import LoadConfig, LoadFormat
-from vllm2.model_executor.model_loader.loader import (RunaiModelStreamerLoader,
+from vllm import SamplingParams
+from vllm.config import LoadConfig, LoadFormat
+from vllm.model_executor.model_loader.loader import (RunaiModelStreamerLoader,
                                                      get_model_loader)
 
 test_model = "openai-community/gpt2"

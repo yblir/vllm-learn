@@ -6,14 +6,14 @@ Run `pytest tests/kernels/test_awq_marlin.py`.
 import pytest
 import torch
 
-import vllm2.model_executor.layers.fused_moe  # noqa
+import vllm.model_executor.layers.fused_moe  # noqa
 from tests.kernels.utils import (compute_max_diff, stack_and_dev, torch_moe,
                                  torch_moe_single)
-from vllm2 import _custom_ops as ops
-from vllm2.model_executor.layers.fused_moe.fused_moe import fused_topk
-from vllm2.model_executor.layers.quantization.utils.marlin_utils_test import (
+from vllm import _custom_ops as ops
+from vllm.model_executor.layers.fused_moe.fused_moe import fused_topk
+from vllm.model_executor.layers.quantization.utils.marlin_utils_test import (
     awq_marlin_quantize)
-from vllm2.scalar_type import scalar_types
+from vllm.scalar_type import scalar_types
 
 NUM_EXPERTS = [8, 64]
 TOP_KS = [2, 6]
@@ -99,13 +99,8 @@ def test_fused_marlin_moe_awq(
         num_bits=num_bits,
     )
 
-    torch_output = torch_moe(
-        a,
-        w_ref1.transpose(1, 2),
-        w_ref2.transpose(1, 2),
-        score,
-        topk,
-    )
+    torch_output = torch_moe(a, w_ref1.transpose(1, 2), w_ref2.transpose(1, 2),
+                             score, topk, None)
 
     assert compute_max_diff(marlin_output, torch_output) < 4e-2
 

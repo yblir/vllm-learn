@@ -6,7 +6,7 @@ encoder/decoder models, specifically Florence-2
 # TODO(Isotr0py):
 # Move to offline_inference/vision_language.py
 # after porting vision backbone
-from vllm2 import LLM, SamplingParams
+from vllm import LLM, SamplingParams
 
 dtype = "float"
 

@@ -3,7 +3,7 @@
 import pytest
 from transformers import PreTrainedTokenizerBase
 
-from vllm2.transformers_utils.tokenizer import get_tokenizer
+from vllm.transformers_utils.tokenizer import get_tokenizer
 
 TOKENIZER_NAMES = [
     "facebook/opt-125m",

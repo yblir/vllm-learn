@@ -11,9 +11,9 @@ from typing import Literal, NamedTuple, Optional, TypedDict, Union, get_args
 
 from PIL.Image import Image
 
-from vllm2 import LLM
-from vllm2.multimodal.utils import fetch_image
-from vllm2.utils import FlexibleArgumentParser
+from vllm import LLM
+from vllm.multimodal.utils import fetch_image
+from vllm.utils import FlexibleArgumentParser
 
 
 class TextQuery(TypedDict):

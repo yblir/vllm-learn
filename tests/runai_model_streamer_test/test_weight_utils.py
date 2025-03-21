@@ -6,7 +6,7 @@ import tempfile
 import huggingface_hub.constants
 import torch
 
-from vllm2.model_executor.model_loader.weight_utils import (
+from vllm.model_executor.model_loader.weight_utils import (
     download_weights_from_hf, runai_safetensors_weights_iterator,
     safetensors_weights_iterator)
 

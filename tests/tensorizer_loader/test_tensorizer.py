@@ -13,11 +13,11 @@ import pytest
 import torch
 from huggingface_hub import snapshot_download
 
-from vllm2 import SamplingParams
-from vllm2.engine.arg_utils import EngineArgs
+from vllm import SamplingParams
+from vllm.engine.arg_utils import EngineArgs
 # yapf conflicts with isort for this docstring
 # yapf: disable
-from vllm2.model_executor.model_loader.tensorizer import (TensorizerConfig,
+from vllm.model_executor.model_loader.tensorizer import (TensorizerConfig,
                                                          TensorSerializer,
                                                          is_vllm_tensorized,
                                                          load_with_tensorizer,
@@ -25,7 +25,7 @@ from vllm2.model_executor.model_loader.tensorizer import (TensorizerConfig,
                                                          serialize_vllm_model,
                                                          tensorize_vllm_model)
 # yapf: enable
-from vllm2.utils import PlaceholderModule, import_from_path
+from vllm.utils import PlaceholderModule, import_from_path
 
 from ..utils import VLLM_PATH, RemoteOpenAIServer
 from .conftest import retry_until_skip
@@ -166,7 +166,7 @@ def test_vllm_model_can_load_with_lora(vllm_runner, tmp_path):
     test_prompts = multilora_inference.create_test_prompts(lora_path)
 
     # Serialize model before deserializing and binding LoRA adapters
-    with vllm_runner(model_ref, ) as vllm_model:
+    with vllm_runner(model_ref) as vllm_model:
         model_path = tmp_path / (model_ref + ".tensors")
 
         vllm_model.apply_model(
@@ -208,7 +208,7 @@ def test_load_without_tensorizer_load_format(vllm_runner):
 @pytest.mark.skipif(not is_curl_installed(), reason="cURL is not installed")
 def test_openai_apiserver_with_tensorizer(vllm_runner, tmp_path):
     ## Serialize model
-    with vllm_runner(model_ref, ) as vllm_model:
+    with vllm_runner(model_ref) as vllm_model:
         model_path = tmp_path / (model_ref + ".tensors")
 
         vllm_model.apply_model(

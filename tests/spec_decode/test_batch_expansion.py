@@ -1,11 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import List
-
 import pytest
 import torch
 
-from vllm2.spec_decode.batch_expansion import BatchExpansionTop1Scorer
+from vllm.spec_decode.batch_expansion import BatchExpansionTop1Scorer
 
 from .utils import create_seq_group_metadata_from_prompts, mock_worker
 
@@ -42,7 +40,7 @@ def test_get_token_ids_to_score(k: int):
         device='cuda',
     )
 
-    expected_output: List[List[int]] = [
+    expected_output: list[list[int]] = [
         [],
     ]
     for i in range(proposal_token_ids.shape[0]):

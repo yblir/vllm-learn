@@ -18,7 +18,7 @@ If a specific seed value is provided, the global random states for `random`, `np
 
 ```python
 import random
-from vllm2 import LLM
+from vllm import LLM
 
 # Initialize a vLLM model without specifying a seed
 model = LLM(model="Qwen/Qwen2.5-0.5B-Instruct")
@@ -31,7 +31,7 @@ print(random.randint(0, 100))  # Outputs different numbers across runs
 
 ```python
 import random
-from vllm2 import LLM
+from vllm import LLM
 
 # Initialize a vLLM model with a specific seed
 model = LLM(model="Qwen/Qwen2.5-0.5B-Instruct", seed=42)

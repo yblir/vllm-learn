@@ -5,8 +5,8 @@ import torch
 
 from tests.kernels.quant_utils import FP8_DTYPE
 from tests.kernels.utils import opcheck
-from vllm2.model_executor.layers.layernorm import RMSNorm
-from vllm2.platforms import current_platform
+from vllm.model_executor.layers.layernorm import RMSNorm
+from vllm.platforms import current_platform
 
 DTYPES = [torch.half, torch.bfloat16, torch.float]
 NUM_TOKENS = [7, 83, 4096]  # Arbitrary values for testing

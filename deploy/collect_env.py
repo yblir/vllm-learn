@@ -14,7 +14,7 @@ import sys
 # Run it with `python collect_env.py` or `python -m torch.utils.collect_env`
 from collections import namedtuple
 
-from vllm2.envs import environment_variables
+from vllm.envs import environment_variables
 
 try:
     import torch
@@ -272,7 +272,7 @@ def get_neuron_sdk_version(run_lambda):
 
 
 def get_vllm_version():
-    from vllm2 import __version__, __version_tuple__
+    from vllm import __version__, __version_tuple__
 
     if __version__ == "dev":
         return "N/A (dev)"

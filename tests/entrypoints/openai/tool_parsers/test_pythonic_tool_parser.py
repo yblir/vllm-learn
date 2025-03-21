@@ -1,14 +1,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import List
 from unittest.mock import MagicMock
 
 import pytest
 
 from tests.entrypoints.openai.tool_parsers.utils import (
     run_tool_extraction, run_tool_extraction_streaming)
-from vllm2.entrypoints.openai.protocol import FunctionCall
-from vllm2.entrypoints.openai.tool_parsers import ToolParser, ToolParserManager
+from vllm.entrypoints.openai.protocol import FunctionCall
+from vllm.entrypoints.openai.tool_parsers import ToolParser, ToolParserManager
 
 # https://github.com/meta-llama/llama-models/blob/main/models/llama3_2/text_prompt_format.md#model-response-format-1
 SIMPLE_FUNCTION_OUTPUT = "get_weather(city='San Francisco', metric='celsius')"
@@ -125,7 +124,7 @@ TEST_CASES = [
 @pytest.mark.parametrize("streaming, model_output, expected_tool_calls",
                          TEST_CASES)
 def test_tool_call(streaming: bool, model_output: str,
-                   expected_tool_calls: List[FunctionCall]):
+                   expected_tool_calls: list[FunctionCall]):
     mock_tokenizer = MagicMock()
     tool_parser: ToolParser = ToolParserManager.get_tool_parser("pythonic")(
         mock_tokenizer)

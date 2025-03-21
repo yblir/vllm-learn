@@ -8,17 +8,17 @@ if the config `tractable_init` is set to True. Otherwise, the weights are
 initialized randomly with a fixed seed.
 """
 from dataclasses import dataclass
-from typing import Any, List, Optional, Tuple
+from typing import Any, Optional
 
 import torch
 from torch import nn
 from torch.library import Library
 
-from vllm2.compilation.counter import compilation_counter
-from vllm2.compilation.decorators import support_torch_compile
-from vllm2.config import (CompilationConfig, CompilationLevel, VllmConfig,
+from vllm.compilation.counter import compilation_counter
+from vllm.compilation.decorators import support_torch_compile
+from vllm.config import (CompilationConfig, CompilationLevel, VllmConfig,
                          set_current_vllm_config)
-from vllm2.utils import direct_register_custom_op
+from vllm.utils import direct_register_custom_op
 
 # create a library to hold the custom op
 silly_lib = Library("silly", "FRAGMENT")  # noqa
@@ -56,7 +56,7 @@ class LlamaConfig:
     random_seed: int = 0
 
     def compute_hash(self) -> str:
-        factors: List[Any] = []
+        factors: list[Any] = []
         for k, v in self.__dict__.items():
             if k == "random_seed":
                 continue
@@ -174,7 +174,7 @@ class LlamaDecoderLayer(nn.Module):
         positions: torch.Tensor,
         hidden_states: torch.Tensor,
         residual: Optional[torch.Tensor],
-    ) -> Tuple[torch.Tensor, torch.Tensor]:
+    ) -> tuple[torch.Tensor, torch.Tensor]:
         """
         For tractable computation:
         - if residual is None, the outputs are:

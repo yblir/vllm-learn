@@ -10,9 +10,9 @@ from typing import List, NamedTuple, Optional
 from PIL.Image import Image
 from transformers import AutoProcessor, AutoTokenizer
 
-from vllm2 import LLM, SamplingParams
-from vllm2.multimodal.utils import fetch_image
-from vllm2.utils import FlexibleArgumentParser
+from vllm import LLM, SamplingParams
+from vllm.multimodal.utils import fetch_image
+from vllm.utils import FlexibleArgumentParser
 
 QUESTION = "What is the content of each image?"
 IMAGE_URLS = [

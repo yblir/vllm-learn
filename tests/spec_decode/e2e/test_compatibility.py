@@ -2,7 +2,7 @@
 
 import pytest
 
-from vllm2 import SamplingParams
+from vllm import SamplingParams
 
 from .conftest import get_output_from_llm_generator
 

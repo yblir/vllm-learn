@@ -2,10 +2,10 @@
 
 import torch
 
-from vllm2.engine.arg_utils import EngineArgs
-from vllm2.utils import get_distributed_init_method, get_ip, get_open_port
-from vllm2.worker.cache_engine import CacheEngine
-from vllm2.worker.worker import Worker
+from vllm.engine.arg_utils import EngineArgs
+from vllm.utils import get_distributed_init_method, get_ip, get_open_port
+from vllm.worker.cache_engine import CacheEngine
+from vllm.worker.worker import Worker
 
 
 def test_gpu_memory_profiling():
