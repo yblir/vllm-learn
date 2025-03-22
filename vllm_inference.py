@@ -8,7 +8,6 @@ import os
 import sys
 from pathlib2 import Path
 
-# vllm_path = Path.cwd() / 'vllm'
 sys.path.insert(0, str(Path.cwd() / 'vllm'))
 
 from vllm import LLM, SamplingParams
@@ -19,7 +18,7 @@ os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 
 # os.environ['TORCH_USE_CUDA_DSA'] = '1'
 
-#model_path = '/mnt/e/PyCharm/PreTrainModel/qwen2_15b_instruct'
+# model_path = '/mnt/e/PyCharm/PreTrainModel/qwen2_15b_instruct'
 model_path = '/media/xk/D6B8A862B8A8433B/data/qwen2-15b-instruct'
 
 params = {"repetition_penalty": 1.1,
