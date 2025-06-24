@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: Copyright contributors to the vLLM project
 
 import itertools
 from collections.abc import Iterable
@@ -115,7 +116,6 @@ class LogprobsProcessor:
         num_prompt_tokens, num_logprobs = logprobs.shape
 
         # Pythonize the torch tensors.
-        # TODO(rob): experiment with doing this in EngineCore?
         prompt_token_ranks = ranks.tolist()
         prompt_logprobs = logprobs.tolist()
         token_ids = token_ids.tolist()

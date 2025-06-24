@@ -1,14 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: Copyright contributors to the vLLM project
 
 import requests
-from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (
-    OTLPSpanExporter)
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import (BatchSpanProcessor,
-                                            ConsoleSpanExporter)
+from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
 from opentelemetry.trace import SpanKind, set_tracer_provider
-from opentelemetry.trace.propagation.tracecontext import (
-    TraceContextTextMapPropagator)
+from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
 
 trace_provider = TracerProvider()
 set_tracer_provider(trace_provider)
@@ -28,7 +26,6 @@ with tracer.start_as_current_span("client-span", kind=SpanKind.CLIENT) as span:
         "model": "facebook/opt-125m",
         "prompt": prompt,
         "max_tokens": 10,
-        "best_of": 20,
         "n": 3,
         "use_beam_search": "true",
         "temperature": 0.0,
