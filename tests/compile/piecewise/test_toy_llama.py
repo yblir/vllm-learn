@@ -11,14 +11,16 @@ initialized randomly with a fixed seed.
 from dataclasses import dataclass
 from typing import Any, Optional
 
+import pytest
 import torch
 from torch import nn
 from torch.library import Library
 
 from vllm.compilation.counter import compilation_counter
 from vllm.compilation.decorators import support_torch_compile
-from vllm.config import (CompilationConfig, CompilationLevel, VllmConfig,
-                         set_current_vllm_config)
+from vllm.config import (CompilationConfig, CompilationLevel, CUDAGraphMode,
+                         VllmConfig, set_current_vllm_config)
+from vllm.forward_context import BatchDescriptor, set_forward_context
 from vllm.utils import direct_register_custom_op
 
 # create a library to hold the custom op
@@ -274,9 +276,11 @@ def run_model(llama_config,
         )
         if split_attn:
             compilation_config.splitting_ops = ["silly.attention"]
+        cudagraph_runtime_mode = CUDAGraphMode.PIECEWISE
     else:
         compilation_config = CompilationConfig(
             level=CompilationLevel.NO_COMPILATION, )
+        cudagraph_runtime_mode = CUDAGraphMode.NONE
 
     vllm_config = VllmConfig(compilation_config=compilation_config,
                              additional_config=llama_config)
@@ -285,29 +289,52 @@ def run_model(llama_config,
                            vllm_config=vllm_config,
                            prefix="").eval().cuda()
 
-    B = 16  # max batch size
-    input_ids = torch.randint(0, llama_config.vocab_size, (B, )).cuda()
-    positions = torch.arange(B).cuda()
+    with set_forward_context({},
+                             vllm_config=vllm_config):  # background context
+        B = 16  # max batch size
+        input_ids = torch.randint(0, llama_config.vocab_size, (B, )).cuda()
+        positions = torch.arange(B).cuda()
 
-    model(input_ids, positions)
-    model(input_ids[:2], positions[:2])
-    model(input_ids[:1], positions[:1])
+        # warmup for the model with cudagraph_mode NONE
+        model(input_ids, positions)
 
-    input_ids[:2].zero_()
-    output = model(input_ids[:2], positions[:2])
+        # simulate cudagraphs capturing
+        with set_forward_context({},
+                                 vllm_config=vllm_config,
+                                 cudagraph_runtime_mode=cudagraph_runtime_mode,
+                                 batch_descriptor=BatchDescriptor(
+                                     num_tokens=2, )):
+            model(input_ids[:2], positions[:2])
+        with set_forward_context({},
+                                 vllm_config=vllm_config,
+                                 cudagraph_runtime_mode=cudagraph_runtime_mode,
+                                 batch_descriptor=BatchDescriptor(
+                                     num_tokens=1, )):
+            model(input_ids[:1], positions[:1])
 
-    output = output.cpu()
+        input_ids[:2].zero_()
+        # simulate cudagraphs replay
+        with set_forward_context({},
+                                 vllm_config=vllm_config,
+                                 cudagraph_runtime_mode=cudagraph_runtime_mode,
+                                 batch_descriptor=BatchDescriptor(
+                                     num_tokens=2, )):
+            output = model(input_ids[:2], positions[:2])
 
-    if llama_config.tractable_init:
-        expected_output = tractable_computation(input_ids[:2], positions[:2],
-                                                llama_config).cpu()
+        output = output.cpu()
 
-        assert torch.allclose(output, expected_output)
-    else:
-        return output.cpu()
+        if llama_config.tractable_init:
+            expected_output = tractable_computation(input_ids[:2],
+                                                    positions[:2],
+                                                    llama_config).cpu()
+
+            assert torch.allclose(output, expected_output)
+        else:
+            return output.cpu()
 
 
-def _test_toy_llama(*, use_inductor):
+@pytest.mark.parametrize("use_inductor", [True, False])
+def test_toy_llama(use_inductor: bool):
     # compare output with and without piecewise compilation
 
     llama_config = LlamaConfig(hidden_size=128,
@@ -377,14 +404,6 @@ def _test_toy_llama(*, use_inductor):
 
     for i in range(1, len(outputs)):
         assert torch.allclose(outputs[0], outputs[i])
-
-
-def test_toy_llama_inductor():
-    _test_toy_llama(use_inductor=True)
-
-
-def test_toy_no_inductor():
-    _test_toy_llama(use_inductor=False)
 
 
 @torch.inference_mode

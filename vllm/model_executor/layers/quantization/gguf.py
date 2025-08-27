@@ -11,6 +11,7 @@ from torch.nn.parameter import Parameter, UninitializedParameter
 from vllm import _custom_ops as ops
 from vllm.logger import init_logger
 from vllm.model_executor.layers.fused_moe.layer import (FusedMoE,
+                                                        FusedMoEConfig,
                                                         FusedMoEMethodBase)
 from vllm.model_executor.layers.linear import LinearBase, LinearMethodBase
 from vllm.model_executor.layers.quantization import QuantizationMethods
@@ -58,7 +59,7 @@ class GGUFConfig(QuantizationConfig):
         elif isinstance(layer, VocabParallelEmbedding):
             return GGUFEmbeddingMethod(self)
         elif isinstance(layer, FusedMoE):
-            return GGUFMoEMethod(self)
+            return GGUFMoEMethod(self, layer.moe_config)
         return None
 
 
@@ -99,6 +100,10 @@ MMQ_QUANT_TYPES = STANDARD_QUANT_TYPES | KQUANT_TYPES
 
 def _fused_mul_mat_gguf(x: torch.Tensor, qweight: torch.Tensor,
                         qweight_type: int) -> torch.Tensor:
+    if qweight_type in IMATRIX_QUANT_TYPES:
+        mmvq_safe = 8 if qweight.shape[0] > 5120 else 16
+    else:
+        mmvq_safe = 2 if qweight.shape[0] > 5120 else 6
     # HACK: when doing chunked prefill we don't generate output tokens
     # so input to logits generator is empty which causes invalid parameter
     if x.shape[0] == 0:
@@ -110,7 +115,7 @@ def _fused_mul_mat_gguf(x: torch.Tensor, qweight: torch.Tensor,
     if qweight_type in UNQUANTIZED_TYPES:
         return x @ qweight.T
     # enable MMVQ in contiguous batching with batch_size=1
-    if x.shape[0] == 1 and qweight_type in MMVQ_QUANT_TYPES:
+    if x.shape[0] <= mmvq_safe and qweight_type in MMVQ_QUANT_TYPES:
         y = ops.ggml_mul_mat_vec_a8(qweight, x, qweight_type, qweight.shape[0])
     # Use MMQ Kernel if it's available (standard + k-quants)
     elif qweight_type in MMQ_QUANT_TYPES:
@@ -441,7 +446,12 @@ class GGUFMoEMethod(FusedMoEMethodBase):
         quant_config: The GGUF quantization config.
     """
 
-    def __init__(self, quant_config: GGUFConfig):
+    def __init__(
+        self,
+        quant_config: GGUFConfig,
+        moe: FusedMoEConfig,
+    ):
+        super().__init__(moe)
         self.quant_config = quant_config
 
     def create_weights(self, layer: torch.nn.Module, num_experts: int,
@@ -516,7 +526,17 @@ class GGUFMoEMethod(FusedMoEMethodBase):
         e_score_correction_bias: Optional[torch.Tensor] = None,
         apply_router_weight_on_input: bool = False,
         activation: str = "silu",
+        enable_eplb: bool = False,
+        expert_load_view: Optional[torch.Tensor] = None,
+        logical_to_physical_map: Optional[torch.Tensor] = None,
+        logical_replica_count: Optional[torch.Tensor] = None,
     ):
+        assert self.fused_experts is None
+
+        if enable_eplb:
+            raise NotImplementedError(
+                "EPLB not supported for `GGUFMoEMethod` yet.")
+
         assert activation == "silu", "Only SiLU activation is supported."
         if apply_router_weight_on_input:
             raise NotImplementedError(
@@ -533,7 +553,8 @@ class GGUFMoEMethod(FusedMoEMethodBase):
             num_expert_group=num_expert_group,
             custom_routing_function=custom_routing_function,
             scoring_func=scoring_func,
-            e_score_correction_bias=e_score_correction_bias)
+            e_score_correction_bias=e_score_correction_bias,
+            indices_type=self.topk_indices_dtype)
         return fused_moe_gguf(x, layer.w13_qweight, layer.w2_qweight,
                               topk_weights, topk_ids,
                               layer.w13_qweight_type.weight_type,
