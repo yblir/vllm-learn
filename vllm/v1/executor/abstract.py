@@ -37,7 +37,7 @@ class Executor(ExecutorBase):
                     "distributed_executor_backend must be a subclass of "
                     f"ExecutorBase. Got {distributed_executor_backend}.")
             executor_class = distributed_executor_backend
-        elif distributed_executor_backend == "ray":
+        elif distributed_executor_backend == "ray_vllm":
             from vllm.v1.executor.ray_distributed_executor import (  # noqa
                 RayDistributedExecutor)
             executor_class = RayDistributedExecutor

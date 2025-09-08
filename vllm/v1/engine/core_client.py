@@ -1214,7 +1214,7 @@ class DPLBAsyncMPClient(DPAsyncMPClient):
             f"different from cur_data_parallel_size {cur_data_parallel_size}")
 
         assert self.vllm_config.parallel_config.data_parallel_backend == \
-            "ray", ("Only ray DP backend supports scaling elastic EP")
+            "ray_vllm", ("Only ray_vllm DP backend supports scaling elastic EP")
 
         scale_up = new_data_parallel_size > cur_data_parallel_size
 

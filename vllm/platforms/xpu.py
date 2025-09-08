@@ -120,7 +120,7 @@ class XPUPlatform(Platform):
 
         if parallel_config.distributed_executor_backend is None:
             if parallel_config.world_size > 1:
-                parallel_config.distributed_executor_backend = "ray"
+                parallel_config.distributed_executor_backend = "ray_vllm"
             else:
                 parallel_config.distributed_executor_backend = "uni"
         elif parallel_config.distributed_executor_backend == "mp":
@@ -131,15 +131,15 @@ class XPUPlatform(Platform):
                 os.environ["VLLM_WORKER_MULTIPROC_METHOD"] = "spawn"
                 logger.warning(
                     "Please use spawn as start method if you want to use mp.")
-        elif (parallel_config.distributed_executor_backend != "ray"
+        elif (parallel_config.distributed_executor_backend != "ray_vllm"
               and parallel_config.distributed_executor_backend != "uni"
               and parallel_config.distributed_executor_backend
               != "external_launcher"):
             logger.warning(
-                "%s is not supported on XPU, fallback to ray distributed"
+                "%s is not supported on XPU, fallback to ray_vllm distributed"
                 " executor backend.",
                 parallel_config.distributed_executor_backend)
-            parallel_config.distributed_executor_backend = "ray"
+            parallel_config.distributed_executor_backend = "ray_vllm"
 
         if model_config and model_config.use_mla:
             logger.info(

@@ -36,7 +36,7 @@ from vllm.config import (BlockSize, CacheConfig, CacheDType, CompilationConfig,
 from vllm.logger import init_logger
 from vllm.platforms import CpuArchEnum, current_platform
 from vllm.plugins import load_general_plugins
-from vllm.ray.lazy_utils import is_ray_initialized
+from vllm.ray_vllm.lazy_utils import is_ray_initialized
 from vllm.reasoning import ReasoningParserManager
 from vllm.test_utils import MODEL_WEIGHTS_S3_BUCKET, MODELS_ON_S3
 from vllm.transformers_utils.config import is_interleaved
@@ -645,7 +645,7 @@ class EngineArgs:
                                     type=str,
                                     default='mp',
                                     help='Backend for data parallel, either '
-                                    '"mp" or "ray".')
+                                    '"mp" or "ray_vllm".')
         parallel_group.add_argument(
             "--data-parallel-hybrid-lb",
             **parallel_kwargs["data_parallel_hybrid_lb"])
@@ -666,7 +666,7 @@ class EngineArgs:
             "--max-parallel-loading-workers",
             **parallel_kwargs["max_parallel_loading_workers"])
         parallel_group.add_argument(
-            "--ray-workers-use-nsight",
+            "--ray_vllm-workers-use-nsight",
             **parallel_kwargs["ray_workers_use_nsight"])
         parallel_group.add_argument(
             "--disable-custom-all-reduce",
@@ -1128,20 +1128,20 @@ class EngineArgs:
             # Ray Serve LLM calls `create_engine_config` in the context
             # of a Ray task, therefore we check is_ray_initialized()
             # as opposed to is_in_ray_actor().
-            import ray
-            ray_runtime_env = ray.get_runtime_context().runtime_env
-            logger.info("Using ray runtime env: %s", ray_runtime_env)
+            import ray_vllm
+            ray_runtime_env = ray_vllm.get_runtime_context().runtime_env
+            logger.info("Using ray_vllm runtime env: %s", ray_runtime_env)
 
         # Get the current placement group if Ray is initialized and
         # we are in a Ray actor. If so, then the placement group will be
         # passed to spawned processes.
         placement_group = None
         if is_in_ray_actor():
-            import ray
+            import ray_vllm
 
             # This call initializes Ray automatically if it is not initialized,
             # but we should not do this here.
-            placement_group = ray.util.get_current_placement_group()
+            placement_group = ray_vllm.util.get_current_placement_group()
 
         assert not headless or not self.data_parallel_hybrid_lb, (
             "data_parallel_hybrid_lb is not applicable in "
@@ -1184,15 +1184,15 @@ class EngineArgs:
         # DP address, used in multi-node case for torch distributed group
         # and ZMQ sockets.
         if self.data_parallel_address is None:
-            if self.data_parallel_backend == "ray":
+            if self.data_parallel_backend == "ray_vllm":
                 host_ip = get_ip()
                 logger.info(
-                    "Using host IP %s as ray-based data parallel address",
+                    "Using host IP %s as ray_vllm-based data parallel address",
                     host_ip)
                 data_parallel_address = host_ip
             else:
                 assert self.data_parallel_backend == "mp", (
-                    "data_parallel_backend can only be ray or mp, got %s",
+                    "data_parallel_backend can only be ray_vllm or mp, got %s",
                     self.data_parallel_backend)
                 data_parallel_address = ParallelConfig.data_parallel_master_ip
         else:
@@ -1494,7 +1494,7 @@ class EngineArgs:
             supports_pp = getattr(self.distributed_executor_backend,
                                   'supports_pp', False)
             if not supports_pp and self.distributed_executor_backend not in (
-                    ParallelConfig.distributed_executor_backend, "ray", "mp",
+                    ParallelConfig.distributed_executor_backend, "ray_vllm", "mp",
                     "external_launcher"):
                 name = "Pipeline Parallelism without Ray distributed " \
                         "executor or multiprocessing executor or external " \

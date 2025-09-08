@@ -72,7 +72,7 @@ python -m vllm.entrypoints.openai.api_server \
      --model=facebook/opt-13b \
      --dtype=bfloat16 \
      --max_model_len=1024 \
-     --distributed-executor-backend=ray \
+     --distributed-executor-backend=ray_vllm \
      --pipeline-parallel-size=2 \
      -tp=8
 ```

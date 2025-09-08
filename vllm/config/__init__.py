@@ -1897,6 +1897,7 @@ class DeviceConfig:
             self.device = None
         else:
             # Set device with device type
+            self.device_type = "cuda"  # todo
             self.device = torch.device(self.device_type)
 
 

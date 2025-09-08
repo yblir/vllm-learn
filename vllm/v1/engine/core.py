@@ -1142,7 +1142,7 @@ class DPEngineCoreActor(DPEngineCoreProc):
         # Set CUDA_VISIBLE_DEVICES as early as possible in actor life cycle
         # NOTE: in MP we set CUDA_VISIBLE_DEVICES at process creation time,
         # and this cannot be done in the same way for Ray because:
-        # 1) Ray manages life cycle of all ray workers (including
+        # 1) Ray manages life cycle of all ray_vllm workers (including
         # DPEngineCoreActor)
         # 2) Ray sets CUDA_VISIBLE_DEVICES based on num_gpus configuration
         # To bypass 2, we need to also set
@@ -1155,7 +1155,7 @@ class DPEngineCoreActor(DPEngineCoreProc):
         # index out of bounds error. See:
         # https://github.com/ray-project/ray/pull/40461/files#diff-31e8159767361e4bc259b6d9883d9c0d5e5db780fcea4a52ead4ee3ee4a59a78R1860 # noqa: E501
         # and get_accelerator_ids_for_accelerator_resource() in worker.py
-        # of ray.
+        # of ray_vllm.
         self._set_cuda_visible_devices(vllm_config, local_dp_rank)
 
         super().__init__(vllm_config, local_client, "", executor_class,
@@ -1194,7 +1194,7 @@ class DPEngineCoreActor(DPEngineCoreProc):
         """
         Wait until the engine core is initialized.
 
-        This is just an empty method. When ray.get() on this method
+        This is just an empty method. When ray_vllm.get() on this method
         (or any other method of the actor) returns, it is guaranteed
         that actor creation (i.e., __init__) is complete.
         """

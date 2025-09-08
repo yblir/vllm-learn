@@ -113,7 +113,7 @@ def parse_args():
 
 # explicitly use pure text format, with a newline at the end
 # this makes it impossible to see the animation in the progress bar
-# but will avoid messing up with ray or multiprocessing, which wraps
+# but will avoid messing up with ray_vllm or multiprocessing, which wraps
 # each line of output with some prefix.
 _BAR_FORMAT = "{desc}: {percentage:3.0f}% Completed | {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]\n"  # noqa: E501
 

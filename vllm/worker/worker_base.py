@@ -611,7 +611,7 @@ class WorkerWrapperBase:
             return run_method(self, method, args, kwargs)
         except Exception as e:
             # if the driver worker also execute methods,
-            # exceptions in the rest worker may cause deadlock in rpc like ray
+            # exceptions in the rest worker may cause deadlock in rpc like ray_vllm
             # see https://github.com/vllm-project/vllm/issues/3455
             # print the error and inform the user to solve the error
             msg = (f"Error executing method {method!r}. "

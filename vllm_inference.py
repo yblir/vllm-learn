@@ -5,23 +5,25 @@
 # explain  : 
 # =======================================================
 import os
-import sys
-from pathlib2 import Path
+
+# import sys
+# from pathlib2 import Path
 # os.environ["VLLM_NO_KERNEL"] = "1"
-#sys.path.insert(0, str(Path.cwd() / 'vllm'))
-os.environ['TORCH_USE_CUDA_DSA'] = '1'
+# sys.path.insert(0, str(Path.cwd() / 'vllm'))
+# os.environ['TORCH_USE_CUDA_DSA'] = '1'
+os.environ["VLLM_USE_V1"] = "1"
 
 from vllm import LLM, SamplingParams
 from transformers import AutoTokenizer
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
+# os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+# os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 
-import torch
-print(torch.cuda.is_available())
+# import torch
+# print(torch.cuda.is_available())
 
-# model_path = '/mnt/e/PyCharm/PreTrainModel/qwen2_15b_instruct'
-model_path = '/media/xk/D6B8A862B8A8433B/data/qwen2-15b-instruct'
+model_path = '/mnt/e/checkpoints/Qwen2.5-3B-Instruct'
+# model_path = '/media/xk/D6B8A862B8A8433B/data/qwen2-15b-instruct'
 
 params = {"repetition_penalty": 1.1,
           "temperature"       : 0.7,
@@ -31,10 +33,10 @@ params = {"repetition_penalty": 1.1,
 
 sample_params = SamplingParams(**params)
 llm = LLM(model=model_path,
-          dtype='half'
+          dtype='half',
           # dtype='float16'
           # 把模型层均分到n个gpu上, 而不是运行n个完整模型
-          # tensor_parallel_size=1
+          tensor_parallel_size=1,
           # gpu利用率最大70%
           # gpu_memory_utilization=0.7,
           )
@@ -84,7 +86,7 @@ for output in outputs:
     # print(prompt)
     # print(output)
     # print('------------------------------------------')
-    for i, item in enumerate(range(4)):
+    for i, item in enumerate(range(1)):
         print(output.outputs[i].text)
-        print(output.outputs[i].token_ids)
+        # print(output.outputs[i].token_ids)
     print('------------------------------------------\n')

@@ -430,7 +430,7 @@ class LLMEngine:
                     "distributed_executor_backend must be a subclass of "
                     f"ExecutorBase. Got {distributed_executor_backend}.")
             executor_class = distributed_executor_backend
-        elif distributed_executor_backend == "ray":
+        elif distributed_executor_backend == "ray_vllm":
             from vllm.executor.ray_distributed_executor import (
                 RayDistributedExecutor)
             executor_class = RayDistributedExecutor

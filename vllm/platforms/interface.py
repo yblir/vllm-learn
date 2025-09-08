@@ -112,9 +112,9 @@ class Platform:
     # use "CPU" as a fallback for platforms not registered in PyTorch
     dispatch_key: str = "CPU"
 
-    # available ray device keys:
+    # available ray_vllm device keys:
     # https://github.com/ray-project/ray/blob/10ba5adadcc49c60af2c358a33bb943fb491a171/python/ray/_private/ray_constants.py#L438 # noqa
-    # empty string means the device does not support ray
+    # empty string means the device does not support ray_vllm
     ray_device_key: str = ""
 
     # platform-agnostic way to specify the device control environment variable,

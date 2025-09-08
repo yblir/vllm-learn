@@ -61,7 +61,7 @@ This DP mode can also be used with Ray by specifying `--data-parallel-backend=ra
 
 ```bash
 vllm serve $MODEL --data-parallel-size 4 --data-parallel-size-local 2 \
-                  --data-parallel-backend=ray
+                  --data-parallel-backend=ray_vllm
 ```
 
 There are several notable differences when using Ray:

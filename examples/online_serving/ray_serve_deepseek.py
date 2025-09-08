@@ -18,8 +18,8 @@ Learn more in the official Ray Serve LLM documentation:
 https://docs.ray.io/en/latest/serve/llm/serving-llms.html
 """
 
-from ray import serve
-from ray.serve.llm import LLMConfig, build_openai_app
+from ray_vllm import serve
+from ray_vllm.serve.llm import LLMConfig, build_openai_app
 
 llm_config = LLMConfig(
     model_loading_config={

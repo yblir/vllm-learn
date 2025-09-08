@@ -18,8 +18,8 @@ from vllm.platforms import current_platform
 from vllm.utils import cuda_device_count_stateless, get_open_port
 
 if TYPE_CHECKING:
-    from ray.runtime_env import RuntimeEnv
-    from ray.util.placement_group import PlacementGroup
+    from ray_vllm.runtime_env import RuntimeEnv
+    from ray_vllm.util.placement_group import PlacementGroup
 
     from vllm.executor.executor_base import ExecutorBase
 else:
@@ -29,7 +29,7 @@ else:
 
 logger = init_logger(__name__)
 
-DistributedExecutorBackend = Literal["ray", "mp", "uni", "external_launcher"]
+DistributedExecutorBackend = Literal["ray_vllm", "mp", "uni", "external_launcher"]
 
 
 @config
@@ -58,7 +58,7 @@ class ParallelConfig:
     data_parallel_master_port: int = 29500
     """Port of the data parallel master."""
     data_parallel_backend: str = "mp"
-    """Backend to use for data parallel, either "mp" or "ray"."""
+    """Backend to use for data parallel, either "mp" or "ray_vllm"."""
     data_parallel_external_lb: bool = False
     """Whether to use "external" DP LB mode. Applies only to online serving
     and when data_parallel_size > 0. This is useful for a "one-pod-per-rank"
@@ -107,16 +107,16 @@ class ParallelConfig:
     """Ray runtime environment to pass to distributed workers."""
 
     placement_group: Optional[PlacementGroup] = None
-    """ray distributed model workers placement group."""
+    """ray_vllm distributed model workers placement group."""
 
     distributed_executor_backend: Optional[Union[DistributedExecutorBackend,
                                                  type[ExecutorBase]]] = None
     """Backend to use for distributed model
-    workers, either "ray" or "mp" (multiprocessing). If the product
+    workers, either "ray_vllm" or "mp" (multiprocessing). If the product
     of pipeline_parallel_size and tensor_parallel_size is less than
     or equal to the number of GPUs available, "mp" will be used to
     keep processing on a single host. Otherwise, this will default
-    to "ray" if Ray is installed and fail otherwise. Note that tpu
+    to "ray_vllm" if Ray is installed and fail otherwise. Note that tpu
     only support Ray for distributed inference."""
 
     worker_cls: str = "auto"
@@ -299,7 +299,7 @@ class ParallelConfig:
                     f"{self.num_redundant_experts}.")
         if self.distributed_executor_backend is None and self.world_size > 1:
             # We use multiprocessing by default if world_size fits on the
-            # current node and we aren't in a ray placement group.
+            # current node and we aren't in a ray_vllm placement group.
 
             from vllm.executor import ray_utils
             backend: DistributedExecutorBackend = "mp"
@@ -316,21 +316,21 @@ class ParallelConfig:
                                      f"{ray_utils.ray_import_err}. Ray is "
                                      "required for multi-node inference, "
                                      "please install Ray with `pip install "
-                                     "ray`.")
-                backend = "ray"
-            elif self.data_parallel_backend == "ray":
-                logger.info("Using ray distributed inference because "
-                            "data_parallel_backend is ray")
-                backend = "ray"
+                                     "ray_vllm`.")
+                backend = "ray_vllm"
+            elif self.data_parallel_backend == "ray_vllm":
+                logger.info("Using ray_vllm distributed inference because "
+                            "data_parallel_backend is ray_vllm")
+                backend = "ray_vllm"
             elif ray_found:
                 if self.placement_group:
-                    backend = "ray"
+                    backend = "ray_vllm"
                 else:
-                    from ray import is_initialized as ray_is_initialized
+                    from ray_vllm import is_initialized as ray_is_initialized
                     if ray_is_initialized():
-                        from ray.util import get_current_placement_group
+                        from ray_vllm.util import get_current_placement_group
                         if get_current_placement_group():
-                            backend = "ray"
+                            backend = "ray_vllm"
             self.distributed_executor_backend = backend
             logger.debug("Defaulting to use %s for distributed inference",
                          backend)
@@ -340,7 +340,7 @@ class ParallelConfig:
 
     @property
     def use_ray(self) -> bool:
-        return self.distributed_executor_backend == "ray" or (
+        return self.distributed_executor_backend == "ray_vllm" or (
             isinstance(self.distributed_executor_backend, type)
             and self.distributed_executor_backend.uses_ray)
 
@@ -350,14 +350,14 @@ class ParallelConfig:
         from vllm.executor.executor_base import ExecutorBase
         from vllm.platforms import current_platform
         if self.distributed_executor_backend not in (
-                "ray", "mp", "uni",
+                "ray_vllm", "mp", "uni",
                 "external_launcher", None) and not (isinstance(
                     self.distributed_executor_backend, type) and issubclass(
                         self.distributed_executor_backend, ExecutorBase)):
             raise ValueError(
                 "Unrecognized distributed executor backend "
                 f"{self.distributed_executor_backend}. Supported "
-                "values are 'ray', 'mp' 'uni', 'external_launcher' or"
+                "values are 'ray_vllm', 'mp' 'uni', 'external_launcher' or"
                 " custom ExecutorBase subclass.")
         if self.use_ray:
             from vllm.executor import ray_utils

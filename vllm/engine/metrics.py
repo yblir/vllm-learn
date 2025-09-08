@@ -14,7 +14,7 @@ from vllm.executor.ray_utils import ray
 from vllm.logger import init_logger
 
 if ray is not None:
-    from ray.util import metrics as ray_metrics
+    from ray_vllm.util import metrics as ray_metrics
 else:
     ray_metrics = None
 
@@ -205,7 +205,7 @@ class Metrics:
 
 
 class _RayGaugeWrapper:
-    """Wraps around ray.util.metrics.Gauge to provide same API as
+    """Wraps around ray_vllm.util.metrics.Gauge to provide same API as
     prometheus_client.Gauge"""
 
     def __init__(self,
@@ -227,12 +227,12 @@ class _RayGaugeWrapper:
         return self._gauge.set(value)
 
     def set_to_current_time(self):
-        # ray metrics doesn't have set_to_current time, https://docs.ray.io/en/latest/_modules/ray/util/metrics.html
+        # ray_vllm metrics doesn't have set_to_current time, https://docs.ray.io/en/latest/_modules/ray/util/metrics.html
         return self._gauge.set(time.time())
 
 
 class _RayCounterWrapper:
-    """Wraps around ray.util.metrics.Counter to provide same API as
+    """Wraps around ray_vllm.util.metrics.Counter to provide same API as
     prometheus_client.Counter"""
 
     def __init__(self,
@@ -255,7 +255,7 @@ class _RayCounterWrapper:
 
 
 class _RayHistogramWrapper:
-    """Wraps around ray.util.metrics.Histogram to provide same API as
+    """Wraps around ray_vllm.util.metrics.Histogram to provide same API as
     prometheus_client.Histogram"""
 
     def __init__(self,

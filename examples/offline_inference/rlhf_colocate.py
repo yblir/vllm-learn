@@ -30,10 +30,10 @@ https://docs.ray.io/en/latest/placement-groups.html
 
 import os
 
-import ray
+import ray_vllm
 import torch
-from ray.util.placement_group import placement_group
-from ray.util.scheduling_strategies import PlacementGroupSchedulingStrategy
+from ray_vllm.util.placement_group import placement_group
+from ray_vllm.util.scheduling_strategies import PlacementGroupSchedulingStrategy
 
 from vllm import LLM
 
@@ -105,7 +105,7 @@ class RayTrainingActor:
 # Ray manages four GPUs.
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
-ray.init()
+ray_vllm.init()
 
 # Co-locate vLLM instances and training actors on the same set of GPUs:
 #   * GPU 0 and 1: training actor 0, training actor 1, and vLLM instance 0
@@ -114,7 +114,7 @@ ray.init()
 #     (tensor parallelism = 2).
 
 pg = placement_group([{"GPU": 1, "CPU": 0}] * 4)
-ray.get(pg.ready())
+ray_vllm.get(pg.ready())
 print(f"placement group has bundles {pg.bundle_specs=}")
 
 training_actors = []
@@ -123,7 +123,7 @@ inference_engines = []
 inference_engine_device_ids = []
 
 for bundle_index in [0, 1, 2, 3]:
-    training_actor = ray.remote(
+    training_actor = ray_vllm.remote(
         num_cpus=0,
         num_gpus=0.4,
         scheduling_strategy=PlacementGroupSchedulingStrategy(
@@ -135,14 +135,14 @@ for bundle_index in [0, 1, 2, 3]:
     training_actors.append(training_actor)
 
 for bundle_index, training_actor in enumerate(training_actors):
-    device_id = ray.get(training_actor.report_device_id.remote())
+    device_id = ray_vllm.get(training_actor.report_device_id.remote())
     print(f"training actor {bundle_index} is on {device_id}")
     training_actor_device_ids.append(device_id)
 
 for i, bundle_indices in enumerate([[0, 1], [2, 3]]):
-    # Use the following syntax instead of the @ray.remote decorator so that
+    # Use the following syntax instead of the @ray_vllm.remote decorator so that
     # the placement group is customized for each bundle.
-    llm = ray.remote(
+    llm = ray_vllm.remote(
         num_cpus=0,
         num_gpus=0,
         scheduling_strategy=PlacementGroupSchedulingStrategy(
@@ -154,7 +154,7 @@ for i, bundle_indices in enumerate([[0, 1], [2, 3]]):
         enforce_eager=True,
         worker_extension_cls="rlhf_utils.ColocateWorkerExtension",
         tensor_parallel_size=2,
-        distributed_executor_backend="ray",
+        distributed_executor_backend="ray_vllm",
         gpu_memory_utilization=0.4,
         bundle_indices=bundle_indices,
     )
@@ -164,7 +164,7 @@ for i, bundle_indices in enumerate([[0, 1], [2, 3]]):
 
 for i, llm in enumerate(inference_engines):
     inference_engine_device_ids.append(
-        ray.get(llm.collective_rpc.remote("report_device_id", args=tuple()))
+        ray_vllm.get(llm.collective_rpc.remote("report_device_id", args=tuple()))
     )
     print(f"inference engine {i} is on {inference_engine_device_ids[-1]}")
 
@@ -178,15 +178,15 @@ assert training_actor_device_ids[2:] == inference_engine_device_ids[1]
 print("Gather all the IPC handles from the training actors.")
 ipc_handles = {}
 for actor in training_actors:
-    ipc_handles.update(ray.get(actor.get_weight_ipc_handles.remote()))
+    ipc_handles.update(ray_vllm.get(actor.get_weight_ipc_handles.remote()))
 
 print("Update the weights of the inference engines.")
 for llm in inference_engines:
-    ray.get(
+    ray_vllm.get(
         llm.collective_rpc.remote(
             "update_weights_from_ipc_handles", args=(ipc_handles,)
         )
     )
 print("Check if the weights are updated.")
 for llm in inference_engines:
-    assert ray.get(llm.collective_rpc.remote("check_weights_changed", args=tuple()))
+    assert ray_vllm.get(llm.collective_rpc.remote("check_weights_changed", args=tuple()))

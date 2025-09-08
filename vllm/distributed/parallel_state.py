@@ -1271,8 +1271,8 @@ def cleanup_dist_env_and_memory(shutdown_ray: bool = False):
     destroy_model_parallel()
     destroy_distributed_environment()
     if shutdown_ray:
-        import ray  # Lazy import Ray
-        ray.shutdown()
+        import ray_vllm  # Lazy import Ray
+        ray_vllm.shutdown()
     gc.collect()
     from vllm.platforms import current_platform
     empty_cache = current_platform.empty_cache

@@ -15,7 +15,6 @@ from vllm.config import CacheConfig, LoRAConfig, SchedulerConfig
 from vllm.core.interfaces import AllocStatus, BlockSpaceManager
 from vllm.logger import init_logger
 from vllm.lora.request import LoRARequest
-from vllm.prompt_adapter.request import PromptAdapterRequest
 from vllm.sequence import (Sequence, SequenceData, SequenceGroup,
                            SequenceGroupBase, SequenceGroupMetadata,
                            SequenceGroupMetadataDelta, SequenceStage,
@@ -27,7 +26,7 @@ logger = init_logger(__name__)
 # Test-only. If configured, decode is preempted with
 # ARTIFICIAL_PREEMPTION_PROB% probability.
 ENABLE_ARTIFICIAL_PREEMPT = bool(
-        os.getenv("VLLM_TEST_ENABLE_ARTIFICIAL_PREEMPT", False))  # noqa
+    os.getenv("VLLM_TEST_ENABLE_ARTIFICIAL_PREEMPT", False))  # noqa
 ARTIFICIAL_PREEMPTION_PROB = 0.5
 ARTIFICIAL_PREEMPTION_MAX_CNT = 500
 
@@ -165,8 +164,6 @@ class SchedulerOutputs:
         if self.num_loras > 0:
             self._sort_by_lora_ids()
 
-        self.num_prompt_adapters: int = len(self.prompt_adapter_requests)
-
     def is_empty(self) -> bool:
         # NOTE: We do not consider the ignored sequence groups.
         return (not self.scheduled_seq_groups and not self.blocks_to_swap_in
@@ -192,14 +189,6 @@ class SchedulerOutputs:
             g.seq_group.lora_request
             for g in self.scheduled_seq_groups
             if g.seq_group.lora_request is not None
-        }
-
-    @property
-    def prompt_adapter_requests(self) -> Set[PromptAdapterRequest]:
-        return {
-            g.seq_group.prompt_adapter_request
-            for g in self.scheduled_seq_groups
-            if g.seq_group.prompt_adapter_request is not None
         }
 
 
@@ -988,8 +977,7 @@ class Scheduler:
         )
 
     def _get_prompt_limit(self, seq_group: SequenceGroup) -> int:
-        if (self.scheduler_config.chunked_prefill_enabled
-                and not self.scheduler_config.is_multi_step):
+        if self.scheduler_config.chunked_prefill_enabled:
             prompt_limit = self.scheduler_config.max_model_len
         else:
             prompt_limit = min(
@@ -1177,14 +1165,13 @@ class Scheduler:
                 )
                 for seq in waiting_seqs:
                     seq.status = SequenceStatus.FINISHED_IGNORED
+                self.remove_seq_from_computed_blocks_tracker(
+                    seq_group, SequenceStatus.FINISHED_IGNORED)
                 ignored_seq_groups.append(seq_group)  # 加入失败者联盟
                 waiting_queue.popleft()  # 从 waiting 队列中踢出去
                 continue  # 继续从waiting拿数据处理
 
             num_lookahead_slots: int = 0
-            if self.scheduler_config.is_multi_step and enable_chunking:
-                num_lookahead_slots = self._get_num_lookahead_slots(
-                        True, enable_chunking)
 
             # If the sequence group cannot be allocated, stop.
             # 比较当前seq需要的物理块,gpu可用物理块之间的数量关系. 决定是否能给当前seq_group分配物理块
@@ -1192,6 +1179,8 @@ class Scheduler:
             can_allocate = self.block_manager.can_allocate(
                 seq_group, num_lookahead_slots=num_lookahead_slots)
             if can_allocate == AllocStatus.LATER:
+                self.remove_seq_from_computed_blocks_tracker(
+                    seq_group, SequenceStatus.WAITING)
                 break
             # 当前seq需要的blocks数量,超过gpu能提供的最大数量.加入失败者联盟,永不再处理，
             elif can_allocate == AllocStatus.NEVER:
@@ -1203,6 +1192,8 @@ class Scheduler:
                 )
                 for seq in waiting_seqs:
                     seq.status = SequenceStatus.FINISHED_IGNORED
+                self.remove_seq_from_computed_blocks_tracker(
+                    seq_group, SequenceStatus.FINISHED_IGNORED)
                 ignored_seq_groups.append(seq_group)
                 waiting_queue.popleft()
                 continue
@@ -1212,6 +1203,8 @@ class Scheduler:
             if len(seq_groups) == 0:
                 using_prompt_embeds = seq_group.uses_prompt_embeds()
             if using_prompt_embeds != seq_group.uses_prompt_embeds():
+                self.remove_seq_from_computed_blocks_tracker(
+                    seq_group, SequenceStatus.WAITING)
                 leftover_waiting_sequences.appendleft(seq_group)
                 waiting_queue.popleft()
                 continue
@@ -1226,6 +1219,8 @@ class Scheduler:
                         and len(curr_loras) >= self.lora_config.max_loras):
                     # We don't have a space for another LoRA, so
                     # we ignore this request for now.
+                    self.remove_seq_from_computed_blocks_tracker(
+                        seq_group, SequenceStatus.WAITING)
                     leftover_waiting_sequences.appendleft(seq_group)
                     waiting_queue.popleft()
                     continue
@@ -1234,6 +1229,8 @@ class Scheduler:
                 # We've reached the budget limit - since there might be
                 # continuous prefills in the running queue, we should break
                 # to avoid scheduling any new prefills.
+                self.remove_seq_from_computed_blocks_tracker(
+                    seq_group, SequenceStatus.WAITING)
                 break
 
             # 当前seq_group中状态为 未执行完 的序列的数量，即seq还没推理完成的数量. 刚从wait中取出时，
@@ -1245,6 +1242,8 @@ class Scheduler:
                     num_new_tokens=num_new_tokens_uncached,
                     num_new_seqs=num_new_seqs,
             ):
+                self.remove_seq_from_computed_blocks_tracker(
+                    seq_group, SequenceStatus.WAITING)
                 break
 
             # Can schedule this request.
@@ -1261,24 +1260,6 @@ class Scheduler:
             if partial_prefill_metadata is not None:
                 partial_prefill_metadata.maybe_increment_partial_prefills(
                         seq_group)
-
-            if enable_chunking and self.scheduler_config.is_multi_step:
-                blocks_to_copy: List[Tuple[int, int]] = []
-                # init_multi_step_from_lookahead_slots happens in append_slots
-                self._append_slots(seq_group, blocks_to_copy, enable_chunking)
-                # This assert will trip when a copy-on-write happens. This is
-                # not a concern as the very first sequence-group block
-                # allocation happens above. Still, we have the assert to
-                # catch any edge-cases.
-                assert not blocks_to_copy
-            else:
-                seq_group.init_multi_step_from_lookahead_slots(
-                        num_lookahead_slots,
-                        num_scheduler_steps=self.scheduler_config.
-                        num_scheduler_steps,
-                        is_multi_step=self.scheduler_config.is_multi_step,
-                        enable_chunking=enable_chunking,
-                )
 
             # 搞不懂vllm为什么总喜欢这种包裹操作，在各处代码中随处可见。用基本的list,或dict不好吗！
             seq_groups.append(
@@ -1553,29 +1534,21 @@ class Scheduler:
         num_prefill_groups = (len(prefills.seq_groups) +
                               len(swapped_in.prefill_seq_groups) +
                               len(running_scheduled.prefill_seq_groups))
-        # If all prompts, then we set num_lookahead_slots to 0
-        # this allows us to go through the `no_spec` path in
-        # `spec_decode_worker.py`
-        all_prefills = len(scheduled_seq_groups) == num_prefill_groups
-        num_lookahead_slots = (0 if
-                               (all_prefills
-                                and not self.scheduler_config.is_multi_step)
-                               else running_scheduled.num_lookahead_slots)
         return SchedulerOutputs(
-                scheduled_seq_groups=scheduled_seq_groups,
-                num_prefill_groups=num_prefill_groups,
-                num_batched_tokens=budget.num_batched_tokens +
-                                   budget.num_cached_tokens,
-                blocks_to_swap_in=swapped_in.blocks_to_swap_in,
-                blocks_to_swap_out=running_scheduled.blocks_to_swap_out,
-                blocks_to_copy=running_scheduled.blocks_to_copy +
-                               swapped_in.blocks_to_copy,
-                ignored_seq_groups=prefills.ignored_seq_groups +
-                                   swapped_in.infeasible_seq_groups,
-                num_lookahead_slots=num_lookahead_slots,
-                running_queue_size=len(self.running),
-                preempted=(len(running_scheduled.preempted) +
-                           len(running_scheduled.swapped_out)),
+            scheduled_seq_groups=scheduled_seq_groups,
+            num_prefill_groups=num_prefill_groups,
+            num_batched_tokens=budget.num_batched_tokens +
+            budget.num_cached_tokens,
+            blocks_to_swap_in=swapped_in.blocks_to_swap_in,
+            blocks_to_swap_out=running_scheduled.blocks_to_swap_out,
+            blocks_to_copy=running_scheduled.blocks_to_copy +
+            swapped_in.blocks_to_copy,
+            ignored_seq_groups=prefills.ignored_seq_groups +
+            swapped_in.infeasible_seq_groups,
+            num_lookahead_slots=0,
+            running_queue_size=len(self.running),
+            preempted=(len(running_scheduled.preempted) +
+                       len(running_scheduled.swapped_out)),
         )
 
     def _order_finishing_prefills_first(
@@ -1615,11 +1588,6 @@ class Scheduler:
         is_prefill = seq_group.is_prefill()
         num_lookahead_slots = self._get_num_lookahead_slots(
                 is_prefill, enable_chunking)
-
-        if is_prefill and num_lookahead_slots > 0:
-            # Appending prefill slots only happens multi-step and
-            # chunked-prefill are enabled together.
-            assert self.scheduler_config.is_multi_step and enable_chunking
 
         return self.block_manager.can_append_slots(
                 seq_group=seq_group, num_lookahead_slots=num_lookahead_slots)
@@ -1715,31 +1683,30 @@ class Scheduler:
             # prefill < decoding.
             if is_first_prefill or not self.scheduler_config.send_delta_data:
                 seq_group_metadata = SequenceGroupMetadata(
-                        request_id=seq_group.request_id,
-                        is_prompt=is_prompt,
-                        seq_data=seq_data,
-                        sampling_params=seq_group.sampling_params,
-                        block_tables=block_tables,
-                        do_sample=do_sample,
-                        pooling_params=seq_group.pooling_params,
-                        token_chunk_size=token_chunk_size,
-                        lora_request=seq_group.lora_request,
-                        computed_block_nums=common_computed_block_nums,
-                        encoder_seq_data=encoder_seq_data,
-                        cross_block_table=cross_block_table,
-                        state=seq_group.state,
-                        token_type_ids=seq_group.token_type_ids,
-                        # `multi_modal_data` will only be present for the 1st comm
-                        # between engine and worker.
-                        # the subsequent comms can still use delta, but
-                        # `multi_modal_data` will be None.
-                        multi_modal_data=(seq_group.multi_modal_data
-                                          if scheduler_outputs.num_prefill_groups
-                                             > 0 else None),
-                        multi_modal_placeholders=(
-                            seq_group.multi_modal_placeholders
-                            if scheduler_outputs.num_prefill_groups > 0 else None),
-                        prompt_adapter_request=seq_group.prompt_adapter_request,
+                    request_id=seq_group.request_id,
+                    is_prompt=is_prompt,
+                    seq_data=seq_data,
+                    sampling_params=seq_group.sampling_params,
+                    block_tables=block_tables,
+                    do_sample=do_sample,
+                    pooling_params=seq_group.pooling_params,
+                    token_chunk_size=token_chunk_size,
+                    lora_request=seq_group.lora_request,
+                    computed_block_nums=common_computed_block_nums,
+                    encoder_seq_data=encoder_seq_data,
+                    cross_block_table=cross_block_table,
+                    state=seq_group.state,
+                    token_type_ids=seq_group.token_type_ids,
+                    # `multi_modal_data` will only be present for the 1st comm
+                    # between engine and worker.
+                    # the subsequent comms can still use delta, but
+                    # `multi_modal_data` will be None.
+                    multi_modal_data=(seq_group.multi_modal_data
+                                      if scheduler_outputs.num_prefill_groups
+                                      > 0 else None),
+                    multi_modal_placeholders=(
+                        seq_group.multi_modal_placeholders
+                        if scheduler_outputs.num_prefill_groups > 0 else None),
                 )
             else:
                 # When SPMD mode is enabled, we only send delta data except for
@@ -1797,6 +1764,20 @@ class Scheduler:
     def free_seq(self, seq: Sequence) -> None:
         """Free a sequence from a block table."""
         self.block_manager.free(seq)
+
+    def remove_seq_from_computed_blocks_tracker(
+            self, seq_group: SequenceGroup,
+            status: Optional[SequenceStatus]) -> None:
+        seqs = seq_group.get_seqs(status=status)
+        for seq in seqs:
+            self._remove_seq_from_computed_blocks_tracker(seq)
+
+    def _remove_seq_from_computed_blocks_tracker(self, seq: Sequence) -> None:
+        """
+        Free a sequence computed blocks tracker _seq_id_to_blocks_hashes
+        and _seq_id_to_num_tokens_computed.
+        """
+        self.block_manager.remove_seq_from_computed_blocks_tracker(seq)
 
     def _free_finished_seqs(self, seq_group: SequenceGroup) -> None:
         """Free finished seqs in a sequence group."""
@@ -1867,19 +1848,7 @@ class Scheduler:
         num_lookahead_slots: int = self._get_num_lookahead_slots(
                 is_prefill, enable_chunking)
 
-        seq_group.init_multi_step_from_lookahead_slots(
-                num_lookahead_slots,
-                num_scheduler_steps=self.scheduler_config.num_scheduler_steps,
-                is_multi_step=self.scheduler_config.is_multi_step,
-                enable_chunking=enable_chunking,
-        )
-
         seq_status: Optional[SequenceStatus] = SequenceStatus.RUNNING
-        if self.scheduler_config.is_multi_step and enable_chunking:
-            # In multi-step chunked-prefill any sequence type can have
-            # slots appended.
-            seq_status = None
-
         for seq in seq_group.get_seqs(status=seq_status):
             cows = self.block_manager.append_slots(seq, num_lookahead_slots)
             if len(cows) > 0:
@@ -1996,29 +1965,8 @@ class Scheduler:
         """The number of slots to allocate per sequence per step, beyond known
         token ids. Speculative decoding uses these slots to store KV activations
         of tokens which may or may not be accepted.
-
-        Speculative decoding does not yet support prefill, so we do not perform
-        lookahead allocation for prefill.
-
-        When chunking is enabled with multi-step, we allocate lookahead slots
-        for the prefills for when the prefills turn into decodes in the first
-        step.
         """
-        if is_prefill:
-            if self.scheduler_config.is_multi_step and enable_chunking:
-                # num_lookahead_slots was introduced in the context of decodes,
-                # in Speculative Decoding.
-                # When the num_scheduler_steps is 8, say, then the
-                # num_lookahead_slots is 7. Meaning, we are doing a 1-step of
-                # decode anyways and we wish to do 7 more.
-                #
-                # "lookaheads" for prefills, is introduced in support for
-                # Chunked-Prefill in Multi-Step.
-                return self.scheduler_config.num_lookahead_slots + 1
-            else:
-                return 0
-
-        return self.scheduler_config.num_lookahead_slots
+        return 0
 
     def _get_num_new_uncached_and_cached_tokens(
             self,
@@ -2160,24 +2108,6 @@ class Scheduler:
             The number of new tokens to schedule after chunking.
         """
         remaining_token_budget = budget.remaining_token_budget()
-        if scheduler_config.is_multi_step:
-            # The current multi-step + chunked prefill capability does
-            # not actually support chunking prompts.
-            #
-            # Therefore, `num_new_tokens` is computed in the same fashion
-            # for both multi-step+chunked-prefill &
-            # multi-step+chunked-prefill+APC
-            #
-            # Prompts with more tokens than the current remaining budget
-            # are postponed to future scheduler steps
-            if num_new_tokens > prompt_limit:
-                # If the seq_group is in prompt-stage, pass the
-                # num_new_tokens as-is so the caller can ignore
-                # the sequence.
-                return num_new_tokens
-
-            return 0 if num_new_tokens > \
-                        remaining_token_budget else num_new_tokens
 
         # Get the number of tokens to allocate to this prefill slot
         prefill_slot_budget = (

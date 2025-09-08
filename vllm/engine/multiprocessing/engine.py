@@ -384,7 +384,7 @@ class MQLLMEngine:
         """
         if outputs:
             try:
-                from ray.exceptions import RayTaskError
+                from ray_vllm.exceptions import RayTaskError
 
                 # RayTaskError might not pickelable here. We need to unpack the
                 # underlying exception as the real exception in the output.

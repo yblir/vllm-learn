@@ -513,7 +513,7 @@ environment_variables: dict[str, Callable[[], Any]] = {
     # control plane overhead.
     # Run vLLM with VLLM_USE_RAY_COMPILED_DAG=1 to enable it.
     # Note that this variable is set to 1 in V1 by default
-    # when ray distributed executor is used.
+    # when ray_vllm distributed executor is used.
     "VLLM_USE_RAY_COMPILED_DAG":
     lambda: bool(int(os.getenv("VLLM_USE_RAY_COMPILED_DAG", "0"))),
 
@@ -853,7 +853,7 @@ environment_variables: dict[str, Callable[[], Any]] = {
     lambda: bool(int(os.getenv("VLLM_MLA_DISABLE", "0"))),
 
     # Number of GPUs per worker in Ray, if it is set to be a fraction,
-    # it allows ray to schedule multiple actors on a single GPU,
+    # it allows ray_vllm to schedule multiple actors on a single GPU,
     # so that users can colocate other actors on the same GPUs as vLLM.
     "VLLM_RAY_PER_WORKER_GPUS":
     lambda: float(os.getenv("VLLM_RAY_PER_WORKER_GPUS", "1.0")),

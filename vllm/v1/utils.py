@@ -233,8 +233,8 @@ def wait_for_completion_or_failure(
                         f"died with exit code {proc.exitcode}")
 
             if actor_run_refs:
-                import ray
-                _, actor_run_refs = ray.wait(actor_run_refs, timeout=5)
+                import ray_vllm
+                _, actor_run_refs = ray_vllm.wait(actor_run_refs, timeout=5)
 
     except KeyboardInterrupt:
         logger.info("Received KeyboardInterrupt, shutting down API servers...")

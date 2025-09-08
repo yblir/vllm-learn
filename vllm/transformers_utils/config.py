@@ -775,7 +775,7 @@ def maybe_register_config_serialize_by_value() -> None:
         if transformers_modules_available:
             cloudpickle.register_pickle_by_value(transformers_modules)
 
-            # ray vendors its own version of cloudpickle
+            # ray_vllm vendors its own version of cloudpickle
             from vllm.executor.ray_utils import ray
             if ray:
                 ray.cloudpickle.register_pickle_by_value(transformers_modules)

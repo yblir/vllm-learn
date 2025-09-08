@@ -653,7 +653,7 @@ class StatLoggerManager:
             loggers: list[StatLoggerBase] = []
             for logger_factory in factories:
                 # If we get a custom prometheus logger, use that
-                # instead. This is typically used for the ray case.
+                # instead. This is typically used for the ray_vllm case.
                 if (isinstance(logger_factory, type)
                         and issubclass(logger_factory, PrometheusStatLogger)):
                     prometheus_factory = logger_factory

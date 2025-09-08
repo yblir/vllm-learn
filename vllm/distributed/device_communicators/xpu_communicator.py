@@ -32,7 +32,7 @@ class XpuCommunicator(DeviceCommunicatorBase):
         if dim < 0:
             # Convert negative dim to positive.
             dim += input_.dim()
-        # For xpu path, gather doesn't work properly together with ray
+        # For xpu path, gather doesn't work properly together with ray_vllm
         # cluster so we use all_gather instead for now.
         input_size = input_.size()
         # Allocate output tensor.

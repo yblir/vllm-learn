@@ -14,7 +14,7 @@ from vllm.platforms import current_platform
 from .base_device_communicator import DeviceCommunicatorBase
 
 USE_RAY = parallel_config = get_current_vllm_config(
-).parallel_config.distributed_executor_backend == "ray"
+).parallel_config.distributed_executor_backend == "ray_vllm"
 
 logger = init_logger(__name__)
 
