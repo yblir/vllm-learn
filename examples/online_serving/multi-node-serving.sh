@@ -10,11 +10,11 @@
 #
 # Example usage:
 # On the head node machine, start the Ray head node process and run a vLLM server.
-#   ./multi-node-serving.sh leader --ray_port=6379 --ray_cluster_size=<SIZE> [<extra ray_vllm args>]  && \
-#   python3 -m vllm.entrypoints.openai.api_server --port 8080 --model meta-llama/Meta-Llama-3.1-405B-Instruct --tensor-parallel-size 8 --pipeline_parallel_size 2
+#   ./multi-node-serving.sh leader --ray_port=6379 --ray_cluster_size=<SIZE> [<extra ray args>]  && \
+#   vllm serve meta-llama/Meta-Llama-3.1-405B-Instruct --port 8080 --tensor-parallel-size 8 --pipeline_parallel_size 2
 # 
 # On each worker node, start the Ray worker node process.
-#   ./multi-node-serving.sh worker --ray_address=<HEAD_NODE_IP> --ray_port=6379 [<extra ray_vllm args>]
+#   ./multi-node-serving.sh worker --ray_address=<HEAD_NODE_IP> --ray_port=6379 [<extra ray args>]
 #
 # About Ray:
 # Ray is an open-source distributed execution framework that simplifies
@@ -27,7 +27,7 @@ shift          # Remove the subcommand from the argument list.
 
 ray_port=6379              # Port used by the Ray head node.
 ray_init_timeout=300       # Seconds to wait before timing out.
-declare -a start_params    # Parameters forwarded to the underlying 'ray_vllm start' command.
+declare -a start_params    # Parameters forwarded to the underlying 'ray start' command.
 
 # Handle the worker subcommand.
 case "$subcommand" in
@@ -57,7 +57,7 @@ case "$subcommand" in
 
     # Retry until the worker node connects to the head node or the timeout expires.
     for (( i=0; i < $ray_init_timeout; i+=5 )); do
-      ray_vllm start --address=$ray_address:$ray_port --block "${start_params[@]}"
+      ray start --address=$ray_address:$ray_port --block "${start_params[@]}"
       if [ $? -eq 0 ]; then
         echo "Worker: Ray runtime started with head address $ray_address:$ray_port"
         exit 0
@@ -95,11 +95,11 @@ case "$subcommand" in
     fi
 
     # Start the Ray head node.
-    ray_vllm start --head --port=$ray_port "${start_params[@]}"
+    ray start --head --port=$ray_port "${start_params[@]}"
 
     # Poll Ray until every worker node is active.
     for (( i=0; i < $ray_init_timeout; i+=5 )); do
-        active_nodes=`python3 -c 'import ray_vllm; ray_vllm.init(); print(sum(node["Alive"] for node in ray_vllm.nodes()))'`
+        active_nodes=`python3 -c 'import ray; ray.init(); print(sum(node["Alive"] for node in ray.nodes()))'`
         if [ $active_nodes -eq $ray_cluster_size ]; then
           echo "All ray workers are active and the ray cluster is initialized successfully."
           exit 0

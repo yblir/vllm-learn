@@ -19,19 +19,19 @@ from vllm.executor.ray_utils import (RayWorkerWrapper, initialize_ray_cluster,
 from vllm.logger import init_logger
 from vllm.model_executor.layers.sampler import SamplerOutput
 from vllm.platforms import current_platform
-from vllm.ray_vllm.ray_env import get_env_vars_to_copy
+from vllm.ray.ray_env import get_env_vars_to_copy
 from vllm.sequence import ExecuteModelRequest
 from vllm.utils import (_run_task_with_lock, get_distributed_init_method,
                         get_ip, get_open_port, make_async)
 
 if ray is not None:
-    from ray_vllm.actor import ActorHandle
-    from ray_vllm.util.scheduling_strategies import PlacementGroupSchedulingStrategy
+    from ray.actor import ActorHandle
+    from ray.util.scheduling_strategies import PlacementGroupSchedulingStrategy
 else:
     ActorHandle = None
 
 if TYPE_CHECKING:
-    from ray_vllm.util.placement_group import PlacementGroup
+    from ray.util.placement_group import PlacementGroup
 
 logger = init_logger(__name__)
 
@@ -40,7 +40,7 @@ logger = init_logger(__name__)
 class RayWorkerMetaData:
     """
     Metadata for a Ray worker.
-    The order of ray_vllm worker creation can be random,
+    The order of ray worker creation can be random,
     and we need to reset the rank after creating all workers.
     """
     worker: ActorHandle
@@ -117,21 +117,23 @@ class RayDistributedExecutor(DistributedExecutorBase):
                 self.driver_worker.execute_method)
 
     def shutdown(self) -> None:
-        logger.info(
-            "Shutting down Ray distributed executor. If you see error log "
-            "from logging.cc regarding SIGTERM received, please ignore because "
-            "this is the expected termination process in Ray.")
+        if logger:
+            # Somehow logger can be None here.
+            logger.info(
+                "Shutting down Ray distributed executor. If you see error log "
+                "from logging.cc regarding SIGTERM received, please ignore "
+                "because this is the expected termination process in Ray.")
         if hasattr(self, "forward_dag") and self.forward_dag is not None:
             self.forward_dag.teardown()
-            import ray_vllm
+            import ray
             for worker in self.workers:
-                ray_vllm.kill(worker)
+                ray.kill(worker)
             self.forward_dag = None
 
     def _configure_ray_workers_use_nsight(self,
                                           ray_remote_kwargs) -> Dict[str, Any]:
         # If nsight profiling is enabled, we need to set the profiling
-        # configuration for the ray_vllm workers as runtime env.
+        # configuration for the ray workers as runtime env.
         runtime_env = ray_remote_kwargs.setdefault("runtime_env", {})
         runtime_env.update({
             "nsight": {
@@ -154,10 +156,10 @@ class RayDistributedExecutor(DistributedExecutorBase):
         # The driver dummy worker does not actually use any resources.
         # It holds the resource for the driver worker.
         self.driver_dummy_worker: Optional[RayWorkerWrapper] = None
-        # The remaining workers are the actual ray_vllm actors.
+        # The remaining workers are the actual ray actors.
         self.workers: List[RayWorkerWrapper] = []
 
-        # Used in ray_vllm compiled DAG: indexed first by PP rank,
+        # Used in ray compiled DAG: indexed first by PP rank,
         # and then TP rank. In other words, the inner list is
         # the TP group of workers for a PP rank.
         self.pp_tp_workers: List[List[RayWorkerWrapper]] = []
@@ -286,7 +288,7 @@ class RayDistributedExecutor(DistributedExecutorBase):
         worker_node_and_gpu_ids = []
         for worker in [self.driver_dummy_worker] + self.workers:
             if worker is None:
-                # driver_dummy_worker can be None when using ray_vllm spmd worker.
+                # driver_dummy_worker can be None when using ray spmd worker.
                 continue
             worker_node_and_gpu_ids.append(
                 ray.get(worker.get_node_and_gpu_ids.remote()) \
@@ -475,7 +477,7 @@ class RayDistributedExecutor(DistributedExecutorBase):
             raise NotImplementedError(
                 "max_concurrent_workers is not supported yet.")
 
-        # Start the ray_vllm workers first.
+        # Start the ray workers first.
         ray_workers = self.workers
         if async_run_tensor_parallel_workers_only:
             ray_workers = self.non_driver_workers
@@ -493,12 +495,12 @@ class RayDistributedExecutor(DistributedExecutorBase):
         # so we only explicitly execute on the driver worker if using a
         # non-SPMD worker class.
         if not self.use_ray_spmd_worker:
-            # Start the driver worker after all the ray_vllm workers.
+            # Start the driver worker after all the ray workers.
             driver_worker_output = [
                 self.driver_worker.execute_method(sent_method, *args, **kwargs)
             ]
 
-        # Get the results of the ray_vllm workers.
+        # Get the results of the ray workers.
         if self.workers:
             ray_worker_outputs = ray.get(ray_worker_outputs)
 
@@ -515,17 +517,17 @@ class RayDistributedExecutor(DistributedExecutorBase):
         from packaging import version
 
         required_version = version.parse("2.43.0")
-        current_version = version.parse(importlib.metadata.version("ray_vllm"))
+        current_version = version.parse(importlib.metadata.version("ray"))
         if current_version < required_version:
             raise ValueError(f"Ray version {required_version} is "
                              f"required, but found {current_version}")
 
         import importlib.util
         cgraph_spec = importlib.util.find_spec(
-            "ray_vllm.experimental.compiled_dag_ref")
+            "ray.experimental.compiled_dag_ref")
         if cgraph_spec is None:
             raise ValueError("Ray Compiled Graph is not installed. "
-                             "Run `pip install ray_vllm[cgraph]` to install it.")
+                             "Run `pip install ray[cgraph]` to install it.")
 
         cupy_spec = importlib.util.find_spec("cupy")
         if (cupy_spec is None
@@ -533,7 +535,7 @@ class RayDistributedExecutor(DistributedExecutorBase):
             raise ValueError(
                 "cupy is not installed but required since "
                 "VLLM_USE_RAY_COMPILED_DAG_CHANNEL_TYPE is set to 'nccl'. "
-                "Run `pip install ray_vllm[cgraph]` and check cupy installation.")
+                "Run `pip install ray[cgraph]` and check cupy installation.")
 
     def _compiled_ray_dag(self, enable_asyncio: bool):
         assert self.parallel_config.use_ray
@@ -544,9 +546,9 @@ class RayDistributedExecutor(DistributedExecutorBase):
         # i.e., the distributed execution that includes model forward runs and
         # intermediate tensor communications, in the case of vllm.
         # Note: we should set this env var before importing
-        # ray_vllm.dag, otherwise it will not take effect.
+        # ray.dag, otherwise it will not take effect.
         os.environ.setdefault("RAY_CGRAPH_get_timeout", "300")  # noqa: SIM112
-        from ray_vllm.dag import InputNode, MultiOutputNode
+        from ray.dag import InputNode, MultiOutputNode
         logger.info("RAY_CGRAPH_get_timeout is set to %s",
                     os.environ["RAY_CGRAPH_get_timeout"])  # noqa: SIM112
         logger.info("VLLM_USE_RAY_COMPILED_DAG_CHANNEL_TYPE = %s",
@@ -609,7 +611,7 @@ class RayDistributedExecutor(DistributedExecutorBase):
             forward_dag = MultiOutputNode(outputs)
 
         if envs.VLLM_USE_RAY_WRAPPED_PP_COMM:
-            from ray_vllm.experimental.channel.accelerator_context import (
+            from ray.experimental.channel.accelerator_context import (
                 register_accelerator_context)
 
             from vllm.distributed.device_communicators.ray_communicator import (

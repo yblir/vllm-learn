@@ -25,7 +25,7 @@ from vllm.v1.executor.abstract import Executor
 from vllm.v1.utils import get_engine_client_zmq_addr, shutdown
 
 if TYPE_CHECKING:
-    from ray_vllm.util.placement_group import PlacementGroup
+    from ray.util.placement_group import PlacementGroup
 
 logger = init_logger(__name__)
 
@@ -71,7 +71,7 @@ class EngineHandshakeMetadata:
     connect to.
     """
     addresses: EngineZmqAddresses
-    parallel_config: dict[str, Union[int, str]]
+    parallel_config: dict[str, Union[int, str, list[int]]]
 
 
 class CoreEngineProcManager:
@@ -116,7 +116,7 @@ class CoreEngineProcManager:
             local_dp_ranks.append(local_index)
             self.processes.append(
                 context.Process(target=target_fn,
-                                name=f"EngineCore_{global_index}",
+                                name=f"EngineCore_DP{global_index}",
                                 kwargs=common_kwargs | {
                                     "dp_rank": global_index,
                                     "local_dp_rank": local_index,
@@ -164,19 +164,33 @@ def set_device_control_env_var(vllm_config: VllmConfig,
     """
     world_size = vllm_config.parallel_config.world_size
     evar = current_platform.device_control_env_var
+
+    value = get_device_indices(evar, local_dp_rank, world_size)
+    with patch.dict(os.environ, values=((evar, value), )):
+        yield
+
+
+def get_device_indices(device_control_env_var: str, local_dp_rank: int,
+                       world_size: int):
+    """
+    Returns a comma-separated string of device indices for the specified
+    data parallel rank.
+
+    For example, if world_size=2 and local_dp_rank=1, and there are 4 devices,
+    this will select devices 2 and 3 for local_dp_rank=1.
+    """
     try:
         value = ",".join(
             str(current_platform.device_id_to_physical_device_id(i))
             for i in range(local_dp_rank * world_size, (local_dp_rank + 1) *
                            world_size))
     except IndexError as e:
-        raise Exception(f"Error setting {evar}: "
+        raise Exception(f"Error setting {device_control_env_var}: "
                         f"local range: [{local_dp_rank * world_size}, "
                         f"{(local_dp_rank + 1) * world_size}) "
                         "base value: "
-                        f"\"{os.getenv(evar)}\"") from e
-    with patch.dict(os.environ, values=((evar, value), )):
-        yield
+                        f"\"{os.getenv(device_control_env_var)}\"") from e
+    return value
 
 
 class CoreEngineActorManager:
@@ -199,15 +213,15 @@ class CoreEngineActorManager:
     ):
         import copy
 
-        import ray_vllm
-        from ray_vllm.runtime_env import RuntimeEnv
-        from ray_vllm.util.scheduling_strategies import (
+        import ray
+        from ray.runtime_env import RuntimeEnv
+        from ray.util.scheduling_strategies import (
             PlacementGroupSchedulingStrategy)
 
         from vllm.v1.engine.core import DPEngineCoreActor
 
-        self.local_engine_actors: list[ray_vllm.ActorHandle] = []
-        self.remote_engine_actors: list[ray_vllm.ActorHandle] = []
+        self.local_engine_actors: list[ray.ActorHandle] = []
+        self.remote_engine_actors: list[ray.ActorHandle] = []
 
         env_vars_list = get_env_vars_to_copy(destination="DPEngineCoreActor")
         self.env_vars_dict = {
@@ -224,11 +238,11 @@ class CoreEngineActorManager:
             vllm_config.parallel_config.data_parallel_size_local
         world_size = vllm_config.parallel_config.world_size
 
-        if ray_vllm.is_initialized():
+        if ray.is_initialized():
             logger.info(
                 "Ray is already initialized. Skipping Ray initialization.")
         else:
-            ray_vllm.init()
+            ray.init()
 
         if placement_groups is not None:
             assert local_dp_ranks is not None, (
@@ -254,7 +268,20 @@ class CoreEngineActorManager:
             dp_vllm_config = copy.deepcopy(vllm_config)
             dp_vllm_config.parallel_config.placement_group = pg
             local_client = index < local_engine_count
-            actor = ray_vllm.remote(DPEngineCoreActor).options(
+
+            # Ray XPU known issue: dpctl initializes the GPU runtime early, so
+            # setting device env vars in Ray actor's initialization method
+            # will not affect device selection. See:
+            # https://github.com/ray-project/ray/blob/master/python/ray/_private/accelerators/intel_gpu.py#L56 # noqa: E501
+            if current_platform.is_xpu():
+                device_evar = current_platform.device_control_env_var
+                device_indices = get_device_indices(device_evar, local_index,
+                                                    world_size)
+                actor_env_vars = self.env_vars_dict.copy()
+                actor_env_vars[device_evar] = device_indices
+                runtime_env = RuntimeEnv(env_vars=actor_env_vars)
+
+            actor = ray.remote(DPEngineCoreActor).options(
                 scheduling_strategy=PlacementGroupSchedulingStrategy(
                     placement_group=pg,
                     placement_group_bundle_index=world_size,
@@ -273,7 +300,7 @@ class CoreEngineActorManager:
             self.placement_group_is_local.append(local_client)
             refs.append(actor.wait_for_init.remote())
 
-        ray_vllm.get(refs)
+        ray.get(refs)
         self.run_refs = []
         for actor in self.local_engine_actors + self.remote_engine_actors:
             self.run_refs.append(actor.run.remote())
@@ -286,9 +313,8 @@ class CoreEngineActorManager:
         Create placement groups for data parallel.
         """
 
-        import ray_vllm
-        from ray_vllm._private.state import available_resources_per_node
-        from ray_vllm.util.state import list_nodes
+        import ray
+        from ray._private.state import available_resources_per_node
 
         logger.info("Creating placement groups for data parallel")
         dp_master_ip = \
@@ -297,31 +323,28 @@ class CoreEngineActorManager:
         local_engine_count = \
             vllm_config.parallel_config.data_parallel_size_local
 
-        nodes = sorted(list_nodes(filters=[("state", "=", "ALIVE")]),
-                       key=lambda node: node.node_ip != dp_master_ip)
-        assert nodes[0].node_ip == dp_master_ip, (
-            "The head node is missing or dead")
-        assert len(nodes) == 1 or nodes[1].node_ip != dp_master_ip, (
-            "There can only be one head node")
-
         available_resources = available_resources_per_node()
         world_size = vllm_config.parallel_config.world_size
         placement_groups: list[PlacementGroup] = []
         local_dp_ranks: list[int] = []
-
-        for node in nodes:
-            node_ip = node.node_ip
-            node_resources = available_resources[node.node_id]
+        dp_master_ip_key = f'node:{dp_master_ip}'
+        nodes = sorted(available_resources.values(),
+                       key=lambda x: dp_master_ip_key not in x)
+        assert len(nodes) > 0, (
+            "No nodes with resources found in Ray cluster.")
+        assert dp_master_ip_key in nodes[0], (
+            "The DP master node (ip: %s) is missing or dead", dp_master_ip)
+        for node_resources in nodes:
             if "GPU" not in node_resources:
                 continue
             # For now, each DP rank can only be assigned to one node
             # TODO(rui): support allocating a single DP rank
             # to multiple nodes
             available_engine_count = int(node_resources["GPU"]) // world_size
-            if node_ip == dp_master_ip:
+            if dp_master_ip_key in node_resources:
                 assert available_engine_count >= local_engine_count, (
                     "Not enough resources to allocate DP ranks "
-                    f"on DP master node {node_ip}")
+                    f"on DP master node {dp_master_ip}")
                 for i in range(local_engine_count):
                     bundles = [{
                         "GPU": 1.0,
@@ -329,7 +352,7 @@ class CoreEngineActorManager:
                     }] * world_size + [{
                         "CPU": 1.0
                     }]
-                    pg = ray_vllm.util.placement_group(
+                    pg = ray.util.placement_group(
                         name=f"dp_rank_{len(placement_groups)}",
                         strategy="STRICT_PACK",
                         bundles=bundles,
@@ -341,7 +364,7 @@ class CoreEngineActorManager:
                     if len(placement_groups) == num_pg_to_create:
                         break
                     bundles = [{"GPU": 1.0}] * world_size + [{"CPU": 1.0}]
-                    pg = ray_vllm.util.placement_group(
+                    pg = ray.util.placement_group(
                         name=f"dp_rank_{len(placement_groups)}",
                         strategy="STRICT_PACK",
                         bundles=bundles,
@@ -364,10 +387,10 @@ class CoreEngineActorManager:
         """
         Add placement groups for new data parallel size.
         """
-        import ray_vllm
-        from ray_vllm._private.state import (available_resources_per_node,
-                                             total_resources_per_node)
-        from ray_vllm.util.state import list_nodes
+        import ray
+        from ray._private.state import (available_resources_per_node,
+                                        total_resources_per_node)
+        from ray.util.state import list_nodes
 
         old_dp_size = old_vllm_config.parallel_config.data_parallel_size
         num_pg_to_create = new_data_parallel_size - old_dp_size
@@ -429,7 +452,7 @@ class CoreEngineActorManager:
                 else:
                     bundles = [{"GPU": 1.0}] * world_size + [{"CPU": 1.0}]
 
-                pg = ray_vllm.util.placement_group(
+                pg = ray.util.placement_group(
                     name=f"dp_rank_{rank}",
                     strategy="STRICT_PACK",
                     bundles=bundles,
@@ -448,9 +471,9 @@ class CoreEngineActorManager:
                             new_data_parallel_size: int) -> None:
         import copy
 
-        import ray_vllm
-        from ray_vllm.runtime_env import RuntimeEnv
-        from ray_vllm.util.scheduling_strategies import (
+        import ray
+        from ray.runtime_env import RuntimeEnv
+        from ray.util.scheduling_strategies import (
             PlacementGroupSchedulingStrategy)
 
         from vllm.v1.engine.core import DPEngineCoreActor
@@ -494,7 +517,7 @@ class CoreEngineActorManager:
                     cur_vllm_config.parallel_config.data_parallel_size_local +
                     new_local_engines)
 
-            actor = ray_vllm.remote(DPEngineCoreActor).options(
+            actor = ray.remote(DPEngineCoreActor).options(
                 scheduling_strategy=PlacementGroupSchedulingStrategy(
                     placement_group=pg,
                     placement_group_bundle_index=world_size,
@@ -515,7 +538,7 @@ class CoreEngineActorManager:
             self.created_placement_groups.append(pg)
             self.placement_group_is_local.append(local_client)
 
-        ray_vllm.get([
+        ray.get([
             actor.wait_for_init.remote()
             for actor in (self.local_engine_actors[-new_local_engines:]
                           if new_local_engines > 0 else []) +
@@ -541,7 +564,7 @@ class CoreEngineActorManager:
 
     def scale_down_elastic_ep(self, cur_data_parallel_size: int,
                               new_data_parallel_size: int) -> None:
-        import ray_vllm
+        import ray
         assert cur_data_parallel_size > new_data_parallel_size, (
             f"cur_data_parallel_size {cur_data_parallel_size} must be greater "
             f"than new_data_parallel_size {new_data_parallel_size} "
@@ -553,17 +576,17 @@ class CoreEngineActorManager:
                 self.local_engine_actors.pop()
             else:
                 self.remote_engine_actors.pop()
-            ray_vllm.util.remove_placement_group(pg)
+            ray.util.remove_placement_group(pg)
 
     def get_run_refs(self):
         return self.run_refs
 
     def close(self):
-        import ray_vllm
+        import ray
         for actor in self.local_engine_actors + self.remote_engine_actors:
-            ray_vllm.kill(actor)
+            ray.kill(actor)
         for pg in self.created_placement_groups:
-            ray_vllm.util.remove_placement_group(pg)
+            ray.util.remove_placement_group(pg)
 
 
 @contextlib.contextmanager
@@ -627,8 +650,8 @@ def launch_core_engines(
     else:
         coordinator = None
 
-    if parallel_config.data_parallel_backend == "ray_vllm":
-        logger.info("Starting ray_vllm-based data parallel backend")
+    if parallel_config.data_parallel_backend == "ray":
+        logger.info("Starting ray-based data parallel backend")
 
         engine_actor_manager = CoreEngineActorManager(
             vllm_config=vllm_config,
@@ -798,6 +821,8 @@ def wait_for_engine_startup(
                         parallel_config.data_parallel_master_ip,
                         "data_parallel_master_port":
                         parallel_config.data_parallel_master_port,
+                        "_data_parallel_master_port_list":
+                        parallel_config._data_parallel_master_port_list,
                         "data_parallel_size":
                         parallel_config.data_parallel_size,
                     }))

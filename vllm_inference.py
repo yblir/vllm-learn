@@ -2,9 +2,11 @@
 # @Time    : 2025/3/21 下午2:10
 # @Author  : yblir
 # @File    : vllm_inference.py
-# explain  : 
+# explain  :
 # =======================================================
 import os
+import warnings
+warnings.filterwarnings("ignore")
 
 # import sys
 # from pathlib2 import Path
@@ -27,7 +29,7 @@ model_path = '/mnt/e/checkpoints/Qwen2.5-3B-Instruct'
 
 params = {"repetition_penalty": 1.1,
           "temperature"       : 0.7,
-          'n'                 : 4,
+          'n'                 : 2,
           "top_p"             : 0.8,
           "top_k"             : 20, }
 
@@ -67,8 +69,8 @@ text3 = tokenizer.apply_chat_template(conversation=messages3, tokenize=False, ad
 # print(text)
 outputs = llm.generate(
         # 当tokenizer.apply_chat_templat中 tokenize为 False 时激活prompts
-        prompts=[text, text2, text3],
-
+        # prompts=[text, text2, text3],
+        prompts=[text, text2],
         # 当tokenizer.apply_chat_templat中 tokenize为 True 时激活prompt_token_ids,与prompts二选一
         # prompt_token_ids=[text,text2,text3],
         # 使用OCR技术抽取3000万底库图片文本，搭建ES检测系统，根据关键字检索出符合需求的文本对应的图片，经过图片分辨率，组合关键字等方案二次提取

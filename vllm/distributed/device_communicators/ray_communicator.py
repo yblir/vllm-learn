@@ -3,11 +3,11 @@
 import uuid
 from typing import Any, Optional
 
-import ray_vllm
+import ray
 import torch
-from ray_vllm.exceptions import RayChannelError
-from ray_vllm.experimental.channel.communicator import (Communicator,
-                                                        TorchTensorAllocator)
+from ray.exceptions import RayChannelError
+from ray.experimental.channel.communicator import (Communicator,
+                                                   TorchTensorAllocator)
 from torch.distributed import ReduceOp
 
 from vllm.distributed.device_communicators.base_device_communicator import (
@@ -34,7 +34,7 @@ class RayPPCommunicator(Communicator):
         world_size: int,
         comm_id: Any,
         rank: Optional[int],
-        actor_handles: list["ray_vllm.actor.ActorHandle"],
+        actor_handles: list["ray.actor.ActorHandle"],
         cuda_stream: Optional[torch.cuda.Stream],
         use_communication_streams: bool = False,
     ):
@@ -67,7 +67,7 @@ class RayPPCommunicator(Communicator):
 
         if rank is not None:
             # Rank is not None, this is Ray worker
-            assert ray_vllm.get_gpu_ids(), "RayPPCommunicator has no GPUs assigned"
+            assert ray.get_gpu_ids(), "RayPPCommunicator has no GPUs assigned"
 
             self._comm = get_pp_group().device_communicator
             assert self._comm is not None
@@ -94,7 +94,7 @@ class RayPPCommunicator(Communicator):
         if self._comm is None:
             return {}
 
-        current_actor = ray_vllm.get_runtime_context().current_actor
+        current_actor = ray.get_runtime_context().current_actor
         actor_id_str = current_actor._actor_id.hex()
 
         # Ray actor IDs are 32-character hex strings (128 bits)
@@ -124,10 +124,10 @@ class RayPPCommunicator(Communicator):
         # No additional initialization is needed.
         pass
 
-    def get_actor_handles(self) -> list["ray_vllm.actor.ActorHandle"]:
+    def get_actor_handles(self) -> list["ray.actor.ActorHandle"]:
         return self._actor_handles
 
-    def get_rank(self, actor: ray_vllm.actor.ActorHandle) -> int:
+    def get_rank(self, actor: ray.actor.ActorHandle) -> int:
         """
         Return the given actor's rank using device communicator collective ops.
         """
@@ -186,7 +186,7 @@ class RayPPCommunicator(Communicator):
         """
         Receive a torch.Tensor from a peer and synchronize the current stream.
 
-        After this call returns, the receive buffer is safe to read from from
+        After this call returns, the receive buffer is safe to read from
         any stream. An RayChannelError will be raised if an error occurred
         (e.g., remote actor died), and the buffer is not safe to read.
 

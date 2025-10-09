@@ -30,10 +30,10 @@ causes unexpected behavior.
 
 import os
 
-import ray_vllm
+import ray
 import torch
-from ray_vllm.util.placement_group import placement_group
-from ray_vllm.util.scheduling_strategies import PlacementGroupSchedulingStrategy
+from ray.util.placement_group import placement_group
+from ray.util.scheduling_strategies import PlacementGroupSchedulingStrategy
 from rlhf_utils import stateless_init_process_group
 from transformers import AutoModelForCausalLM
 
@@ -58,13 +58,13 @@ train_model.to("cuda:0")
 # Initialize Ray and set the visible devices. The vLLM engine will
 # be placed on GPUs 1 and 2.
 os.environ["CUDA_VISIBLE_DEVICES"] = "1,2"
-ray_vllm.init()
+ray.init()
 
 # Create a placement group that reserves GPU 1–2 for the vLLM inference engine.
 # Learn more about Ray placement groups:
 # https://docs.ray.io/en/latest/placement-groups.html
 pg_inference = placement_group([{"GPU": 1, "CPU": 0}] * 2)
-ray_vllm.get(pg_inference.ready())
+ray.get(pg_inference.ready())
 scheduling_inference = PlacementGroupSchedulingStrategy(
     placement_group=pg_inference,
     placement_group_capture_child_tasks=True,
@@ -73,7 +73,7 @@ scheduling_inference = PlacementGroupSchedulingStrategy(
 
 # Launch the vLLM inference engine. The `enforce_eager` flag reduces
 # start-up latency.
-llm = ray_vllm.remote(
+llm = ray.remote(
     num_cpus=0,
     num_gpus=0,
     scheduling_strategy=scheduling_inference,
@@ -82,7 +82,7 @@ llm = ray_vllm.remote(
     enforce_eager=True,
     worker_extension_cls="rlhf_utils.WorkerExtension",
     tensor_parallel_size=2,
-    distributed_executor_backend="ray_vllm",
+    distributed_executor_backend="ray",
 )
 
 # Generate text from the prompts.
@@ -95,7 +95,7 @@ prompts = [
 
 sampling_params = SamplingParams(temperature=0)
 
-outputs = ray_vllm.get(llm.generate.remote(prompts, sampling_params))
+outputs = ray.get(llm.generate.remote(prompts, sampling_params))
 
 print("-" * 50)
 for output in outputs:
@@ -116,7 +116,7 @@ handle = llm.collective_rpc.remote(
 model_update_group = stateless_init_process_group(
     master_address, master_port, 0, 3, torch.device("cuda:0")
 )
-ray_vllm.get(handle)
+ray.get(handle)
 
 # Simulate a training step by zeroing out all model weights.
 # In a real RLHF training loop the weights would be updated using the gradient
@@ -131,14 +131,14 @@ for name, p in train_model.named_parameters():
         "update_weight", args=(name, dtype_name, p.shape)
     )
     model_update_group.broadcast(p, src=0, stream=torch.cuda.current_stream())
-    ray_vllm.get(handle)
+    ray.get(handle)
 
 # Verify that the inference weights have been updated.
-assert all(ray_vllm.get(llm.collective_rpc.remote("check_weights_changed")))
+assert all(ray.get(llm.collective_rpc.remote("check_weights_changed")))
 
 # Generate text with the updated model. The output is expected to be nonsense
 # because the weights are zero.
-outputs_updated = ray_vllm.get(llm.generate.remote(prompts, sampling_params))
+outputs_updated = ray.get(llm.generate.remote(prompts, sampling_params))
 print("-" * 50)
 for output in outputs_updated:
     prompt = output.prompt

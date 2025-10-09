@@ -21,21 +21,21 @@ Learn more about Ray Data's LLM integration:
 https://docs.ray.io/en/latest/data/working-with-llms.html
 """
 
-import ray_vllm
+import ray
 from packaging.version import Version
-from ray_vllm.data.llm import build_llm_processor, vLLMEngineProcessorConfig
+from ray.data.llm import build_llm_processor, vLLMEngineProcessorConfig
 
-assert Version(ray_vllm.__version__) >= Version("2.44.1"), (
+assert Version(ray.__version__) >= Version("2.44.1"), (
     "Ray version must be at least 2.44.1"
 )
 
 # Uncomment to reduce clutter in stdout
-# ray_vllm.init(log_to_driver=False)
-# ray_vllm.data.DataContext.get_current().enable_progress_bars = False
+# ray.init(log_to_driver=False)
+# ray.data.DataContext.get_current().enable_progress_bars = False
 
 # Read one text file from S3. Ray Data supports reading multiple files
 # from cloud storage (such as JSONL, Parquet, CSV, binary format).
-ds = ray_vllm.data.read_text("s3://anonymous@air-example-data/prompts.txt")
+ds = ray.data.read_text("s3://anonymous@air-example-data/prompts.txt")
 print(ds.schema())
 
 size = ds.count()

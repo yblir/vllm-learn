@@ -14,7 +14,7 @@ from vllm.executor.ray_utils import ray
 from vllm.logger import init_logger
 
 if ray is not None:
-    from ray_vllm.util import metrics as ray_metrics
+    from ray.util import metrics as ray_metrics
 else:
     ray_metrics = None
 
@@ -113,9 +113,21 @@ class Metrics:
                 0.75, 1.0, 2.5, 5.0, 7.5, 10.0, 20.0, 40.0, 80.0, 160.0, 640.0,
                 2560.0
             ])
+        # Deprecated in 0.11 - Renamed as vllm:inter_token_latency_seconds
+        # TODO: in 0.12, only enable if show_hidden_metrics=True
         self.histogram_time_per_output_token = self._histogram_cls(
             name="vllm:time_per_output_token_seconds",
-            documentation="Histogram of time per output token in seconds.",
+            documentation=(
+                "Histogram of time per output token in seconds."
+                "DEPRECATED: Use vllm:inter_token_latency_seconds instead."),
+            labelnames=labelnames,
+            buckets=[
+                0.01, 0.025, 0.05, 0.075, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.75,
+                1.0, 2.5, 5.0, 7.5, 10.0, 20.0, 40.0, 80.0
+            ])
+        self.histogram_inter_token_latency = self._histogram_cls(
+            name="vllm:inter_token_latency_seconds",
+            documentation="Histogram of inter token latency in seconds.",
             labelnames=labelnames,
             buckets=[
                 0.01, 0.025, 0.05, 0.075, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.75,
@@ -205,7 +217,7 @@ class Metrics:
 
 
 class _RayGaugeWrapper:
-    """Wraps around ray_vllm.util.metrics.Gauge to provide same API as
+    """Wraps around ray.util.metrics.Gauge to provide same API as
     prometheus_client.Gauge"""
 
     def __init__(self,
@@ -227,12 +239,12 @@ class _RayGaugeWrapper:
         return self._gauge.set(value)
 
     def set_to_current_time(self):
-        # ray_vllm metrics doesn't have set_to_current time, https://docs.ray.io/en/latest/_modules/ray/util/metrics.html
+        # ray metrics doesn't have set_to_current time, https://docs.ray.io/en/latest/_modules/ray/util/metrics.html
         return self._gauge.set(time.time())
 
 
 class _RayCounterWrapper:
-    """Wraps around ray_vllm.util.metrics.Counter to provide same API as
+    """Wraps around ray.util.metrics.Counter to provide same API as
     prometheus_client.Counter"""
 
     def __init__(self,
@@ -255,7 +267,7 @@ class _RayCounterWrapper:
 
 
 class _RayHistogramWrapper:
-    """Wraps around ray_vllm.util.metrics.Histogram to provide same API as
+    """Wraps around ray.util.metrics.Histogram to provide same API as
     prometheus_client.Histogram"""
 
     def __init__(self,
@@ -491,7 +503,9 @@ class PrometheusStatLogger(StatLoggerBase):
         self._log_histogram(self.metrics.histogram_time_to_first_token,
                             stats.time_to_first_tokens_iter)
         self._log_histogram(self.metrics.histogram_time_per_output_token,
-                            stats.time_per_output_tokens_iter)
+                            stats.inter_token_latencies_iter)
+        self._log_histogram(self.metrics.histogram_inter_token_latency,
+                            stats.inter_token_latencies_iter)
 
         # Request level data
         # Latency

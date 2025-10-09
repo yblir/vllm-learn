@@ -7,8 +7,8 @@ from vllm.v1.metrics.loggers import PrometheusStatLogger
 from vllm.v1.spec_decode.metrics import SpecDecodingProm
 
 try:
-    from ray_vllm.util import metrics as ray_metrics
-    from ray_vllm.util.metrics import Metric
+    from ray.util import metrics as ray_metrics
+    from ray.util.metrics import Metric
 except ImportError:
     ray_metrics = None
 
@@ -44,7 +44,7 @@ class RayPrometheusMetric:
 
 
 class RayGaugeWrapper(RayPrometheusMetric):
-    """Wraps around ray_vllm.util.metrics.Gauge to provide same API as
+    """Wraps around ray.util.metrics.Gauge to provide same API as
     prometheus_client.Gauge"""
 
     def __init__(self,
@@ -66,12 +66,12 @@ class RayGaugeWrapper(RayPrometheusMetric):
         return self.metric.set(value)
 
     def set_to_current_time(self):
-        # ray_vllm metrics doesn't have set_to_current time, https://docs.ray.io/en/latest/_modules/ray/util/metrics.html
+        # ray metrics doesn't have set_to_current time, https://docs.ray.io/en/latest/_modules/ray/util/metrics.html
         return self.metric.set(time.time())
 
 
 class RayCounterWrapper(RayPrometheusMetric):
-    """Wraps around ray_vllm.util.metrics.Counter to provide same API as
+    """Wraps around ray.util.metrics.Counter to provide same API as
     prometheus_client.Counter"""
 
     def __init__(self,
@@ -90,7 +90,7 @@ class RayCounterWrapper(RayPrometheusMetric):
 
 
 class RayHistogramWrapper(RayPrometheusMetric):
-    """Wraps around ray_vllm.util.metrics.Histogram to provide same API as
+    """Wraps around ray.util.metrics.Histogram to provide same API as
     prometheus_client.Histogram"""
 
     def __init__(self,
