@@ -10,7 +10,7 @@ from vllm.v1.core.kv_cache_utils import BlockHash, KVCacheBlock
 from vllm.v1.kv_cache_interface import (ChunkedLocalAttentionSpec,
                                         CrossAttentionSpec, FullAttentionSpec,
                                         KVCacheSpec, MambaSpec,
-                                        SlidingWindowSpec)
+                                        MLAAttentionSpec, SlidingWindowSpec)
 from vllm.v1.request import Request
 
 

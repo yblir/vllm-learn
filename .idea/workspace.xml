@@ -4,340 +4,162 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2d8e4629-6069-42d6-b2eb-4f2e3742c1ba" name="更改" comment="更新到0.10.1_删减无用信息">
-      <change afterPath="$PROJECT_DIR$/docs/assets/design/hybrid_kv_cache_manager/basic_grouping_example.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/assets/design/hybrid_kv_cache_manager/full_attn.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/assets/design/hybrid_kv_cache_manager/memory_layout.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/assets/design/hybrid_kv_cache_manager/overview.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/assets/design/hybrid_kv_cache_manager/sw_attn.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/contributing/model/transcription.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/design/hybrid_kv_cache_manager.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/design/io_processor_plugins.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/features/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/mkdocs/javascript/mathjax.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/offline_inference/dolphin.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/offline_inference/logits_processor/custom.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/offline_inference/logits_processor/custom_req.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/offline_inference/logits_processor/custom_req_init.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/offline_inference/prithvi_geospatial_mae_io_processor.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/online_serving/prithvi_geospatial_mae.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/_C.abi3.so" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/_bc_linter.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/attention/layers/cross_attention.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/attention/layers/encoder_only_attention.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/attention/ops/common.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/benchmarks/lib/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/benchmarks/lib/endpoint_request_func.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/benchmarks/lib/ready_checker.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/benchmarks/lib/utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/config/kv_events.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/config/kv_transfer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/config/load.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/config/lora.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/distributed/device_communicators/all_reduce_utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/distributed/device_communicators/symm_mem.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/deepseekv31_tool_parser.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/openai_tool_parser.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/seed_oss_tool_parser.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/entrypoints/renderer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/logprobs.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/lora/layers/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/lora/layers/base.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/lora/layers/base_linear.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/lora/layers/column_parallel_linear.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/lora/layers/logits_processor.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/lora/layers/qkv_x_parallel_linear.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/lora/layers/replicated_linear.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/lora/layers/row_parallel_linear.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/lora/layers/utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/lora/layers/vocal_parallel_embedding.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/attention_layer_base.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fla/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fla/ops/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fla/ops/chunk.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fla/ops/chunk_delta_h.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fla/ops/chunk_o.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fla/ops/chunk_scaled_dot_kkt.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fla/ops/cumsum.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fla/ops/fused_recurrent.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fla/ops/index.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fla/ops/l2norm.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fla/ops/layernorm_guard.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fla/ops/op.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fla/ops/solve_tril.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fla/ops/utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fla/ops/wy_fast.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=128,N=352,device_name=NVIDIA_H100_80GB_HBM3,dtype=fp8_w8a8.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=128,N=384,device_name=NVIDIA_B200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=128,N=384,device_name=NVIDIA_GB200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=128,N=704,device_name=NVIDIA_B200,dtype=fp8_w8a8.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=128,N=704,device_name=NVIDIA_H100_80GB_HBM3,dtype=fp8_w8a8.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=128,N=768,device_name=NVIDIA_GB200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=160,N=640,device_name=NVIDIA_B200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=160,N=640,device_name=NVIDIA_GB200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=160,N=640,device_name=NVIDIA_H100,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=20,N=2560,device_name=NVIDIA_B200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=20,N=2560,device_name=NVIDIA_GB200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=20,N=2560,device_name=NVIDIA_H100,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=256,N=512,device_name=NVIDIA_H100_80GB_HBM3.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=384,N=128,device_name=NVIDIA_B200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=384,N=128,device_name=NVIDIA_GB200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=384,N=128,device_name=NVIDIA_H200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=384,N=256,device_name=NVIDIA_B200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=384,N=256,device_name=NVIDIA_GB200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=40,N=2560,device_name=NVIDIA_B200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=40,N=2560,device_name=NVIDIA_GB200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=40,N=2560,device_name=NVIDIA_H100,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=512,N=128,device_name=NVIDIA_B200.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=512,N=128,device_name=NVIDIA_H100_80GB_HBM3.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=512,N=128,device_name=NVIDIA_H20-3e.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=512,N=128,device_name=NVIDIA_H200.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=512,N=256,device_name=NVIDIA_B200.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=512,N=256,device_name=NVIDIA_H100_80GB_HBM3.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=512,N=256,device_name=NVIDIA_H20-3e.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=512,N=256,device_name=NVIDIA_H200.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=512,N=512,device_name=NVIDIA_B200.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=512,N=512,device_name=NVIDIA_H100_80GB_HBM3.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=512,N=512,device_name=NVIDIA_H20-3e.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=512,N=512,device_name=NVIDIA_H200.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=512,N=64,device_name=NVIDIA_B200.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=512,N=64,device_name=NVIDIA_H20-3e.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=512,N=64,device_name=NVIDIA_H200.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=8,N=2048,device_name=NVIDIA_H200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/trtllm_moe.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/linear_attn.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/short_conv.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/mla.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/schemes/compressed_tensors_w4a8_fp8.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/transform/linear.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/transform/module.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/transform/schemes/linear_qutlass_nvfp4.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/transform/utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/kernels/mixed_precision/cutlass.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/kernels/scaled_mm/cpu.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/petit.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=12288,K=7168,device_name=NVIDIA_H100_80GB_HBM3,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=12288,K=7168,device_name=NVIDIA_H200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=2112,K=7168,device_name=NVIDIA_H100_80GB_HBM3,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=2112,K=7168,device_name=NVIDIA_H200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=24576,K=1536,device_name=NVIDIA_H100_80GB_HBM3,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=24576,K=1536,device_name=NVIDIA_H200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=4096,K=7168,device_name=NVIDIA_H100_80GB_HBM3,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=4096,K=7168,device_name=NVIDIA_H200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/mxfp8_utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/petit_utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/rotary_embedding/ernie45_vl_rope.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/shared_fused_moe/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/layers/shared_fused_moe/shared_fused_moe.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/models/apertus.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/models/deepseek_eagle.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/models/donut.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/models/ernie45_vl.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/models/ernie45_vl_moe.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/models/ernie_mtp.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/models/keye_vl1_5.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/models/lfm2.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/models/midashenglm.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/models/motif.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/models/nano_nemotron_vl.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/models/ovis2_5.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/models/qwen3_next.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/models/qwen3_next_mtp.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/models/rvl.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/models/seed_oss.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/models/siglip2navit.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/models/swin.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/model_executor/models/terratorch.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/plugins/io_processors/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/plugins/io_processors/interface.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/transformers_utils/chat_templates/template_minicpmv45.jinja" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/transformers_utils/config_parser_base.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/transformers_utils/configs/midashenglm.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/transformers_utils/configs/qwen3_next.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/transformers_utils/processors/ovis2_5.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/transformers_utils/runai_utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/gdn_attn.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/mamba_attn.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/mla/flashattn_mla.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/mla/flashinfer_mla.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/short_conv_attn.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/v1/structured_output/backend_lm_format_enforcer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/vllm_flash_attn/_vllm_fa2_C.abi3.so" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vllm/vllm_flash_attn/_vllm_fa3_C.abi3.so" afterDir="false" />
+    <list default="true" id="2d8e4629-6069-42d6-b2eb-4f2e3742c1ba" name="更改" comment="更新到0.10.2删减无用信息">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/.nav.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docs/.nav.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/api/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/api/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/community/meetups.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/community/meetups.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/configuration/conserving_memory.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/configuration/conserving_memory.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/configuration/optimization.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/configuration/optimization.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/configuration/tpu.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/configuration/tpu.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/contributing/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/contributing/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/contributing/benchmarks.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/contributing/benchmarks.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/contributing/ci/update_pytorch_version.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/contributing/ci/update_pytorch_version.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/contributing/incremental_build.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/contributing/incremental_build.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/contributing/model/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/contributing/model/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/contributing/model/basic.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/contributing/model/basic.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/contributing/model/multimodal.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/contributing/model/multimodal.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/contributing/profiling.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/contributing/profiling.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/deployment/frameworks/anything-llm.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/deployment/frameworks/anything-llm.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/deployment/frameworks/autogen.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/deployment/frameworks/autogen.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/deployment/frameworks/chatbox.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/deployment/frameworks/chatbox.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/deployment/frameworks/dify.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/deployment/frameworks/dify.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/deployment/frameworks/dstack.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/deployment/frameworks/dstack.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/deployment/frameworks/haystack.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/deployment/frameworks/haystack.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/deployment/frameworks/litellm.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/deployment/frameworks/litellm.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/deployment/frameworks/lobe-chat.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/deployment/frameworks/lobe-chat.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/deployment/frameworks/lws.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/deployment/frameworks/lws.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/deployment/frameworks/retrieval_augmented_generation.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/deployment/frameworks/retrieval_augmented_generation.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/deployment/integrations/llamastack.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/deployment/integrations/llamastack.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/deployment/k8s.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/deployment/k8s.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/design/fused_moe_modular_kernel.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/design/fused_moe_modular_kernel.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/design/metrics.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/design/metrics.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/deployment/frameworks/streamlit.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/deployment/frameworks/streamlit.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/design/huggingface_integration.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/design/huggingface_integration.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/design/multiprocessing.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/design/multiprocessing.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/design/paged_attention.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/design/paged_attention.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/design/plugin_system.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/design/plugin_system.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/examples/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/examples/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/features/compatibility_matrix.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/features/lora.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/features/lora.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/features/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/features/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/features/disagg_prefill.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/features/disagg_prefill.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/features/multimodal_inputs.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/features/multimodal_inputs.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/features/prompt_embeds.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/features/prompt_embeds.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/features/quantization/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/features/quantization/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/features/quantization/bitblas.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/features/quantization/bitblas.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/features/quantization/fp8.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/features/quantization/fp8.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/features/quantization/inc.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/features/quantization/inc.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/features/quantization/int4.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/features/quantization/int4.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/features/quantization/int8.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/features/quantization/int8.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/features/quantization/quark.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/features/quantization/quark.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/features/quantization/supported_hardware.md" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/features/reasoning_outputs.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/features/reasoning_outputs.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/features/structured_outputs.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/features/structured_outputs.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/features/tool_calling.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/features/tool_calling.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/getting_started/installation/.nav.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docs/getting_started/installation/.nav.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/getting_started/installation/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/getting_started/installation/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/getting_started/installation/aws_neuron.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/getting_started/installation/aws_neuron.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/getting_started/installation/cpu.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/getting_started/installation/cpu.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/getting_started/installation/aws_neuron.md" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/getting_started/installation/cpu/apple.inc.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/getting_started/installation/cpu/apple.inc.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/getting_started/installation/cpu/arm.inc.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/getting_started/installation/cpu/arm.inc.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/getting_started/installation/cpu/build.inc.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/getting_started/installation/cpu/build.inc.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/getting_started/installation/cpu/s390x.inc.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/getting_started/installation/cpu/s390x.inc.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/getting_started/installation/cpu/x86.inc.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/getting_started/installation/cpu/x86.inc.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/getting_started/installation/gpu/cuda.inc.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/getting_started/installation/gpu/cuda.inc.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/getting_started/installation/gpu/rocm.inc.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/getting_started/installation/gpu/rocm.inc.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/getting_started/installation/gpu/xpu.inc.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/getting_started/installation/gpu/xpu.inc.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/getting_started/installation/intel_gaudi.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/getting_started/quickstart.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/getting_started/quickstart.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/getting_started/installation/python_env_setup.inc.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/getting_started/installation/python_env_setup.inc.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/mkdocs/hooks/generate_argparse.py" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mkdocs/hooks/generate_argparse.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/mkdocs/hooks/generate_examples.py" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mkdocs/hooks/generate_examples.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/models/generative_models.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/models/generative_models.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/models/pooling_models.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/models/pooling_models.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/models/supported_models.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/models/supported_models.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/serving/data_parallel_deployment.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/serving/data_parallel_deployment.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/serving/expert_parallel_deployment.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/serving/expert_parallel_deployment.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/serving/parallelism_scaling.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/serving/parallelism_scaling.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/usage/troubleshooting.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/usage/troubleshooting.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/usage/usage_stats.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/usage/usage_stats.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/serving/openai_compatible_server.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/serving/openai_compatible_server.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/usage/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/usage/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/usage/security.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/usage/security.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/usage/v1_guide.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/usage/v1_guide.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/offline_inference/audio_language.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/offline_inference/audio_language.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/offline_inference/batch_llm_inference.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/offline_inference/batch_llm_inference.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/offline_inference/chat_with_tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/offline_inference/chat_with_tools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/offline_inference/basic/chat.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/offline_inference/basic/chat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/offline_inference/convert_model_to_seq_cls.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/examples/offline_inference/data_parallel.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/offline_inference/data_parallel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/offline_inference/disaggregated_prefill.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/offline_inference/disaggregated_prefill.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/offline_inference/encoder_decoder.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/offline_inference/encoder_decoder.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/offline_inference/dolphin.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/offline_inference/embed_jina_embeddings_v3.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/offline_inference/embed_matryoshka_fy.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/offline_inference/encoder_decoder.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/examples/offline_inference/encoder_decoder_multimodal.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/offline_inference/encoder_decoder_multimodal.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/offline_inference/logits_processor.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/offline_inference/multilora_inference.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/offline_inference/multilora_inference.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/offline_inference/neuron.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/offline_inference/neuron_eagle.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/offline_inference/neuron_int8_quantization.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/offline_inference/neuron_multimodal.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/offline_inference/neuron_speculation.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/offline_inference/prithvi_geospatial_mae.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/offline_inference/prithvi_geospatial_mae.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/offline_inference/rlhf.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/offline_inference/rlhf.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/offline_inference/rlhf_colocate.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/offline_inference/rlhf_colocate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/offline_inference/rlhf_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/offline_inference/rlhf_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/offline_inference/logits_processor/custom.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/offline_inference/logits_processor/custom.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/offline_inference/profiling.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/offline_inference/qwen3_reranker.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/offline_inference/qwen_1m.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/offline_inference/qwen_1m.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/examples/offline_inference/spec_decode.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/offline_inference/spec_decode.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/examples/offline_inference/structured_outputs.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/offline_inference/structured_outputs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/offline_inference/tpu.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/offline_inference/tpu.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/examples/offline_inference/vision_language.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/offline_inference/vision_language.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/examples/offline_inference/vision_language_multi_image.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/offline_inference/vision_language_multi_image.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/online_serving/disaggregated_prefill.sh" beforeDir="false" afterPath="$PROJECT_DIR$/examples/online_serving/disaggregated_prefill.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/online_serving/kv_events_subscriber.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/online_serving/kv_events_subscriber.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/online_serving/multi-node-serving.sh" beforeDir="false" afterPath="$PROJECT_DIR$/examples/online_serving/multi-node-serving.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/online_serving/openai_chat_completion_client_for_multimodal.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/online_serving/openai_chat_completion_client_for_multimodal.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/online_serving/prometheus_grafana/grafana.json" beforeDir="false" afterPath="$PROJECT_DIR$/examples/online_serving/prometheus_grafana/grafana.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/online_serving/ray_serve_deepseek.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/online_serving/ray_serve_deepseek.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/online_serving/cohere_rerank_client.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/online_serving/jinaai_rerank_client.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/online_serving/openai_chat_completion_client_with_tools_required.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/online_serving/openai_chat_completion_client_with_tools_required.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/online_serving/openai_chat_embedding_client_for_multimodal.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/online_serving/openai_classification_client.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/online_serving/openai_embedding_client.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/online_serving/openai_embedding_long_text/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/examples/online_serving/openai_embedding_long_text/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/online_serving/openai_embedding_long_text/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/online_serving/openai_embedding_long_text/client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/online_serving/openai_embedding_long_text/service.sh" beforeDir="false" afterPath="$PROJECT_DIR$/examples/online_serving/openai_embedding_long_text/service.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/online_serving/openai_embedding_matryoshka_fy.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/online_serving/openai_pooling_client.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/online_serving/structured_outputs/structured_outputs.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/online_serving/structured_outputs/structured_outputs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/others/tensorize_vllm_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/others/tensorize_vllm_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/_custom_ops.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/_custom_ops.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/_ipex_ops.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/_ipex_ops.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/assets/audio.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/assets/audio.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/assets/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/assets/base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/assets/image.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/assets/image.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/adapter_commons/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/adapter_commons/layers.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/adapter_commons/models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/adapter_commons/request.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/adapter_commons/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/adapter_commons/worker_manager.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/assets/video.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/assets/video.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/attention/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/attention/backends/abstract.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/backends/abstract.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/attention/backends/differential_flash_attn.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/backends/differential_flash_attn.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/attention/backends/dual_chunk_flash_attn.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/backends/dual_chunk_flash_attn.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/attention/backends/flash_attn.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/backends/flash_attn.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/attention/backends/flashinfer.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/attention/backends/flashmla.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/backends/flashmla.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/attention/backends/mla/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/backends/mla/common.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/attention/backends/rocm_flash_attn.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/backends/rocm_flash_attn.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/attention/backends/differential_flash_attn.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/attention/backends/dual_chunk_flash_attn.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/attention/backends/flash_attn.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/attention/backends/flashmla.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/attention/backends/mla/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/attention/backends/mla/common.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/attention/backends/placeholder_attn.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/attention/backends/rocm_aiter_mla.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/attention/backends/rocm_flash_attn.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/attention/backends/triton_mla.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/attention/backends/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/backends/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/attention/backends/xformers.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/backends/xformers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/attention/backends/xformers.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/attention/layer.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/layer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/attention/layers/chunked_local_attention.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/layers/chunked_local_attention.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/attention/ops/chunked_prefill_paged_decode.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/ops/chunked_prefill_paged_decode.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/attention/layers/cross_attention.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/layers/cross_attention.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/attention/ops/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/ops/common.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/attention/ops/flashmla.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/ops/flashmla.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/attention/ops/nki_flash_attn.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/attention/ops/paged_attn.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/ops/paged_attn.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/attention/ops/prefix_prefill.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/ops/prefix_prefill.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/attention/ops/rocm_aiter_paged_attn.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/ops/rocm_aiter_paged_attn.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/attention/ops/triton_decode_attention.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/ops/triton_decode_attention.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/attention/ops/triton_unified_attention.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/ops/triton_unified_attention.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/attention/selector.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/selector.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/attention/utils/fa_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/attention/utils/fa_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/beam_search.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/beam_search.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/benchmarks/datasets.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/benchmarks/datasets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/benchmarks/lib/endpoint_request_func.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/benchmarks/lib/endpoint_request_func.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/benchmarks/lib/ready_checker.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/benchmarks/lib/ready_checker.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/benchmarks/serve.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/benchmarks/serve.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/benchmarks/throughput.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/benchmarks/throughput.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/collect_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/collect_env.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/compilation/activation_quant_fusion.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/compilation/activation_quant_fusion.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/compilation/backends.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/compilation/backends.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/compilation/base_static_graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/compilation/base_static_graph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/compilation/collective_fusion.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/compilation/collective_fusion.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/compilation/compiler_interface.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/compilation/compiler_interface.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/compilation/cuda_graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/compilation/cuda_graph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/compilation/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/compilation/decorators.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/compilation/fix_functionalization.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/compilation/fix_functionalization.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/compilation/fusion.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/compilation/fusion.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/compilation/fusion_attn.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/compilation/fusion_attn.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/compilation/inductor_pass.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/compilation/inductor_pass.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/compilation/monitor.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/compilation/monitor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/compilation/multi_output_match.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/compilation/noop_elimination.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/compilation/noop_elimination.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/compilation/pass_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/compilation/pass_manager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/compilation/sequence_parallelism.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/compilation/sequence_parallelism.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/compilation/vllm_inductor_pass.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/compilation/vllm_inductor_pass.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/compilation/wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/compilation/wrapper.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/config/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/config/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/config/cache.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/config/cache.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/config/compilation.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/config/compilation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/config/parallel.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/config/parallel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/core/block/block_table.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/core/block/block_table.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/core/block/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/core/block/common.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/core/block/cpu_gpu_block_allocator.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/core/block/cpu_gpu_block_allocator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/core/block/interfaces.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/core/block/interfaces.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/core/block/naive_block.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/core/block/naive_block.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/core/block/prefix_caching_block.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/core/block/prefix_caching_block.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/core/block/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/core/block/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/core/block_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/core/block_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/core/evictor.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/core/evictor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/core/scheduler.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/core/scheduler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/config/scheduler.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/config/scheduler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/config/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/config/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/connections.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/connections.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/core/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/core/block/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/core/block/block_table.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/core/block/common.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/core/block/cpu_gpu_block_allocator.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/core/block/interfaces.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/core/block/naive_block.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/core/block/prefix_caching_block.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/core/block/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/core/block_manager.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/core/block_manager_v1_弃用.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/core/evictor.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/core/interfaces.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/core/placeholder_block_space_manager.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/core/scheduler.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/device_allocator/cumem.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/device_allocator/cumem.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/distributed/device_communicators/all2all.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/device_communicators/all2all.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/distributed/device_communicators/all_reduce_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/device_communicators/all_reduce_utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/distributed/device_communicators/base_device_communicator.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/device_communicators/base_device_communicator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/distributed/device_communicators/cuda_communicator.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/device_communicators/cuda_communicator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/distributed/device_communicators/custom_all_reduce.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/device_communicators/custom_all_reduce.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/distributed/device_communicators/custom_all_reduce_utils.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/distributed/device_communicators/neuron_communicator.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/distributed/device_communicators/pynccl.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/device_communicators/pynccl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/distributed/device_communicators/quick_all_reduce.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/device_communicators/quick_all_reduce.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/distributed/device_communicators/pynccl_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/device_communicators/pynccl_wrapper.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/distributed/device_communicators/ray_communicator.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/device_communicators/ray_communicator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/distributed/device_communicators/tpu_communicator.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/device_communicators/tpu_communicator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/distributed/device_communicators/shm_broadcast.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/device_communicators/shm_broadcast.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/distributed/device_communicators/xpu_communicator.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/device_communicators/xpu_communicator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/distributed/eplb/eplb_state.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/eplb/eplb_state.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/distributed/kv_events.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/kv_events.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/distributed/kv_transfer/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/kv_transfer/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/distributed/kv_transfer/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/kv_transfer/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/distributed/eplb/rebalance_algo.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/eplb/rebalance_algo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/distributed/kv_transfer/kv_connector/factory.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/kv_transfer/kv_connector/factory.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/distributed/kv_transfer/kv_connector/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/kv_transfer/kv_connector/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/distributed/kv_transfer/kv_connector/v1/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/kv_transfer/kv_connector/v1/base.py" afterDir="false" />
@@ -348,20 +170,28 @@
       <change beforePath="$PROJECT_DIR$/vllm/distributed/kv_transfer/kv_connector/v1/p2p/p2p_nccl_engine.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/kv_transfer/kv_connector/v1/p2p/p2p_nccl_engine.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/distributed/kv_transfer/kv_connector/v1/p2p/tensor_memory_pool.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/kv_transfer/kv_connector/v1/p2p/tensor_memory_pool.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/distributed/kv_transfer/kv_connector/v1/shared_storage_connector.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/kv_transfer/kv_connector/v1/shared_storage_connector.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/distributed/kv_transfer/kv_pipe/mooncake_pipe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/kv_transfer/kv_pipe/mooncake_pipe.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/distributed/kv_transfer/kv_pipe/pynccl_pipe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/kv_transfer/kv_pipe/pynccl_pipe.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/distributed/kv_transfer/kv_transfer_state.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/kv_transfer/kv_transfer_state.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/distributed/parallel_state.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/distributed/parallel_state.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/engine/arg_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/engine/arg_utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/engine/async_llm_engine.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/engine/async_llm_engine.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/engine/async_timeout.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/engine/llm_engine.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/engine/llm_engine.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/engine/metrics.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/engine/metrics.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/engine/metrics_types.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/engine/metrics_types.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/engine/multiprocessing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/engine/multiprocessing/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/engine/multiprocessing/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/engine/multiprocessing/client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/engine/multiprocessing/engine.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/engine/multiprocessing/engine.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/engine/multiprocessing/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/engine/multiprocessing/client.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/engine/multiprocessing/engine.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/engine/output_processor/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/engine/output_processor/interfaces.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/engine/output_processor/single_step.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/engine/output_processor/stop_checker.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/engine/output_processor/util.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/engine/protocol.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/engine/protocol.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/entrypoints/chat_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/chat_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/cli/benchmark/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/cli/benchmark/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/cli/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/cli/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/cli/openai.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/cli/openai.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/cli/run_batch.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/cli/run_batch.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/cli/serve.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/cli/serve.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/entrypoints/context.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/context.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/entrypoints/harmony_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/harmony_utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/entrypoints/launcher.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/launcher.py" afterDir="false" />
@@ -379,53 +209,49 @@
       <change beforePath="$PROJECT_DIR$/vllm/entrypoints/openai/serving_responses.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/serving_responses.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/entrypoints/openai/serving_score.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/serving_score.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/entrypoints/openai/serving_tokenization.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/serving_tokenization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/openai/serving_transcription.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/serving_transcription.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/openai/speech_to_text.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/speech_to_text.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/deepseekv3_tool_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/deepseekv3_tool_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/granite_20b_fc_tool_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/granite_20b_fc_tool_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/granite_tool_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/granite_tool_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/deepseekv31_tool_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/deepseekv31_tool_parser.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/hermes_tool_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/hermes_tool_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/internlm2_tool_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/internlm2_tool_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/jamba_tool_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/jamba_tool_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/llama4_pythonic_tool_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/llama4_pythonic_tool_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/llama_tool_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/llama_tool_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/minimax_tool_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/minimax_tool_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/mistral_tool_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/mistral_tool_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/phi4mini_tool_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/phi4mini_tool_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/pythonic_tool_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/pythonic_tool_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/qwen3coder_tool_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/qwen3coder_tool_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/xlam_tool_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/xlam_tool_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/tool.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/tool.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/openai_tool_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/openai/tool_parsers/openai_tool_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/entrypoints/renderer.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/renderer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/entrypoints/tool_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/tool_server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/entrypoints/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/entrypoints/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/env_override.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/env_override.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/envs.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/envs.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/executor/executor_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/executor/executor_base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/executor/mp_distributed_executor.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/executor/mp_distributed_executor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/executor/msgspec_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/executor/msgspec_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/executor/mp_distributed_executor.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/executor/multiproc_worker_utils.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/executor/ray_distributed_executor.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/executor/ray_distributed_executor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/executor/ray_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/executor/ray_utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/executor/uniproc_executor.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/executor/uniproc_executor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/forward_context.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/forward_context.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/inputs/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/inputs/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/inputs/data.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/inputs/data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/inputs/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/inputs/preprocess.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/inputs/registry.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/inputs/registry.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/logger.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/logging_utils/formatter.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/logging_utils/formatter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/lora/fully_sharded_layers.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/lora/layers.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/inputs/registry.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/logging_utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/logging_utils/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/logits_process.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/logits_process.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/lora/layers/base_linear.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/lora/layers/base_linear.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/lora/layers/column_parallel_linear.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/lora/layers/column_parallel_linear.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/lora/layers/logits_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/lora/layers/logits_processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/lora/layers/replicated_linear.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/lora/layers/replicated_linear.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/lora/layers/row_parallel_linear.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/lora/layers/row_parallel_linear.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/lora/layers/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/lora/layers/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/lora/layers/vocal_parallel_embedding.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/lora/layers/vocal_parallel_embedding.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/lora/lora.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/lora/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/lora/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/lora/peft_helper.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/lora/peft_helper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/lora/punica_wrapper/punica_xpu.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/lora/punica_wrapper/punica_xpu.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/lora/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/lora/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/lora/ops/triton_ops/lora_expand_op.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/lora/ops/triton_ops/lora_expand_op.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/lora/ops/triton_ops/lora_kernel_metadata.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/lora/ops/triton_ops/lora_kernel_metadata.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/lora/ops/triton_ops/lora_shrink_op.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/lora/ops/triton_ops/lora_shrink_op.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/lora/ops/xla_ops/lora_ops.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/lora/ops/xla_ops/lora_ops.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/lora/punica_wrapper/punica_gpu.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/lora/punica_wrapper/punica_gpu.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/lora/punica_wrapper/punica_tpu.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/lora/punica_wrapper/punica_tpu.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/lora/request.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/lora/request.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/lora/worker_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/lora/worker_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/custom_op.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/custom_op.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/activation.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/activation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fla/ops/fused_recurrent.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fla/ops/fused_recurrent.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/batched_deep_gemm_moe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/batched_deep_gemm_moe.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/batched_triton_or_deep_gemm_moe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/batched_triton_or_deep_gemm_moe.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=128,N=768,device_name=NVIDIA_B200,dtype=fp8_w8a8,block_shape=[128,128].json" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=128,N=768,device_name=NVIDIA_B200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=20,N=2560,device_name=NVIDIA_H20-3e,dtype=fp8_w8a8,block_shape=[128,128].json" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/configs/E=20,N=2560,device_name=NVIDIA_H20-3e,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/cpu_fused_moe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/cpu_fused_moe.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/cutlass_moe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/cutlass_moe.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/deep_gemm_moe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/deep_gemm_moe.py" afterDir="false" />
@@ -434,103 +260,95 @@
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/flashinfer_cutlass_moe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/flashinfer_cutlass_moe.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/flashinfer_cutlass_prepare_finalize.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/flashinfer_cutlass_prepare_finalize.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/fused_batched_moe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/fused_batched_moe.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/fused_marlin_moe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/fused_marlin_moe.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/fused_moe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/fused_moe.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/gpt_oss_triton_kernels_moe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/gpt_oss_triton_kernels_moe.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/layer.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/layer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/modular_kernel.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/modular_kernel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/moe_pallas.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/moe_pallas.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/moe_permute_unpermute.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/moe_permute_unpermute.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/pplx_prepare_finalize.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/pplx_prepare_finalize.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/prepare_finalize.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/prepare_finalize.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/rocm_aiter_fused_moe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/rocm_aiter_fused_moe.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/routing_simulator.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/routing_simulator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/triton_deep_gemm_moe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/triton_deep_gemm_moe.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/trtllm_moe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/trtllm_moe.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/fused_moe/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/layernorm.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/layernorm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/lightning_attn.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/lightning_attn.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/linear.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/linear.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/logits_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/logits_processor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/abstract.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/abstract.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/linear_attn.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/linear_attn.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/mamba2_metadata.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/mamba_mixer.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/mamba_mixer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/mamba_mixer2.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/mamba_mixer2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/mamba_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/mamba_utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/ops/causal_conv1d.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/ops/causal_conv1d.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/ops/ssd_bmm.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/ops/ssd_bmm.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/ops/ssd_chunk_scan.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/ops/ssd_chunk_scan.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/ops/ssd_chunk_state.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/ops/ssd_chunk_state.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/ops/ssd_combined.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/ops/ssd_combined.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/ops/ssd_state_passing.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/ops/ssd_state_passing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/short_conv.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/mamba/short_conv.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/mla.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/mla.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/pooler.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/pooler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/auto_round.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/auto_round.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/awq_marlin.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/awq_marlin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/awq_triton.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/awq_triton.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/base_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/base_config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/bitblas.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/bitblas.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/bitsandbytes.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/bitsandbytes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/compressed_tensors.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/compressed_tensors.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/compressed_tensors_moe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/compressed_tensors_moe.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/schemes/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/schemes/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/schemes/compressed_tensors_w4a4_nvfp4.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/schemes/compressed_tensors_w4a4_nvfp4.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/schemes/compressed_tensors_w8a8_fp8.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/schemes/compressed_tensors_w8a8_fp8.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/transform/linear.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/transform/linear.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/transform/module.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/transform/module.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/transform/schemes/linear_qutlass_nvfp4.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/compressed_tensors/transform/schemes/linear_qutlass_nvfp4.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/deepgemm.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/experts_int8.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/experts_int8.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/fp8.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/fp8.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/gguf.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/gguf.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/gptq.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/gptq.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/gptq_bitblas.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/gptq_bitblas.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/gptq_marlin.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/gptq_marlin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/input_quant_fp8.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/input_quant_fp8.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/ipex_quant.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/ipex_quant.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/kernels/mixed_precision/MPLinearKernel.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/kernels/mixed_precision/MPLinearKernel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/kernels/mixed_precision/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/kernels/mixed_precision/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/kernels/scaled_mm/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/kernels/scaled_mm/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/kernels/scaled_mm/cutlass.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/kernels/scaled_mm/cutlass.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/kernels/scaled_mm/aiter.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/kernels/scaled_mm/aiter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/kv_cache.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/kv_cache.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/marlin.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/modelopt.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/modelopt.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/moe_wna16.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/moe_wna16.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/mxfp4.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/mxfp4.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/ptpc_fp8.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/ptpc_fp8.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/neuron_quant.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/qqq.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/quark/quark.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/quark/quark.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/quark/quark_moe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/quark/quark_moe.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/quark/schemes/quark_w4a4_mxfp4.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/quark/schemes/quark_w4a4_mxfp4.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/rtn.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/rtn.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/torchao.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/torchao.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=24576,K=7168,device_name=NVIDIA_H100_80GB_HBM3,dtype=fp8_w8a8,block_shape=[128,128].json" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=24576,K=7168,device_name=NVIDIA_H100_80GB_HBM3,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=24576,K=7168,device_name=NVIDIA_H200,dtype=fp8_w8a8,block_shape=[128,128].json" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=24576,K=7168,device_name=NVIDIA_H200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=32768,K=512,device_name=NVIDIA_H100_80GB_HBM3,dtype=fp8_w8a8,block_shape=[128,128].json" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=32768,K=512,device_name=NVIDIA_H100_80GB_HBM3,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=32768,K=512,device_name=NVIDIA_H200,dtype=fp8_w8a8,block_shape=[128,128].json" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=32768,K=512,device_name=NVIDIA_H200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=36864,K=7168,device_name=NVIDIA_H100_80GB_HBM3,dtype=fp8_w8a8,block_shape=[128,128].json" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=36864,K=7168,device_name=NVIDIA_H100_80GB_HBM3,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=36864,K=7168,device_name=NVIDIA_H200,dtype=fp8_w8a8,block_shape=[128,128].json" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=36864,K=7168,device_name=NVIDIA_H200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=576,K=7168,device_name=NVIDIA_H100_80GB_HBM3,dtype=fp8_w8a8,block_shape=[128,128].json" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=576,K=7168,device_name=NVIDIA_H100_80GB_HBM3,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=576,K=7168,device_name=NVIDIA_H200,dtype=fp8_w8a8,block_shape=[128,128].json" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=576,K=7168,device_name=NVIDIA_H200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=7168,K=16384,device_name=NVIDIA_H100_80GB_HBM3,dtype=fp8_w8a8,block_shape=[128,128].json" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=7168,K=16384,device_name=NVIDIA_H100_80GB_HBM3,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=7168,K=16384,device_name=NVIDIA_H200,dtype=fp8_w8a8,block_shape=[128,128].json" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=7168,K=16384,device_name=NVIDIA_H200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=7168,K=18432,device_name=NVIDIA_H100_80GB_HBM3,dtype=fp8_w8a8,block_shape=[128,128].json" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=7168,K=18432,device_name=NVIDIA_H100_80GB_HBM3,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=7168,K=18432,device_name=NVIDIA_H200,dtype=fp8_w8a8,block_shape=[128,128].json" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=7168,K=18432,device_name=NVIDIA_H200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=7168,K=2048,device_name=NVIDIA_H100_80GB_HBM3,dtype=fp8_w8a8,block_shape=[128,128].json" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=7168,K=2048,device_name=NVIDIA_H100_80GB_HBM3,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=7168,K=2048,device_name=NVIDIA_H200,dtype=fp8_w8a8,block_shape=[128,128].json" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/configs/N=7168,K=2048,device_name=NVIDIA_H200,dtype=fp8_w8a8,block_shape=[128,128].json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/flashinfer_fp4_moe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/flashinfer_fp4_moe.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/flashinfer_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/flashinfer_utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/fp8_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/fp8_utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/gptq_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/gptq_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/marlin_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/marlin_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/int8_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/int8_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/marlin_utils_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/marlin_utils_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/marlin_utils_test_qqq.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/mxfp4_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/mxfp4_utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/quant_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/quant_utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/w8a8_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/quantization/utils/w8a8_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/rotary_embedding/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/rotary_embedding/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/rotary_embedding/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/rotary_embedding/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/rotary_embedding/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/rotary_embedding/common.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/rotary_embedding/deepseek_scaling_rope.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/rotary_embedding/deepseek_scaling_rope.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/rotary_embedding/dual_chunk_rope.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/rotary_embedding/dual_chunk_rope.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/rotary_embedding/llama4_vision_rope.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/rotary_embedding/llama4_vision_rope.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/rotary_embedding/mrope.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/rotary_embedding/mrope.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/sampler.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/sampler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/sampler.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/layers/vocab_parallel_embedding.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/layers/vocab_parallel_embedding.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/model_loader/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/model_loader/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/model_loader/base_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/model_loader/base_loader.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/model_loader/bitsandbytes_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/model_loader/bitsandbytes_loader.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/model_loader/default_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/model_loader/default_loader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/model_loader/dummy_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/model_loader/dummy_loader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/model_loader/gguf_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/model_loader/gguf_loader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/model_loader/runai_streamer_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/model_loader/runai_streamer_loader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/model_loader/sharded_state_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/model_loader/sharded_state_loader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/model_loader/tensorizer_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/model_loader/tensorizer_loader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/model_loader/tpu.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/model_loader/tpu.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/model_loader/neuron.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/model_loader/neuronx_distributed.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/model_loader/tensorizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/model_loader/tensorizer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/model_loader/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/model_loader/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/model_loader/weight_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/model_loader/weight_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/adapters.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/adapters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/apertus.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/apertus.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/arcee.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/arcee.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/arctic.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/arctic.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/aria.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/aria.py" afterDir="false" />
@@ -538,7 +356,7 @@
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/baichuan.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/baichuan.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/bailing_moe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/bailing_moe.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/bamba.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/bamba.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/bart.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/bart.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/bart.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/bert.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/bert.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/bert_with_rope.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/bert_with_rope.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/blip2.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/blip2.py" afterDir="false" />
@@ -548,26 +366,35 @@
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/cohere2_vision.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/cohere2_vision.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/commandr.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/commandr.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/constant_size_cache.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/dbrx.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/dbrx.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/deepseek.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/deepseek.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/deepseek_eagle.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/deepseek_eagle.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/deepseek_mtp.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/deepseek_mtp.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/deepseek_v2.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/deepseek_v2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/deepseek_vl2.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/deepseek_vl2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/donut.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/dots1.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/dots1.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/ernie45_moe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/ernie45_moe.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/ernie45_vl.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/ernie45_vl.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/ernie45_vl_moe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/ernie45_vl_moe.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/ernie_mtp.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/ernie_mtp.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/exaone.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/exaone.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/exaone4.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/exaone4.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/falcon.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/falcon.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/florence2.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/florence2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/falcon_h1.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/falcon_h1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/florence2.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/fuyu.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/fuyu.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/gemma.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/gemma.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/gemma2.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/gemma2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/gemma3.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/gemma3.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/gemma3_mm.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/gemma3_mm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/gemma3n.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/gemma3n.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/gemma3n_mm.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/gemma3n_mm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/glm4.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/glm4.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/glm4_1v.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/glm4_1v.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/glm4_moe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/glm4_moe.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/glm4v.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/glm4v.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/glm4_moe_mtp.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/glm4_moe_mtp.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/gpt2.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/gpt2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/gpt_bigcode.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/gpt_bigcode.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/gpt_j.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/gpt_j.py" afterDir="false" />
@@ -580,7 +407,6 @@
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/granitemoeshared.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/granitemoeshared.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/gritlm.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/gritlm.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/grok1.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/grok1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/h2ovl.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/h2ovl.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/hunyuan_v1.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/hunyuan_v1.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/hyperclovax_vision.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/hyperclovax_vision.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/idefics2_vision_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/idefics2_vision_model.py" afterDir="false" />
@@ -589,73 +415,86 @@
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/interfaces_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/interfaces_base.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/intern_vit.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/intern_vit.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/internlm2.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/internlm2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/internlm2_ve.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/internlm2_ve.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/interns1.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/interns1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/interns1_vit.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/interns1_vit.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/internvl.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/internvl.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/jais.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/jais.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/jamba.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/jamba.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/jina_vl.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/jina_vl.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/keye.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/keye.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/keye_vl1_5.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/keye_vl1_5.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/kimi_vl.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/kimi_vl.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/lfm2.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/lfm2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/llama.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/llama.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/llama4.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/llama4.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/llama4_eagle.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/llama4_eagle.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/llama_eagle.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/llama_eagle.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/llama_eagle3.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/llama_eagle3.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/llava.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/llava.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/llava_next.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/llava_next.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/llava_next_video.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/llava_next_video.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/llava_onevision.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/llava_onevision.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/mamba.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/mamba.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/mamba2.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/mamba2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/mamba_cache.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/medusa.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/medusa.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/midashenglm.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/midashenglm.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/mimo.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/mimo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/mimo_mtp.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/mimo_mtp.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/minicpm.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/minicpm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/minicpm_eagle.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/minicpm_eagle.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/minicpmo.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/minicpmo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/minicpmv.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/minicpmv.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/minimax_cache.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/minimax_text_01.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/minimax_text_01.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/minimax_vl_01.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/minimax_vl_01.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/mistral3.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/mistral3.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/mixtral.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/mixtral.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/mllama.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/mllama.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/mixtral_quant.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/mllama.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/mllama4.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/mllama4.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/modernbert.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/modernbert.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/mlp_speculator.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/mlp_speculator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/molmo.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/molmo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/moonvit.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/moonvit.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/mpt.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/mpt.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/nano_nemotron_vl.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/nano_nemotron_vl.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/nemotron.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/nemotron.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/nemotron_h.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/nemotron_h.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/nemotron_nas.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/nemotron_nas.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/nemotron_vl.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/nemotron_vl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/nvlm_d.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/nvlm_d.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/olmo.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/olmo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/olmo2.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/olmo2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/olmoe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/olmoe.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/opt.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/opt.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/orion.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/orion.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/ovis.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/ovis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/ovis2_5.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/ovis2_5.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/paligemma.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/paligemma.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/persimmon.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/persimmon.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/phi.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/phi.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/phi3v.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/phi3v.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/phi4_multimodal.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/phi4_multimodal.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/phi4flash.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/phi4mm.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/phi4mm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/phi4mm_audio.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/phi4mm_audio.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/phi4mm_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/phi4mm_utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/phimoe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/phimoe.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/pixtral.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/pixtral.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/plamo2.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/plamo2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/prithvi_geospatial_mae.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/qwen.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/qwen.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/qwen2.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/qwen2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/qwen2_5_omni_thinker.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/qwen2_5_omni_thinker.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/qwen2_5_vl.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/qwen2_5_vl.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/qwen2_audio.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/qwen2_audio.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/qwen2_moe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/qwen2_moe.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/qwen2_rm.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/qwen2_rm.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/qwen2_vl.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/qwen2_vl.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/qwen3.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/qwen3.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/qwen3_moe.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/qwen3_moe.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/qwen_vl.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/qwen_vl.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/qwen3_next.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/qwen3_next.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/qwen3_next_mtp.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/qwen3_next_mtp.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/registry.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/registry.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/roberta.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/roberta.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/seed_oss.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/seed_oss.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/siglip.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/siglip.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/siglip2navit.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/siglip2navit.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/skyworkr1v.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/skyworkr1v.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/solar.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/solar.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/stablelm.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/stablelm.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/starcoder2.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/starcoder2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/step3_text.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/step3_text.py" afterDir="false" />
@@ -669,12 +508,13 @@
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/whisper.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/whisper.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/models/zamba2.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/models/zamba2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/parameter.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/parameter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/pooling_metadata.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/model_executor/sampling_metadata.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/sampling_metadata.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/model_executor/sampling_metadata.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/warmup/deep_gemm_warmup.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/warmup/deep_gemm_warmup.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/model_executor/warmup/kernel_warmup.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/model_executor/warmup/kernel_warmup.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/multimodal/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/multimodal/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/multimodal/audio.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/multimodal/audio.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/multimodal/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/multimodal/base.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/multimodal/cache.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/multimodal/cache.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/multimodal/hasher.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/multimodal/hasher.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/multimodal/inputs.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/multimodal/inputs.py" afterDir="false" />
@@ -685,72 +525,78 @@
       <change beforePath="$PROJECT_DIR$/vllm/multimodal/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/multimodal/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/multimodal/video.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/multimodal/video.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/outputs.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/outputs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/platforms/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/platforms/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/platforms/cpu.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/platforms/cpu.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/platforms/cuda.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/platforms/cuda.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/platforms/interface.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/platforms/interface.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/platforms/neuron.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/platforms/rocm.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/platforms/rocm.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/platforms/tpu.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/platforms/tpu.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/platforms/xpu.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/platforms/xpu.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/plugins/io_processors/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/plugins/io_processors/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/pooling_params.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/pooling_params.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/profiler/layerwise_profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/profiler/layerwise_profile.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/profiler/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/profiler/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/ray_vllm/lazy_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/ray_vllm/lazy_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/ray_vllm/ray_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/ray_vllm/ray_env.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/reasoning/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/reasoning/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/reasoning/abs_reasoning_parsers.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/reasoning/abs_reasoning_parsers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/reasoning/deepseek_r1_reasoning_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/reasoning/deepseek_r1_reasoning_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/reasoning/glm4_moe_reasoning_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/reasoning/glm4_moe_reasoning_parser.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/reasoning/gptoss_reasoning_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/reasoning/gptoss_reasoning_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/reasoning/granite_reasoning_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/reasoning/granite_reasoning_parser.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/reasoning/hunyuan_a13b_reasoning_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/reasoning/hunyuan_a13b_reasoning_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/reasoning/mistral_reasoning_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/reasoning/mistral_reasoning_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/reasoning/qwen3_reasoning_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/reasoning/qwen3_reasoning_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/reasoning/step3_reasoning_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/reasoning/step3_reasoning_parser.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/sampling_params.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/sampling_params.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/scalar_type.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/scalar_type.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/sequence.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/sequence.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/third_party/pynvml.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/third_party/pynvml.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/tracing.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/tracing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/test_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/test_utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/chat_templates/registry.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/chat_templates/registry.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/config.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/configs/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/configs/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/configs/eagle.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/configs/eagle.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/configs/mistral.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/configs/mistral.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/configs/nemotron.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/configs/nemotron.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/configs/nemotron_h.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/configs/nemotron_h.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/configs/jais.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/configs/jais.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/configs/speculators/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/configs/speculators/base.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/configs/ultravox.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/configs/ultravox.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/detokenizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/detokenizer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/detokenizer_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/detokenizer_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/processors/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/processors/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/processors/ovis.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/processors/ovis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/detokenizer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/dynamic_module.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/dynamic_module.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/processors/deepseek_vl2.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/processors/deepseek_vl2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/runai_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/runai_utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/s3_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/s3_utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/tokenizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/tokenizer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/tokenizer_group.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/tokenizer_group.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/tokenizer_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/tokenizer_base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/tokenizer_group.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/tokenizers/mistral.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/tokenizers/mistral.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/triton_utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/triton_utils/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/transformers_utils/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/transformers_utils/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/triton_utils/importing.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/triton_utils/importing.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/utils/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/utils/deep_gemm.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/utils/deep_gemm.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/utils/flashinfer.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/utils/flashinfer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/utils/jsontree.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/utils/jsontree.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/utils/tensor_schema.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/utils/tensor_schema.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/cpu_attn.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/cpu_attn.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/flash_attn.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/flash_attn.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/flashinfer.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/flashinfer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/flex_attention.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/flex_attention.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/gdn_attn.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/gdn_attn.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/linear_attn.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/linear_attn.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/mamba1_attn.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/mamba1_attn.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/mamba2_attn.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/mamba2_attn.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/mamba_selectors.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/mamba_attn.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/mamba_attn.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/mla/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/mla/common.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/mla/cutlass_mla.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/mla/cutlass_mla.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/mla/flashattn_mla.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/mla/flashattn_mla.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/mla/flashinfer_mla.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/mla/flashinfer_mla.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/mla/flashmla.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/mla/flashmla.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/mla/rocm_aiter_mla.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/mla/rocm_aiter_mla.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/mla/triton_mla.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/mla/triton_mla.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/pallas.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/pallas.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/rocm_aiter_fa.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/rocm_aiter_fa.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/short_conv_attn.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/short_conv_attn.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/tree_attn.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/tree_attn.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/triton_attn.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/triton_attn.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/attention/backends/xformers.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/attention/backends/xformers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/core/block_pool.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/core/block_pool.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/core/encoder_cache_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/core/encoder_cache_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/v1/core/kv_cache_coordinator.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/core/kv_cache_coordinator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/core/kv_cache_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/core/kv_cache_manager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/core/kv_cache_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/core/kv_cache_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/v1/core/sched/interface.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/core/sched/interface.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/core/sched/output.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/core/sched/output.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/core/sched/scheduler.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/core/sched/scheduler.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/core/sched/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/core/sched/utils.py" afterDir="false" />
@@ -762,8 +608,6 @@
       <change beforePath="$PROJECT_DIR$/vllm/v1/engine/core_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/engine/core_client.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/engine/detokenizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/engine/detokenizer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/engine/llm_engine.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/engine/llm_engine.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/v1/engine/logprobs.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/engine/logprobs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/v1/engine/mm_input_cache.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/engine/output_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/engine/output_processor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/engine/processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/engine/processor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/engine/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/engine/utils.py" afterDir="false" />
@@ -772,11 +616,9 @@
       <change beforePath="$PROJECT_DIR$/vllm/v1/executor/ray_distributed_executor.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/executor/ray_distributed_executor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/kv_cache_interface.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/kv_cache_interface.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/metrics/loggers.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/metrics/loggers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/v1/metrics/prometheus.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/metrics/prometheus.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/metrics/ray_wrappers.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/metrics/ray_wrappers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/metrics/stats.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/metrics/stats.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/outputs.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/outputs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/v1/pool/metadata.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/pool/metadata.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/request.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/request.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/sample/logits_processor/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/sample/logits_processor/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/sample/logits_processor/builtin.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/sample/logits_processor/builtin.py" afterDir="false" />
@@ -785,14 +627,17 @@
       <change beforePath="$PROJECT_DIR$/vllm/v1/sample/ops/topk_topp_sampler.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/sample/ops/topk_topp_sampler.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/sample/rejection_sampler.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/sample/rejection_sampler.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/sample/sampler.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/sample/sampler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/v1/sample/tpu/sampler.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/sample/tpu/sampler.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/serial_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/serial_utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/spec_decode/eagle.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/spec_decode/eagle.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/spec_decode/medusa.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/spec_decode/medusa.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/spec_decode/metrics.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/spec_decode/metrics.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/spec_decode/ngram_proposer.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/spec_decode/ngram_proposer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/structured_output/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/structured_output/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/v1/structured_output/backend_types.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/structured_output/backend_types.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/v1/structured_output/backend_guidance.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/structured_output/backend_guidance.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/v1/structured_output/backend_lm_format_enforcer.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/structured_output/backend_lm_format_enforcer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/v1/structured_output/backend_outlines.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/structured_output/backend_outlines.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/v1/structured_output/backend_xgrammar.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/structured_output/backend_xgrammar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/v1/structured_output/request.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/structured_output/request.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/structured_output/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/structured_output/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/worker/block_table.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/worker/block_table.py" afterDir="false" />
@@ -803,23 +648,18 @@
       <change beforePath="$PROJECT_DIR$/vllm/v1/worker/gpu_worker.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/worker/gpu_worker.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/worker/kv_connector_model_runner_mixin.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/worker/kv_connector_model_runner_mixin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/worker/lora_model_runner_mixin.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/worker/lora_model_runner_mixin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/v1/worker/tpu_input_batch.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/worker/tpu_input_batch.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/worker/tpu_model_runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/worker/tpu_model_runner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/worker/tpu_worker.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/worker/tpu_worker.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/worker/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/worker/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/v1/worker/worker_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/worker/worker_base.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/v1/worker/xpu_model_runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/worker/xpu_model_runner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/v1/worker/xpu_worker.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/v1/worker/xpu_worker.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/version.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/version.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/worker/enc_dec_model_runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/worker/enc_dec_model_runner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/worker/model_runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/worker/model_runner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/worker/model_runner_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/worker/model_runner_base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/worker/neuron_model_runner.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/worker/neuron_worker.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/worker/neuronx_distributed_model_runner.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/worker/pooling_model_runner.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm/worker/worker.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/worker/worker.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/worker/cache_engine.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/worker/enc_dec_model_runner.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/worker/model_runner.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/worker/model_runner_base.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/worker/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vllm/worker/worker.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vllm/worker/worker_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm/worker/worker_base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vllm_inference.py" beforeDir="false" afterPath="$PROJECT_DIR$/vllm_inference.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -862,31 +702,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.cuda.executor&quot;: &quot;Run&quot;,
-    &quot;Python.find_cuda_init.executor&quot;: &quot;Run&quot;,
-    &quot;Python.qwen2_offline_inference.executor&quot;: &quot;Run&quot;,
-    &quot;Python.setup (1).executor&quot;: &quot;Run&quot;,
-    &quot;Python.setup.executor&quot;: &quot;Run&quot;,
-    &quot;Python.use_existing_torch.executor&quot;: &quot;Run&quot;,
-    &quot;Python.validate_config.executor&quot;: &quot;Run&quot;,
-    &quot;Python.vllm_inference.executor&quot;: &quot;Debug&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/GitHub/vllm-learn&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.cuda.executor": "Run",
+    "Python.find_cuda_init.executor": "Run",
+    "Python.qwen2_offline_inference.executor": "Run",
+    "Python.setup (1).executor": "Run",
+    "Python.setup.executor": "Run",
+    "Python.use_existing_torch.executor": "Run",
+    "Python.validate_config.executor": "Run",
+    "Python.vllm_inference.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "E:/GitHub/vllm-learn",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\GitHub\vllm-learn" />
@@ -1220,6 +1060,8 @@
       <workItem from="1759505696865" duration="899000" />
       <workItem from="1759506686783" duration="736000" />
       <workItem from="1759542524011" duration="607000" />
+      <workItem from="1759984031094" duration="248000" />
+      <workItem from="1760103197298" duration="628000" />
     </task>
     <task id="LOCAL-00001" summary="阅读add_request,添加注释">
       <option name="closed" value="true" />
@@ -1373,7 +1215,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757297720320</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="更新到0.10.2删减无用信息">
+      <option name="closed" value="true" />
+      <created>1759984177461</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1759984177461</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1407,7 +1257,8 @@
     <MESSAGE value="更新到0.9.1" />
     <MESSAGE value="更新到0.10.1" />
     <MESSAGE value="更新到0.10.1_删减无用信息" />
-    <option name="LAST_COMMIT_MESSAGE" value="更新到0.10.1_删减无用信息" />
+    <MESSAGE value="更新到0.10.2删减无用信息" />
+    <option name="LAST_COMMIT_MESSAGE" value="更新到0.10.2删减无用信息" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1419,22 +1270,22 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/vllm/v1/engine/core.py</url>
-          <line>340</line>
+          <line>341</line>
           <option name="timeStamp" value="65" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/vllm/v1/engine/core.py</url>
-          <line>1089</line>
+          <line>1083</line>
           <option name="timeStamp" value="70" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/vllm/v1/engine/core.py</url>
-          <line>756</line>
+          <line>750</line>
           <option name="timeStamp" value="74" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/vllm/model_executor/models/qwen2.py</url>
-          <line>364</line>
+          <line>363</line>
           <option name="timeStamp" value="78" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -1449,12 +1300,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/vllm/v1/engine/llm_engine.py</url>
-          <line>110</line>
+          <line>113</line>
           <option name="timeStamp" value="83" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/vllm/entrypoints/cli/serve.py</url>
-          <line>115</line>
+          <line>121</line>
           <option name="timeStamp" value="88" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -1469,22 +1320,22 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/vllm/entrypoints/llm.py</url>
-          <line>281</line>
+          <line>296</line>
           <option name="timeStamp" value="92" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/vllm/v1/engine/llm_engine.py</url>
-          <line>159</line>
+          <line>176</line>
           <option name="timeStamp" value="94" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/vllm/v1/engine/core.py</url>
-          <line>733</line>
+          <line>727</line>
           <option name="timeStamp" value="96" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/vllm/v1/engine/core.py</url>
-          <line>702</line>
+          <line>696</line>
           <option name="timeStamp" value="98" />
         </line-breakpoint>
       </breakpoints>

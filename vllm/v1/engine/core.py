@@ -23,16 +23,17 @@ from vllm.logger import init_logger
 from vllm.logging_utils.dump_input import dump_engine_exception
 from vllm.lora.request import LoRARequest
 from vllm.multimodal import MULTIMODAL_REGISTRY
-from vllm.multimodal.cache import receiver_cache_from_config
+from vllm.multimodal.cache import engine_receiver_cache_from_config
 from vllm.tasks import POOLING_TASKS, SupportedTask
 from vllm.transformers_utils.config import (
     maybe_register_config_serialize_by_value)
 from vllm.utils import (decorate_logs, get_hash_fn_by_name, make_zmq_socket,
                         resolve_obj_by_qualname, set_process_title)
-from vllm.v1.core.kv_cache_utils import (BlockHash, get_kv_cache_config,
+from vllm.v1.core.kv_cache_utils import (BlockHash,
+                                         generate_scheduler_kv_cache_config,
+                                         get_kv_cache_configs,
                                          get_request_block_hasher,
-                                         init_none_hash,
-                                         unify_kv_cache_configs)
+                                         init_none_hash)
 from vllm.v1.core.sched.interface import SchedulerInterface
 from vllm.v1.core.sched.output import SchedulerOutput
 from vllm.v1.core.sched.scheduler import Scheduler as V1Scheduler
@@ -129,9 +130,12 @@ class EngineCore:
             log_stats=self.log_stats,
         )
         self.use_spec_decode = vllm_config.speculative_config is not None
+        if self.scheduler.connector is not None:  # type: ignore
+            self.model_executor.init_kv_output_aggregator(
+                self.scheduler.connector.get_finished_count())  # type: ignore
 
         self.mm_registry = mm_registry = MULTIMODAL_REGISTRY
-        self.mm_receiver_cache = receiver_cache_from_config(
+        self.mm_receiver_cache = engine_receiver_cache_from_config(
             vllm_config, mm_registry)
 
         # Setup batch queue for pipeline parallelism.
@@ -158,6 +162,14 @@ class EngineCore:
 
             self.request_block_hasher = get_request_block_hasher(
                 block_size, caching_hash_fn)
+        # - pp=1，batch_queue = None，step_fn = self.step
+        # - pp>1, batch_queue的长度为pp的stage数，step_fn = self.step_with_batch_queue
+        # 整体来说，step_fn函数主要做了3件事情：
+        # 调度器单步调度
+        # 单步推理
+        # 调度器对推理结果做一些后处理
+        self.step_fn = (self.step if self.batch_queue is None else
+                        self.step_with_batch_queue)
 
     def _initialize_kv_caches(
             self, vllm_config: VllmConfig) -> tuple[int, int, KVCacheConfig]:
@@ -197,30 +209,19 @@ class EngineCore:
         # - num_blocks：可分配的block数量，floor(可用显存 / 单块缓存大小)
         # - block_size：每块缓存的 token 容量
         # - cache_dtype：数据类型
-        kv_cache_configs = [
-            get_kv_cache_config(vllm_config, kv_cache_spec_one_worker,
-                                available_gpu_memory_one_worker)
-            for kv_cache_spec_one_worker, available_gpu_memory_one_worker in
-            zip(kv_cache_specs, available_gpu_memory)
-        ]
+        kv_cache_configs = get_kv_cache_configs(vllm_config, kv_cache_specs,
+                                                available_gpu_memory)
 
         # Since we use a shared centralized controller, we need the
         # `kv_cache_config` to be consistent across all workers to make sure
         # all the memory operators can be applied to all workers.
         # 4、统一各卡上的kv cache config，例如取 min(num_blocks) 作为最终各卡上可以维护的block数量
-        unify_kv_cache_configs(kv_cache_configs)
-
-        # All workers have the same kv_cache_config except layer names, so use
-        # an arbitrary one to initialize the scheduler.
-        assert all([
-            cfg.num_blocks == kv_cache_configs[0].num_blocks
-            for cfg in kv_cache_configs
-        ])
+        scheduler_kv_cache_config = generate_scheduler_kv_cache_config(
+            kv_cache_configs)
         # 最终确定的每张卡上的block数量
-        num_gpu_blocks = kv_cache_configs[0].num_blocks
+        num_gpu_blocks = scheduler_kv_cache_config.num_blocks
         # 最终确定的cpu上的block数量
         num_cpu_blocks = 0
-        scheduler_kv_cache_config = kv_cache_configs[0]
 
         # Initialize kv cache and warmup the execution
         # 5、在各张卡上实际分配 KV cache（用0张量填充kv cache）
@@ -349,7 +350,8 @@ class EngineCore:
         model_executed = False
         if self.scheduler.has_requests():
             scheduler_output = self.scheduler.schedule()
-            future = self.model_executor.execute_model(scheduler_output)
+            future = self.model_executor.execute_model(scheduler_output,
+                                                       non_block=True)
             batch_queue.appendleft(
                 (future, scheduler_output))  # type: ignore[arg-type]
 
@@ -551,14 +553,6 @@ class EngineCoreProc(EngineCore):
                         "Input socket thread died during startup")
                 assert addresses.coordinator_input is not None
                 logger.info("Waiting for READY message from DP Coordinator...")
-        # - pp=1，batch_queue = None，step_fn = self.step
-        # - pp>1, batch_queue的长度为pp的stage数，step_fn = self.step_with_batch_queue
-        # 整体来说，step_fn函数主要做了3件事情：
-        # 调度器单步调度
-        # 单步推理
-        # 调度器对推理结果做一些后处理
-        self.step_fn = (self.step if self.batch_queue is None else
-                        self.step_with_batch_queue)
 
         # Mark the startup heap as static so that it's ignored by GC.
         # Reduces pause times of oldest generation collections.
