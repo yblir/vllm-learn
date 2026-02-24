@@ -24,8 +24,8 @@ from transformers import AutoTokenizer
 # import torch
 # print(torch.cuda.is_available())
 
-model_path = '/mnt/e/checkpoints/Qwen2.5-3B-Instruct'
-# model_path = '/media/xk/D6B8A862B8A8433B/data/qwen2-15b-instruct'
+# model_path = '/mnt/e/checkpoints/Qwen2.5-3B-Instruct'
+model_path = '/media/xk/D6B8A862B8A8433B/data/qwen2-15b-instruct'
 
 params = {"repetition_penalty": 1.1,
           "temperature"       : 0.7,
